@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Osman Kose — Mobile Games</title>
+<meta name="description" content="Independent mobile game developer. Cosmos Jumper is available on the App Store. Contact: osmankose85@gmail.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#0A0713;
+    --surface:#171029;
+    --edge:#2A1F45;
+    --ink:#EDE7F5;
+    --muted:#8B82A3;
+    --amber:#F2A65A;
+    --violet:#7B6CF6;
+    --display:"Space Grotesk",system-ui,sans-serif;
+    --body:"IBM Plex Sans",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  body{
+    background:var(--void);
+    color:var(--ink);
+    font-family:var(--body);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+
+  a{color:var(--amber)}
+  a:focus-visible,
+  .btn:focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:2px}
+
+  .wrap{width:100%;max-width:640px;margin:0 auto;padding:0 24px}
+
+  /* ---- masthead ---- */
+  .masthead{padding:40px 0 0}
+  .name{
+    font-family:var(--mono);
+    font-size:.75rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  /* ---- hero: the jump arc is the signature ---- */
+  .hero{position:relative;padding:64px 0 72px;overflow:hidden}
+  .arc{
+    position:absolute;
+    left:-10%;
+    top:18px;
+    width:120%;
+    height:210px;
+    pointer-events:none;
+    opacity:.55;
+  }
+  .arc path{
+    fill:none;
+    stroke:var(--violet);
+    stroke-width:1.5;
+    stroke-dasharray:2 9;
+    stroke-linecap:round;
+  }
+  .arc circle{fill:var(--amber)}
+  @media (prefers-reduced-motion:no-preference){
+    .arc circle{
+      animation:travel 7s cubic-bezier(.4,0,.6,1) infinite;
+      offset-path:path("M -20 200 C 120 -30, 340 -30, 480 200");
+      offset-rotate:0deg;
+    }
+    @keyframes travel{
+      0%{offset-distance:0%;opacity:0}
+      12%{opacity:1}
+      88%{opacity:1}
+      100%{offset-distance:100%;opacity:0}
+    }
+  }
+
+  .hero-inner{position:relative}
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:.7rem;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--violet);
+    margin-bottom:14px;
+  }
+  h1{
+    font-family:var(--display);
+    font-weight:700;
+    font-size:clamp(2.4rem,10vw,3.6rem);
+    line-height:1.02;
+    letter-spacing:-.03em;
+  }
+  h1 em{font-style:normal;color:var(--amber)}
+  .lede{
+    margin-top:18px;
+    max-width:46ch;
+    color:var(--muted);
+    font-size:1.02rem;
+  }
+
+  /* ---- app card ---- */
+  .card{
+    background:var(--surface);
+    border:1px solid var(--edge);
+    border-radius:14px;
+    padding:26px;
+    margin-bottom:20px;
+  }
+  .card h2{
+    font-family:var(--display);
+    font-weight:600;
+    font-size:1.35rem;
+    letter-spacing:-.01em;
+  }
+  .card p{color:var(--muted);margin-top:8px;font-size:.95rem}
+
+  .meta{
+    font-family:var(--mono);
+    font-size:.75rem;
+    color:var(--muted);
+    margin-top:18px;
+    padding-top:16px;
+    border-top:1px solid var(--edge);
+    display:grid;
+    gap:6px;
+  }
+  .meta span{color:var(--ink)}
+
+  .btn{
+    display:inline-block;
+    margin-top:20px;
+    padding:11px 22px;
+    background:var(--amber);
+    color:var(--void);
+    font-family:var(--display);
+    font-weight:600;
+    font-size:.92rem;
+    text-decoration:none;
+    border-radius:8px;
+  }
+  .btn:hover{background:#F7B876}
+
+  /* ---- contact ---- */
+  section{padding-bottom:20px}
+  .label{
+    font-family:var(--mono);
+    font-size:.7rem;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:12px;
+  }
+  .mail{
+    font-family:var(--display);
+    font-size:clamp(1.05rem,4.6vw,1.5rem);
+    font-weight:600;
+    color:var(--ink);
+    text-decoration:none;
+    border-bottom:2px solid var(--amber);
+    padding-bottom:2px;
+    word-break:break-all;
+  }
+  .mail:hover{color:var(--amber)}
+  .contact-note{margin-top:14px;color:var(--muted);font-size:.9rem;max-width:46ch}
+
+  footer{
+    margin-top:auto;
+    padding:32px 0 40px;
+    border-top:1px solid var(--edge);
+  }
+  .foot-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px 20px;
+    justify-content:space-between;
+    align-items:baseline;
+    font-family:var(--mono);
+    font-size:.72rem;
+    color:var(--muted);
+  }
+  .foot-row a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--edge)}
+  .foot-row a:hover{color:var(--amber)}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap"><p class="name">Osman Kose · Independent Developer</p></div>
+</header>
+
+<main>
+  <div class="hero">
+    <svg class="arc" viewBox="0 0 480 210" aria-hidden="true" preserveAspectRatio="none">
+      <path d="M -20 200 C 120 -30, 340 -30, 480 200"/>
+      <circle r="3.5" cx="0" cy="0"/>
+    </svg>
+    <div class="wrap hero-inner">
+      <p class="eyebrow">Mobile games from Turkey</p>
+      <h1>Small games<br>with <em>one good</em><br>mechanic.</h1>
+      <p class="lede">I build and publish arcade games for iOS as a solo developer. Everything here is made with React Native and Skia.</p>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <section>
+      <p class="label">Published</p>
+      <article class="card">
+        <h2>Cosmos Jumper</h2>
+        <p>An arcade jumper set across five zones. Time your leaps, collect characters, climb the leaderboard.</p>
+        <div class="meta">
+          <div>Platform <span>iOS — App Store</span></div>
+          <div>Bundle ID <span>com.osmnks.jumpermobile</span></div>
+          <div>Status <span>Live</span></div>
+        </div>
+        <a class="btn" href="https://apps.apple.com/app/id6763640635">View on the App Store</a>
+      </article>
+    </section>
+
+    <section>
+      <p class="label">Contact</p>
+      <a class="mail" href="mailto:osmankose85@gmail.com">osmankose85@gmail.com</a>
+      <p class="contact-note">This is the developer contact address for every app listed on this site, including business, partnership, and advertising enquiries.</p>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap foot-row">
+    <span>© 2026 Osman Kose</span>
+    <a href="/app-ads.txt">app-ads.txt</a>
+  </div>
+</footer>
+
+</body>
+</html>
