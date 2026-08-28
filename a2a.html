@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ajan Orkestrasyonu · Sinyal Kartı</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#061F1B;
+    --board:#0C3B33;
+    --board-hi:#125145;
+    --copper:#B87A3A;
+    --copper-bright:#F2B75F;
+    --copper-dim:#5F4327;
+    --silk:#EDE7D8;
+    --muted:#7E9A90;
+    --alert:#E4573D;
+    --display:'Bricolage Grotesque',system-ui,sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+    --sans:'IBM Plex Sans',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--void);
+    color:var(--silk);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+    padding:22px 16px 56px;
+  }
+  .wrap{max-width:1080px;margin:0 auto}
+
+  /* ---- header ---- */
+  .eyebrow{
+    font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--copper);display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+  }
+  .eyebrow span.dot{width:6px;height:6px;border-radius:50%;background:var(--copper-bright);display:inline-block}
+  h1{
+    font-family:var(--display);font-weight:800;font-size:clamp(30px,7.2vw,58px);
+    line-height:.94;letter-spacing:-.03em;margin:12px 0 10px;
+  }
+  h1 em{font-style:normal;color:var(--copper-bright)}
+  .lede{max-width:56ch;color:#C9D6D0;font-size:15px;line-height:1.55;margin:0}
+
+  /* ---- controls ---- */
+  .bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:20px 0 14px}
+  button{
+    font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    background:var(--board);color:var(--silk);border:1px solid var(--copper-dim);
+    padding:11px 16px;border-radius:2px;cursor:pointer;transition:.18s;
+  }
+  button:hover{border-color:var(--copper);background:var(--board-hi)}
+  button.primary{background:var(--copper);border-color:var(--copper-bright);color:#20130A;font-weight:600}
+  button.primary:hover{background:var(--copper-bright)}
+  button:focus-visible{outline:2px solid var(--copper-bright);outline-offset:2px}
+  .speed{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.1em}
+  .speed button{padding:7px 10px;letter-spacing:.05em}
+  .speed button[aria-pressed="true"]{border-color:var(--copper-bright);color:var(--copper-bright)}
+
+  /* ---- board ---- */
+  .board{
+    background:var(--board);
+    border:1px solid #17564A;
+    border-radius:3px;
+    padding:6px;
+    position:relative;
+    overflow:hidden;
+  }
+  .board::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:radial-gradient(rgba(255,255,255,.055) 1px,transparent 1px);
+    background-size:16px 16px;
+  }
+  svg{display:block;width:100%;height:auto;position:relative}
+
+  .card-body{fill:#0A332C;stroke:var(--copper-dim);stroke-width:1.4}
+  .node.on .card-body{stroke:var(--copper-bright);fill:#0F4237}
+  .node.done .card-body{stroke:var(--copper)}
+  .node{transition:filter .3s}
+  .node.on{filter:drop-shadow(0 0 10px rgba(242,183,95,.42))}
+
+  .t-eyebrow{font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;fill:var(--muted)}
+  .node.on .t-eyebrow{fill:var(--copper-bright)}
+  .t-title{font-family:var(--display);font-weight:800;font-size:17px;letter-spacing:-.02em;fill:var(--silk)}
+  .t-state{font-family:var(--mono);font-size:10.5px;fill:var(--copper);letter-spacing:.04em}
+  .t-state.warn{fill:var(--alert)}
+  .t-note{font-family:var(--mono);font-size:10px;fill:#89A69C;letter-spacing:.05em}
+  .t-zone{font-family:var(--mono);font-size:10px;letter-spacing:.24em;fill:var(--muted)}
+
+  .trace{fill:none;stroke:var(--copper-dim);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .trace.proto{stroke-dasharray:7 6}
+  .glow{fill:none;stroke:var(--copper-bright);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;opacity:0}
+  .pad{fill:#0A332C;stroke:var(--copper);stroke-width:2}
+  .head{fill:var(--copper-bright);opacity:0}
+  .zone{fill:none;stroke:#2C6355;stroke-width:1.2;stroke-dasharray:4 7}
+
+  .divider{stroke:var(--copper-dim);stroke-width:1;stroke-dasharray:3 4}
+  .ring-track{fill:none;stroke:#1B5A4C;stroke-width:3.5}
+  .ring-arc{fill:none;stroke:var(--copper-bright);stroke-width:3.5;stroke-linecap:round;transform:rotate(-90deg);transform-origin:center;transition:stroke .2s}
+  .ring-arc.fail{stroke:var(--alert)}
+  .pdot{fill:#0A332C;stroke:#2C6355;stroke-width:1.6}
+  .pdot.on{fill:var(--copper-bright);stroke:var(--copper-bright)}
+  .pdot.fail{fill:var(--alert);stroke:var(--alert)}
+  .ring-count{font-family:var(--mono);font-size:12px;font-weight:600;fill:var(--muted);text-anchor:middle}
+  .ring-count.on{fill:var(--copper-bright)}
+  .ring-count.fail{fill:var(--alert)}
+  .ring-cap{font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;fill:#5F8377;text-anchor:middle}
+
+  .chip rect{fill:#0A332C;stroke:var(--copper-dim);stroke-width:1}
+  .chip text{font-family:var(--mono);font-size:9.5px;fill:var(--muted);letter-spacing:.08em}
+  .chip.on rect{stroke:var(--copper-bright);fill:#134A3D}
+  .chip.on text{fill:var(--copper-bright)}
+
+  /* ---- console ---- */
+  .console{
+    margin-top:14px;border:1px solid #17564A;background:#082A25;border-radius:3px;
+    height:190px;overflow-y:auto;padding:12px 14px;font-family:var(--mono);font-size:12px;line-height:1.75;
+  }
+  .console .ln{display:flex;gap:10px}
+  .console .ts{color:#4E7268;flex:none}
+  .console .msg{color:#CFDCD6}
+  .console .msg b{color:var(--copper-bright);font-weight:600}
+  .console .ln.warn .msg{color:var(--alert)}
+  .console .ln.head .msg{color:var(--copper-bright);letter-spacing:.08em;text-transform:uppercase;font-size:11px}
+
+  /* ---- legend ---- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:#17564A;margin-top:26px;border:1px solid #17564A}
+  .cell{background:var(--void);padding:18px 16px}
+  .cell h3{font-family:var(--display);font-weight:600;font-size:16px;margin:0 0 6px;letter-spacing:-.01em}
+  .cell .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;color:var(--copper);text-transform:uppercase}
+  .cell p{margin:0;font-size:13.5px;line-height:1.6;color:#A9BDB6}
+  footer{margin-top:26px;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:#4E7268;text-transform:uppercase}
+
+  @media (prefers-reduced-motion: reduce){
+    .node{transition:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow"><span class="dot"></span> Sinyal kartı · rev A <span class="dot"></span> A2A etkin</div>
+  <h1>Merkezî orkestratör<br>ve <em>uzman ajanlar</em></h1>
+  <p class="lede">Bir görevin karta girişinden birleşik çıktıya kadar izlediği yol. Bakır hatlar üzerinde ilerleyen sinyali izleyin: ayrıştırma, ajan içi doğrulama döngüsü ve kart dışına çıkan A2A el sıkışması.</p>
+
+  <div class="bar">
+    <button class="primary" id="play">Senaryoyu oynat</button>
+    <button id="reset">Sıfırla</button>
+    <div class="speed">
+      Hız
+      <button data-speed="1" aria-pressed="true">×1</button>
+      <button data-speed="2" aria-pressed="false">×2</button>
+    </div>
+  </div>
+
+  <div class="board">
+    <svg viewBox="0 0 1040 640" role="img" aria-label="Ajan orkestrasyonu akış şeması">
+      <!-- harici sistem bölgesi -->
+      <rect class="zone" x="770" y="418" width="252" height="188" rx="3"/>
+      <text class="t-zone" x="778" y="410">HARİCİ SİSTEM SINIRI</text>
+
+      <!-- ---------- hatlar ---------- -->
+      <path id="p1" class="trace" d="M160,330 H215"/>
+      <path id="p2" class="trace" d="M415,290 H450 Q460,290 460,280 V130 Q460,120 470,120 H505"/>
+      <path id="p3" class="trace" d="M415,330 H505"/>
+      <path id="p4" class="trace" d="M415,370 H450 Q460,370 460,380 V505 Q460,515 470,515 H505"/>
+      <path id="p5" class="trace proto" d="M755,515 H800"/>
+      <path id="p6" class="trace" d="M315,420 V520"/>
+
+      <path id="g1" class="glow" d="M160,330 H215"/>
+      <path id="g2" class="glow" d="M415,290 H450 Q460,290 460,280 V130 Q460,120 470,120 H505"/>
+      <path id="g3" class="glow" d="M415,330 H505"/>
+      <path id="g4" class="glow" d="M415,370 H450 Q460,370 460,380 V505 Q460,515 470,515 H505"/>
+      <path id="g5" class="glow" d="M755,515 H800"/>
+      <path id="g6" class="glow" d="M315,420 V520"/>
+
+      <g id="pads">
+        <circle class="pad" cx="160" cy="330" r="4.5"/><circle class="pad" cx="215" cy="330" r="4.5"/>
+        <circle class="pad" cx="415" cy="290" r="4.5"/><circle class="pad" cx="505" cy="120" r="4.5"/>
+        <circle class="pad" cx="415" cy="330" r="4.5"/><circle class="pad" cx="505" cy="330" r="4.5"/>
+        <circle class="pad" cx="415" cy="370" r="4.5"/><circle class="pad" cx="505" cy="515" r="4.5"/>
+        <circle class="pad" cx="755" cy="515" r="4.5"/><circle class="pad" cx="800" cy="515" r="4.5"/>
+        <circle class="pad" cx="315" cy="420" r="4.5"/><circle class="pad" cx="315" cy="520" r="4.5"/>
+      </g>
+
+      <circle id="head" class="head" cx="0" cy="0" r="5"/>
+
+      <!-- ---------- görev girişi ---------- -->
+      <g class="node" id="n-task">
+        <rect class="card-body" x="30" y="298" width="130" height="64" rx="2"/>
+        <text class="t-eyebrow" x="46" y="322">GİRİŞ</text>
+        <text class="t-title" x="46" y="344" style="font-size:15px">Görev</text>
+      </g>
+
+      <!-- ---------- orkestratör ---------- -->
+      <g class="node" id="n-orch">
+        <rect class="card-body" x="215" y="240" width="200" height="180" rx="2"/>
+        <text class="t-eyebrow" x="233" y="268">DÜĞÜM 00</text>
+        <text class="t-title" x="233" y="294" style="font-size:19px">Merkezî</text>
+        <text class="t-title" x="233" y="315" style="font-size:19px">orkestratör</text>
+        <text class="t-note" x="233" y="336">planla · dağıt · birleştir</text>
+        <g class="chip" id="c-1"><rect x="233" y="352" width="52" height="21" rx="2"/><text x="243" y="366">ST-1</text></g>
+        <g class="chip" id="c-2"><rect x="291" y="352" width="52" height="21" rx="2"/><text x="301" y="366">ST-2</text></g>
+        <g class="chip" id="c-3"><rect x="349" y="352" width="52" height="21" rx="2"/><text x="359" y="366">ST-3</text></g>
+        <text class="t-state" id="s-orch" x="233" y="396">bekliyor</text>
+      </g>
+
+      <!-- ---------- uzman ajan A ---------- -->
+      <g class="node" id="n-a">
+        <rect class="card-body" x="505" y="55" width="250" height="130" rx="2"/>
+        <line class="divider" x1="650" y1="65" x2="650" y2="175"/>
+        <text class="t-eyebrow" x="523" y="82">DÜĞÜM 01 · ST-1</text>
+        <text class="t-title" x="523" y="108" style="font-size:16px">Uzman ajan</text>
+        <text class="t-note" x="523" y="128">veri çekme · analiz</text>
+        <g id="loop-a">
+          <circle class="ring-track" cx="702" cy="115" r="30"/>
+          <circle class="ring-arc" id="arc-a" cx="702" cy="115" r="30"/>
+          <circle class="pdot" id="pd-a-0" cx="702" cy="85" r="4.5"/>
+          <circle class="pdot" id="pd-a-1" cx="728" cy="130" r="4.5"/>
+          <circle class="pdot" id="pd-a-2" cx="676" cy="130" r="4.5"/>
+          <text class="ring-count" id="cnt-a" x="702" y="119">0/2</text>
+          <text class="ring-cap" x="702" y="167">YİNELEME</text>
+        </g>
+        <text class="t-state" id="s-a" x="505" y="205">bekliyor</text>
+      </g>
+
+      <!-- ---------- uzman ajan B ---------- -->
+      <g class="node" id="n-b">
+        <rect class="card-body" x="505" y="265" width="250" height="130" rx="2"/>
+        <line class="divider" x1="650" y1="275" x2="650" y2="385"/>
+        <text class="t-eyebrow" x="523" y="292">DÜĞÜM 02 · ST-2</text>
+        <text class="t-title" x="523" y="318" style="font-size:16px">Uzman ajan</text>
+        <text class="t-note" x="523" y="338">kod üretimi · test</text>
+        <g id="loop-b">
+          <circle class="ring-track" cx="702" cy="325" r="30"/>
+          <circle class="ring-arc" id="arc-b" cx="702" cy="325" r="30"/>
+          <circle class="pdot" id="pd-b-0" cx="702" cy="295" r="4.5"/>
+          <circle class="pdot" id="pd-b-1" cx="728" cy="340" r="4.5"/>
+          <circle class="pdot" id="pd-b-2" cx="676" cy="340" r="4.5"/>
+          <text class="ring-count" id="cnt-b" x="702" y="329">0/1</text>
+          <text class="ring-cap" x="702" y="377">YİNELEME</text>
+        </g>
+        <text class="t-state" id="s-b" x="505" y="415">bekliyor</text>
+      </g>
+
+      <!-- ---------- a2a geçidi ---------- -->
+      <g class="node" id="n-gw">
+        <rect class="card-body" x="505" y="455" width="250" height="120" rx="2"/>
+        <text class="t-eyebrow" x="523" y="482">DÜĞÜM 03 · ST-3</text>
+        <text class="t-title" x="523" y="506">A2A geçidi</text>
+        <text class="t-note" x="523" y="526">agent card · yetenek keşfi</text>
+        <text class="t-state" id="s-gw" x="523" y="556">bekliyor</text>
+      </g>
+
+      <!-- ---------- harici yz ---------- -->
+      <g class="node" id="n-ext">
+        <rect class="card-body" x="800" y="455" width="205" height="120" rx="2"/>
+        <text class="t-eyebrow" x="818" y="482">KART DIŞI</text>
+        <text class="t-title" x="818" y="506">Harici uzman</text>
+        <text class="t-title" x="818" y="527">yapay zekâ</text>
+        <text class="t-state" id="s-ext" x="818" y="556">erişilebilir</text>
+      </g>
+
+      <!-- ---------- çıktı ---------- -->
+      <g class="node" id="n-out">
+        <rect class="card-body" x="215" y="520" width="200" height="84" rx="2"/>
+        <text class="t-eyebrow" x="233" y="546">ÇIKIŞ</text>
+        <text class="t-title" x="233" y="570">Birleşik çıktı</text>
+        <text class="t-state" id="s-out" x="233" y="592">bekliyor</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="console" id="log" aria-live="polite"></div>
+
+  <div class="grid">
+    <div class="cell">
+      <div class="k">Düğüm 00</div>
+      <h3>Orkestrasyon</h3>
+      <p>Tek bir istek gelir, orkestratör onu bağımsız alt görevlere böler ve her birini yetenek profiline uyan ajana yönlendirir. Sonuçları toplayıp tek yanıta indirger.</p>
+    </div>
+    <div class="cell">
+      <div class="k">Ajan içi</div>
+      <h3>Loop engineering</h3>
+      <p>Ajan çıktısını orkestratöre göndermeden önce kendi kendine doğrular. Başarısız kontrol yukarı taşmaz; ajan planı düzeltip yineler. Halkanın kırmızıya dönmesi bu anı gösterir.</p>
+    </div>
+    <div class="cell">
+      <div class="k">Düğüm 03</div>
+      <h3>A2A protokolü</h3>
+      <p>Yerel ajanların yeteneği yetmediğinde geçit devreye girer: agent card ile karşı tarafın ne yapabildiği okunur, görev standart bir zarfla dışarıya taşınır.</p>
+    </div>
+    <div class="cell">
+      <div class="k">Kart dışı</div>
+      <h3>Harici uzman</h3>
+      <p>Farklı satıcıya, farklı altyapıya ait bir ajan. Sistem sınırının ötesinde çalışır; sadece protokolü paylaşır, belleği ve araçlarını değil.</p>
+    </div>
+  </div>
+
+  <footer>Ajan orkestrasyonu · loop engineering · A2A</footer>
+</div>
+
+<script>
+(function(){
+  const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let speed = 1, runId = 0, running = false, t0 = 0;
+
+  const $ = s => document.querySelector(s);
+  const logEl = $('#log');
+  const head = $('#head');
+
+  const nodes = {
+    task:$('#n-task'), orch:$('#n-orch'), a:$('#n-a'), b:$('#n-b'),
+    gw:$('#n-gw'), ext:$('#n-ext'), out:$('#n-out')
+  };
+
+  function sleep(ms){ return new Promise(r=>setTimeout(r, REDUCED ? Math.min(ms,120) : ms/speed)); }
+  function check(id){ if(id!==runId) throw 'cancel'; }
+
+  function stamp(){
+    const s = (performance.now()-t0)/1000;
+    return '['+String(Math.floor(s/60)).padStart(2,'0')+':'+s.toFixed(1).padStart(4,'0')+']';
+  }
+  function log(msg, kind){
+    const ln = document.createElement('div');
+    ln.className = 'ln' + (kind ? ' '+kind : '');
+    ln.innerHTML = '<span class="ts">'+stamp()+'</span><span class="msg">'+msg+'</span>';
+    logEl.appendChild(ln);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  function on(k){ nodes[k].classList.add('on'); nodes[k].classList.remove('done'); }
+  function done(k){ nodes[k].classList.remove('on'); nodes[k].classList.add('done'); }
+  function state(k, txt, warn){
+    const el = document.getElementById('s-'+k);
+    el.textContent = txt;
+    el.classList.toggle('warn', !!warn);
+  }
+  function chip(n, isOn){ document.getElementById('c-'+n).classList.toggle('on', isOn); }
+
+  function pulse(n, opts){
+    opts = opts || {};
+    const dur = (opts.dur || 640) / (REDUCED ? 6 : speed);
+    const rev = !!opts.reverse;
+    const path = document.getElementById('p'+n);
+    const glow = document.getElementById('g'+n);
+    const L = path.getTotalLength();
+    glow.style.strokeDasharray = L;
+    glow.style.strokeDashoffset = rev ? -L : L;
+    glow.style.opacity = 1;
+    glow.style.stroke = opts.color || 'var(--copper-bright)';
+    head.style.opacity = 1;
+    head.setAttribute('fill', opts.color || 'var(--copper-bright)');
+    const start = performance.now();
+    return new Promise(res=>{
+      function frame(now){
+        const t = Math.min(1,(now-start)/dur);
+        const e = t<.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2;
+        glow.style.strokeDashoffset = rev ? -L*(1-e) : L*(1-e);
+        const pt = path.getPointAtLength(rev ? L*(1-e) : L*e);
+        head.setAttribute('cx', pt.x); head.setAttribute('cy', pt.y);
+        if(t<1) requestAnimationFrame(frame);
+        else {
+          head.style.opacity = 0;
+          setTimeout(()=>{ glow.style.opacity = 0; res(); }, 160/speed);
+        }
+      }
+      requestAnimationFrame(frame);
+    });
+  }
+
+  const C = 2*Math.PI*30;
+  const PHASES = ['planla','araç çağır','doğrula'];
+
+  function ringClear(k){
+    const arc = document.getElementById('arc-'+k);
+    arc.style.strokeDasharray = C;
+    arc.style.strokeDashoffset = C;
+    arc.classList.remove('fail');
+    for(let i=0;i<3;i++){
+      document.getElementById('pd-'+k+'-'+i).classList.remove('on','fail');
+    }
+  }
+  function ringReset(k, total){
+    ringClear(k);
+    const cnt = document.getElementById('cnt-'+k);
+    cnt.classList.remove('on','fail');
+    if(total !== undefined) cnt.textContent = '0/'+total;
+  }
+  function ringPhase(k, idx, dur){
+    const arc = document.getElementById('arc-'+k);
+    document.getElementById('pd-'+k+'-'+idx).classList.add('on');
+    const from = C*(1-idx/3), to = C*(1-(idx+1)/3);
+    const d = dur/(REDUCED ? 8 : speed);
+    const start = performance.now();
+    return new Promise(res=>{
+      function frame(now){
+        const t = Math.min(1,(now-start)/d);
+        arc.style.strokeDashoffset = from + (to-from)*t;
+        if(t<1) requestAnimationFrame(frame); else res();
+      }
+      requestAnimationFrame(frame);
+    });
+  }
+  function ringVerdict(k, ok){
+    document.getElementById('arc-'+k).classList.toggle('fail', !ok);
+    document.getElementById('cnt-'+k).classList.toggle('fail', !ok);
+    if(!ok){
+      for(let i=0;i<3;i++) document.getElementById('pd-'+k+'-'+i).classList.add('fail');
+    }
+  }
+
+  async function runLoop(k, id, verdicts, notes){
+    const total = verdicts.length;
+    ringReset(k, total);
+    const cnt = document.getElementById('cnt-'+k);
+    cnt.classList.add('on');
+    for(let i=0;i<total;i++){
+      ringClear(k);
+      cnt.textContent = (i+1)+'/'+total;
+      for(let p=0;p<PHASES.length;p++){
+        check(id);
+        state(k, 'yineleme '+(i+1)+' · '+PHASES[p]);
+        await ringPhase(k, p, 300);
+      }
+      check(id);
+      if(verdicts[i]==='fail'){
+        ringVerdict(k, false);
+        state(k, 'doğrulama düştü · yeniden deneniyor', true);
+        log(notes.fail, 'warn');
+        await sleep(680);
+      } else {
+        ringVerdict(k, true);
+        state(k, 'doğrulandı · sonuç hazır');
+        log(notes.pass);
+        await sleep(320);
+      }
+    }
+  }
+
+  function resetAll(){
+    runId++;
+    running = false;
+    logEl.innerHTML = '';
+    Object.keys(nodes).forEach(k=>nodes[k].classList.remove('on','done'));
+    ['orch','a','b','gw','out'].forEach(k=>state(k,'bekliyor'));
+    state('ext','erişilebilir');
+    [1,2,3].forEach(n=>chip(n,false));
+    ringReset('a',2); ringReset('b',1);
+    ['1','2','3','4','5','6'].forEach(n=>{ document.getElementById('g'+n).style.opacity = 0; });
+    head.style.opacity = 0;
+    $('#play').textContent = 'Senaryoyu oynat';
+  }
+
+  async function run(){
+    resetAll();
+    const id = ++runId;
+    running = true;
+    t0 = performance.now();
+    $('#play').textContent = 'Çalışıyor…';
+
+    try{
+      log('oturum açıldı · orkestratör hazır', 'head');
+      on('task'); state('orch','dinlemede');
+      log('görev alındı: <b>üç parçalı rapor</b>');
+      await sleep(320); check(id);
+      await pulse(1); check(id);
+      done('task'); on('orch');
+
+      state('orch','görev ayrıştırılıyor');
+      log('bağımlılık analizi çalıştırıldı');
+      for(let n=1;n<=3;n++){ check(id); chip(n,true); await sleep(260); }
+      log('3 alt görev üretildi · <b>ST-1 ST-2 ST-3</b>');
+      state('orch','yönlendiriliyor');
+      await sleep(260); check(id);
+
+      // ST-1
+      log('ST-1 → düğüm 01 (veri & analiz)');
+      await pulse(2); check(id);
+      on('a'); state('a','görev kabul edildi');
+      await sleep(240); check(id);
+      await runLoop('a', id, ['fail','pass'], {
+        fail:'düğüm 01: şema doğrulaması düştü · eksik alan <b>period_end</b> · ajan kendi içinde yineliyor',
+        pass:'düğüm 01: doğrulama geçti · orkestratöre yalnızca <b>onaylı</b> çıktı gidiyor'
+      });
+      check(id); done('a');
+
+      // ST-2
+      log('ST-2 → düğüm 02 (kod üretimi)');
+      await pulse(3); check(id);
+      on('b'); state('b','görev kabul edildi');
+      await sleep(220); check(id);
+      await runLoop('b', id, ['pass'], {
+        fail:'', pass:'düğüm 02: birim testleri geçti · tek yinelemede tamam'
+      });
+      check(id); done('b');
+
+      // ST-3 → A2A
+      log('ST-3: yerel yetenek eşleşmedi · yönlendirme <b>A2A geçidine</b>');
+      await pulse(4); check(id);
+      on('gw'); state('gw','agent card okunuyor');
+      log('geçit: karşı tarafın yetenek listesi alındı');
+      await sleep(420); check(id);
+      state('gw','görev zarfı gönderiliyor');
+      await pulse(5); check(id);
+      on('ext'); state('ext','görev işleniyor');
+      log('harici uzman yapay zekâ görevi devraldı · sistem sınırı aşıldı');
+      await sleep(760); check(id);
+      state('ext','yanıt döndürüldü');
+      await pulse(5, {reverse:true}); check(id);
+      done('ext');
+      state('gw','yanıt doğrulandı');
+      log('geçit: gelen yanıt şemaya uygun · kabul edildi');
+      await sleep(280); check(id);
+
+      // birleştirme
+      state('orch','sonuçlar birleştiriliyor');
+      on('orch');
+      await pulse(2,{reverse:true}); check(id);
+      await pulse(3,{reverse:true}); check(id);
+      await pulse(4,{reverse:true}); check(id);
+      done('gw');
+      log('3/3 alt görev tamam · çakışma yok');
+      state('orch','birleştirme tamam');
+      await sleep(300); check(id);
+
+      // çıktı
+      await pulse(6); check(id);
+      done('orch'); on('out');
+      state('out','teslim edildi');
+      log('birleşik çıktı teslim edildi · 1 yineleme, 1 harici çağrı', 'head');
+      $('#play').textContent = 'Tekrar oynat';
+      running = false;
+    }catch(e){
+      if(e!=='cancel') throw e;
+    }
+  }
+
+  $('#play').addEventListener('click', ()=>{ if(!running) run(); });
+  $('#reset').addEventListener('click', resetAll);
+  document.querySelectorAll('.speed button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      speed = Number(btn.dataset.speed);
+      document.querySelectorAll('.speed button').forEach(b=>b.setAttribute('aria-pressed', String(b===btn)));
+    });
+  });
+
+  ringReset('a',2); ringReset('b',1);
+  t0 = performance.now();
+  log('kart hazır · <b>Senaryoyu oynat</b> ile başlatın', 'head');
+})();
+</script>
+</body>
+</html>
