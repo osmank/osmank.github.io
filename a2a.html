@@ -3,554 +3,526 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ajan Orkestrasyonu · Sinyal Kartı</title>
+<title>Agent Orchestration · Adım Adım</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --void:#061F1B;
-    --board:#0C3B33;
-    --board-hi:#125145;
-    --copper:#B87A3A;
-    --copper-bright:#F2B75F;
-    --copper-dim:#5F4327;
-    --silk:#EDE7D8;
-    --muted:#7E9A90;
-    --alert:#E4573D;
+    --void:#061F1B; --board:#0C3B33; --board-hi:#11493E;
+    --copper:#B87A3A; --copper-bright:#F2B75F; --copper-dim:#5F4327;
+    --silk:#EDE7D8; --muted:#7E9A90; --alert:#E4573D; --line:#17564A;
     --display:'Bricolage Grotesque',system-ui,sans-serif;
     --mono:'IBM Plex Mono',ui-monospace,monospace;
     --sans:'IBM Plex Sans',system-ui,sans-serif;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
-  body{
-    background:var(--void);
-    color:var(--silk);
-    font-family:var(--sans);
-    -webkit-font-smoothing:antialiased;
-    padding:22px 16px 56px;
-  }
-  .wrap{max-width:1080px;margin:0 auto}
+  body{background:var(--void);color:var(--silk);font-family:var(--sans);-webkit-font-smoothing:antialiased;padding:22px 14px 56px}
+  .wrap{max-width:940px;margin:0 auto}
 
-  /* ---- header ---- */
-  .eyebrow{
-    font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
-    color:var(--copper);display:flex;gap:10px;align-items:center;flex-wrap:wrap;
-  }
-  .eyebrow span.dot{width:6px;height:6px;border-radius:50%;background:var(--copper-bright);display:inline-block}
-  h1{
-    font-family:var(--display);font-weight:800;font-size:clamp(30px,7.2vw,58px);
-    line-height:.94;letter-spacing:-.03em;margin:12px 0 10px;
-  }
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--copper);display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+  .eyebrow i{width:6px;height:6px;border-radius:50%;background:var(--copper-bright);display:inline-block}
+  h1{font-family:var(--display);font-weight:800;font-size:clamp(29px,7vw,54px);line-height:.95;letter-spacing:-.03em;margin:12px 0 10px}
   h1 em{font-style:normal;color:var(--copper-bright)}
-  .lede{max-width:56ch;color:#C9D6D0;font-size:15px;line-height:1.55;margin:0}
+  .lede{max-width:60ch;color:#C9D6D0;font-size:15px;line-height:1.55;margin:0}
 
-  /* ---- controls ---- */
-  .bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:20px 0 14px}
-  button{
-    font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
-    background:var(--board);color:var(--silk);border:1px solid var(--copper-dim);
-    padding:11px 16px;border-radius:2px;cursor:pointer;transition:.18s;
-  }
-  button:hover{border-color:var(--copper);background:var(--board-hi)}
+  .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:20px 0 12px}
+  button{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;background:var(--board);color:var(--silk);border:1px solid var(--copper-dim);padding:11px 14px;border-radius:2px;cursor:pointer;transition:.18s}
+  button:hover:not(:disabled){border-color:var(--copper);background:var(--board-hi)}
+  button:disabled{opacity:.35;cursor:default}
   button.primary{background:var(--copper);border-color:var(--copper-bright);color:#20130A;font-weight:600}
   button.primary:hover{background:var(--copper-bright)}
   button:focus-visible{outline:2px solid var(--copper-bright);outline-offset:2px}
-  .speed{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.1em}
-  .speed button{padding:7px 10px;letter-spacing:.05em}
+  .speed{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.1em;display:flex;align-items:center;gap:6px}
+  .speed button{padding:7px 9px;letter-spacing:.04em}
   .speed button[aria-pressed="true"]{border-color:var(--copper-bright);color:var(--copper-bright)}
 
-  /* ---- board ---- */
-  .board{
-    background:var(--board);
-    border:1px solid #17564A;
-    border-radius:3px;
-    padding:6px;
-    position:relative;
-    overflow:hidden;
-  }
-  .board::before{
-    content:"";position:absolute;inset:0;pointer-events:none;
-    background-image:radial-gradient(rgba(255,255,255,.055) 1px,transparent 1px);
-    background-size:16px 16px;
-  }
-  svg{display:block;width:100%;height:auto;position:relative}
+  .now{border:1px solid var(--line);border-left:3px solid var(--copper-bright);background:#082A25;padding:13px 15px;margin-bottom:10px}
+  .now .code{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--copper-bright);text-transform:uppercase;display:flex;justify-content:space-between;gap:10px}
+  .now .txt{font-family:var(--display);font-weight:600;font-size:clamp(15px,4vw,20px);letter-spacing:-.01em;margin-top:5px;line-height:1.3}
+  .prog{height:3px;background:#124036;margin-bottom:20px}
+  .prog span{display:block;height:100%;width:0;background:var(--copper-bright);transition:width .3s}
 
-  .card-body{fill:#0A332C;stroke:var(--copper-dim);stroke-width:1.4}
-  .node.on .card-body{stroke:var(--copper-bright);fill:#0F4237}
-  .node.done .card-body{stroke:var(--copper)}
-  .node{transition:filter .3s}
-  .node.on{filter:drop-shadow(0 0 10px rgba(242,183,95,.42))}
+  .stack{position:relative;display:grid;grid-template-columns:58px 1fr}
+  .rail{position:relative}
+  .rail::before{content:"";position:absolute;left:21px;top:16px;bottom:16px;width:2px;background:var(--copper-dim)}
+  .marker{position:absolute;left:14px;top:0;width:16px;height:16px;border-radius:50%;border:2px solid var(--copper-bright);background:var(--void);opacity:0;transition:top .4s cubic-bezier(.6,0,.3,1),opacity .25s}
+  .marker.on{opacity:1;box-shadow:0 0 12px rgba(242,183,95,.6)}
+  .col{display:flex;flex-direction:column}
 
-  .t-eyebrow{font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;fill:var(--muted)}
-  .node.on .t-eyebrow{fill:var(--copper-bright)}
-  .t-title{font-family:var(--display);font-weight:800;font-size:17px;letter-spacing:-.02em;fill:var(--silk)}
-  .t-state{font-family:var(--mono);font-size:10.5px;fill:var(--copper);letter-spacing:.04em}
-  .t-state.warn{fill:var(--alert)}
-  .t-note{font-family:var(--mono);font-size:10px;fill:#89A69C;letter-spacing:.05em}
-  .t-zone{font-family:var(--mono);font-size:10px;letter-spacing:.24em;fill:var(--muted)}
+  .layer{border:1px solid var(--line);border-bottom:0;background:#08302A;padding:14px 15px;position:relative;transition:.25s}
+  .layer:last-child{border-bottom:1px solid var(--line)}
+  .layer.on{background:#0D4034;box-shadow:inset 3px 0 0 var(--copper-bright)}
+  .layer.cross{background:#071F1B;border-style:dashed;border-color:#2C6355}
+  .layer.cross.on{background:#0B2E27}
+  .lcode{position:absolute;left:-58px;top:16px;width:58px;text-align:center;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--muted)}
+  .layer.on .lcode{color:var(--copper-bright)}
+  .lname{font-family:var(--display);font-weight:800;font-size:17px;letter-spacing:-.02em}
+  .lname small{font-family:var(--mono);font-weight:400;font-size:10px;letter-spacing:.16em;color:var(--copper);text-transform:uppercase;display:block;margin-bottom:3px}
+  .ldesc{font-size:12.5px;color:#9DB4AD;margin:5px 0 12px;line-height:1.5;max-width:62ch}
 
-  .trace{fill:none;stroke:var(--copper-dim);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
-  .trace.proto{stroke-dasharray:7 6}
-  .glow{fill:none;stroke:var(--copper-bright);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;opacity:0}
-  .pad{fill:#0A332C;stroke:var(--copper);stroke-width:2}
-  .head{fill:var(--copper-bright);opacity:0}
-  .zone{fill:none;stroke:#2C6355;stroke-width:1.2;stroke-dasharray:4 7}
+  .nodes{display:flex;flex-wrap:wrap;gap:8px}
+  .node{flex:1 1 175px;min-width:0;border:1px solid var(--copper-dim);background:#0A332C;padding:10px 11px;border-radius:2px;transition:.2s}
+  .node.on{border-color:var(--copper-bright);background:#134A3D;box-shadow:0 0 14px rgba(242,183,95,.22)}
+  .node.done{border-color:var(--copper)}
+  .node .nt{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--silk)}
+  .node.on .nt{color:var(--copper-bright)}
+  .node .ns{font-size:11.5px;color:#8FA9A0;margin-top:2px;line-height:1.4}
+  .node .nstate{font-family:var(--mono);font-size:10px;color:var(--copper);margin-top:7px;border-top:1px dashed var(--copper-dim);padding-top:6px}
+  .node .nstate.warn{color:var(--alert)}
 
-  .divider{stroke:var(--copper-dim);stroke-width:1;stroke-dasharray:3 4}
-  .ring-track{fill:none;stroke:#1B5A4C;stroke-width:3.5}
-  .ring-arc{fill:none;stroke:var(--copper-bright);stroke-width:3.5;stroke-linecap:round;transform:rotate(-90deg);transform-origin:center;transition:stroke .2s}
+  .agent{flex:1 1 300px;display:flex;gap:12px;align-items:flex-start}
+  .agent .ring{flex:none;width:88px;height:88px}
+  .agent .abody{flex:1;min-width:0}
+  .ring-track{fill:none;stroke:#1B5A4C;stroke-width:5}
+  .ring-arc{fill:none;stroke:var(--copper-bright);stroke-width:5;stroke-linecap:round;transform:rotate(-90deg);transform-origin:center;transition:stroke .2s}
   .ring-arc.fail{stroke:var(--alert)}
-  .pdot{fill:#0A332C;stroke:#2C6355;stroke-width:1.6}
+  .pdot{fill:#0A332C;stroke:#2C6355;stroke-width:2.5}
   .pdot.on{fill:var(--copper-bright);stroke:var(--copper-bright)}
   .pdot.fail{fill:var(--alert);stroke:var(--alert)}
-  .ring-count{font-family:var(--mono);font-size:12px;font-weight:600;fill:var(--muted);text-anchor:middle}
+  .ring-count{font-family:var(--mono);font-size:19px;font-weight:600;fill:var(--muted);text-anchor:middle}
   .ring-count.on{fill:var(--copper-bright)}
   .ring-count.fail{fill:var(--alert)}
-  .ring-cap{font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;fill:#5F8377;text-anchor:middle}
+  .phases{list-style:none;margin:7px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:5px}
+  .phases li{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#6D8B82;border:1px solid #24564A;padding:3px 6px;border-radius:2px}
+  .phases li.on{color:var(--copper-bright);border-color:var(--copper-bright)}
+  .phases li.fail{color:var(--alert);border-color:var(--alert)}
 
-  .chip rect{fill:#0A332C;stroke:var(--copper-dim);stroke-width:1}
-  .chip text{font-family:var(--mono);font-size:9.5px;fill:var(--muted);letter-spacing:.08em}
-  .chip.on rect{stroke:var(--copper-bright);fill:#134A3D}
-  .chip.on text{fill:var(--copper-bright)}
+  .meters{display:flex;flex-wrap:wrap;gap:8px}
+  .meter{flex:1 1 100px;border:1px solid #24564A;padding:9px 10px;background:#0A2822}
+  .meter .mv{font-family:var(--mono);font-size:19px;font-weight:600;color:var(--copper-bright);line-height:1}
+  .meter .mk{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-top:5px}
+  .meter.warn .mv{color:var(--alert)}
 
-  /* ---- console ---- */
-  .console{
-    margin-top:14px;border:1px solid #17564A;background:#082A25;border-radius:3px;
-    height:190px;overflow-y:auto;padding:12px 14px;font-family:var(--mono);font-size:12px;line-height:1.75;
+  /* ---- adım defteri ---- */
+  h2{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.02em;margin:32px 0 4px}
+  .sub{font-size:13px;color:#9DB4AD;margin:0 0 12px}
+  .ledger{border:1px solid var(--line);background:#082A25;max-height:460px;overflow-y:auto}
+  .step{display:grid;grid-template-columns:42px 46px 1fr auto;gap:9px;align-items:baseline;padding:9px 11px;border-bottom:1px solid #0F3B33;opacity:.42;cursor:pointer;transition:.15s;border-left:3px solid transparent}
+  .step:last-child{border-bottom:0}
+  .step:hover{opacity:.8;background:#0A322B}
+  .step.done{opacity:1}
+  .step.now{opacity:1;background:#0E4034;border-left-color:var(--copper-bright)}
+  .step.fail.done .en,.step.fail.now .en{color:var(--alert)}
+  .sn{font-family:var(--mono);font-size:10px;color:#5F8377}
+  .step.now .sn,.step.done .sn{color:var(--copper)}
+  .badge{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-align:center;border:1px solid #2C6355;color:var(--muted);padding:2px 0;border-radius:2px}
+  .step.done .badge,.step.now .badge{border-color:var(--copper);color:var(--copper-bright)}
+  .en{font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--silk);letter-spacing:.01em}
+  .tr{font-size:12px;color:#93AAA3;line-height:1.45;margin-top:2px;grid-column:3/5}
+  .stime{font-family:var(--mono);font-size:9.5px;color:#4E7268}
+
+  .gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+  .gloss div{background:var(--void);padding:14px 15px}
+  .gloss dt{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--copper-bright)}
+  .gloss dd{margin:5px 0 0;font-size:13px;line-height:1.55;color:#A9BDB6}
+  footer{margin-top:28px;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:#4E7268;text-transform:uppercase}
+
+  @media (max-width:560px){
+    .stack{grid-template-columns:40px 1fr}
+    .rail::before{left:14px} .marker{left:7px}
+    .lcode{left:-40px;width:40px;font-size:10px}
+    .agent .ring{width:70px;height:70px}
+    .step{grid-template-columns:34px 42px 1fr;gap:7px}
+    .stime{display:none}
+    .tr{grid-column:3/4}
   }
-  .console .ln{display:flex;gap:10px}
-  .console .ts{color:#4E7268;flex:none}
-  .console .msg{color:#CFDCD6}
-  .console .msg b{color:var(--copper-bright);font-weight:600}
-  .console .ln.warn .msg{color:var(--alert)}
-  .console .ln.head .msg{color:var(--copper-bright);letter-spacing:.08em;text-transform:uppercase;font-size:11px}
-
-  /* ---- legend ---- */
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:#17564A;margin-top:26px;border:1px solid #17564A}
-  .cell{background:var(--void);padding:18px 16px}
-  .cell h3{font-family:var(--display);font-weight:600;font-size:16px;margin:0 0 6px;letter-spacing:-.01em}
-  .cell .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;color:var(--copper);text-transform:uppercase}
-  .cell p{margin:0;font-size:13.5px;line-height:1.6;color:#A9BDB6}
-  footer{margin-top:26px;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:#4E7268;text-transform:uppercase}
-
-  @media (prefers-reduced-motion: reduce){
-    .node{transition:none}
-  }
+  @media (prefers-reduced-motion: reduce){ .layer,.node,.marker,.step{transition:none} }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <div class="eyebrow"><span class="dot"></span> Sinyal kartı · rev A <span class="dot"></span> A2A etkin</div>
-  <h1>Merkezî orkestratör<br>ve <em>uzman ajanlar</em></h1>
-  <p class="lede">Bir görevin karta girişinden birleşik çıktıya kadar izlediği yol. Bakır hatlar üzerinde ilerleyen sinyali izleyin: ayrıştırma, ajan içi doğrulama döngüsü ve kart dışına çıkan A2A el sıkışması.</p>
+  <div class="eyebrow"><i></i> Agent orchestration <i></i> 41 adım · 6 katman</div>
+  <h1>Aynı görev,<br><em>adım adım</em></h1>
+  <p class="lede">Her işlem tek tek listelendi. İleri tuşuyla kendi hızınızda yürüyün, bir adıma dokunup doğrudan oraya atlayın ya da otomatik oynatın. Üstteki katman yığını her adımda hangi bileşenin çalıştığını gösterir.</p>
 
   <div class="bar">
-    <button class="primary" id="play">Senaryoyu oynat</button>
+    <button class="primary" id="play">Oynat</button>
+    <button id="prev" disabled>◀ Geri</button>
+    <button id="next">İleri ▶</button>
     <button id="reset">Sıfırla</button>
-    <div class="speed">
-      Hız
+    <div class="speed">Hız
       <button data-speed="1" aria-pressed="true">×1</button>
       <button data-speed="2" aria-pressed="false">×2</button>
     </div>
   </div>
 
-  <div class="board">
-    <svg viewBox="0 0 1040 640" role="img" aria-label="Ajan orkestrasyonu akış şeması">
-      <!-- harici sistem bölgesi -->
-      <rect class="zone" x="770" y="418" width="252" height="188" rx="3"/>
-      <text class="t-zone" x="778" y="410">HARİCİ SİSTEM SINIRI</text>
-
-      <!-- ---------- hatlar ---------- -->
-      <path id="p1" class="trace" d="M160,330 H215"/>
-      <path id="p2" class="trace" d="M415,290 H450 Q460,290 460,280 V130 Q460,120 470,120 H505"/>
-      <path id="p3" class="trace" d="M415,330 H505"/>
-      <path id="p4" class="trace" d="M415,370 H450 Q460,370 460,380 V505 Q460,515 470,515 H505"/>
-      <path id="p5" class="trace proto" d="M755,515 H800"/>
-      <path id="p6" class="trace" d="M315,420 V520"/>
-
-      <path id="g1" class="glow" d="M160,330 H215"/>
-      <path id="g2" class="glow" d="M415,290 H450 Q460,290 460,280 V130 Q460,120 470,120 H505"/>
-      <path id="g3" class="glow" d="M415,330 H505"/>
-      <path id="g4" class="glow" d="M415,370 H450 Q460,370 460,380 V505 Q460,515 470,515 H505"/>
-      <path id="g5" class="glow" d="M755,515 H800"/>
-      <path id="g6" class="glow" d="M315,420 V520"/>
-
-      <g id="pads">
-        <circle class="pad" cx="160" cy="330" r="4.5"/><circle class="pad" cx="215" cy="330" r="4.5"/>
-        <circle class="pad" cx="415" cy="290" r="4.5"/><circle class="pad" cx="505" cy="120" r="4.5"/>
-        <circle class="pad" cx="415" cy="330" r="4.5"/><circle class="pad" cx="505" cy="330" r="4.5"/>
-        <circle class="pad" cx="415" cy="370" r="4.5"/><circle class="pad" cx="505" cy="515" r="4.5"/>
-        <circle class="pad" cx="755" cy="515" r="4.5"/><circle class="pad" cx="800" cy="515" r="4.5"/>
-        <circle class="pad" cx="315" cy="420" r="4.5"/><circle class="pad" cx="315" cy="520" r="4.5"/>
-      </g>
-
-      <circle id="head" class="head" cx="0" cy="0" r="5"/>
-
-      <!-- ---------- görev girişi ---------- -->
-      <g class="node" id="n-task">
-        <rect class="card-body" x="30" y="298" width="130" height="64" rx="2"/>
-        <text class="t-eyebrow" x="46" y="322">GİRİŞ</text>
-        <text class="t-title" x="46" y="344" style="font-size:15px">Görev</text>
-      </g>
-
-      <!-- ---------- orkestratör ---------- -->
-      <g class="node" id="n-orch">
-        <rect class="card-body" x="215" y="240" width="200" height="180" rx="2"/>
-        <text class="t-eyebrow" x="233" y="268">DÜĞÜM 00</text>
-        <text class="t-title" x="233" y="294" style="font-size:19px">Merkezî</text>
-        <text class="t-title" x="233" y="315" style="font-size:19px">orkestratör</text>
-        <text class="t-note" x="233" y="336">planla · dağıt · birleştir</text>
-        <g class="chip" id="c-1"><rect x="233" y="352" width="52" height="21" rx="2"/><text x="243" y="366">ST-1</text></g>
-        <g class="chip" id="c-2"><rect x="291" y="352" width="52" height="21" rx="2"/><text x="301" y="366">ST-2</text></g>
-        <g class="chip" id="c-3"><rect x="349" y="352" width="52" height="21" rx="2"/><text x="359" y="366">ST-3</text></g>
-        <text class="t-state" id="s-orch" x="233" y="396">bekliyor</text>
-      </g>
-
-      <!-- ---------- uzman ajan A ---------- -->
-      <g class="node" id="n-a">
-        <rect class="card-body" x="505" y="55" width="250" height="130" rx="2"/>
-        <line class="divider" x1="650" y1="65" x2="650" y2="175"/>
-        <text class="t-eyebrow" x="523" y="82">DÜĞÜM 01 · ST-1</text>
-        <text class="t-title" x="523" y="108" style="font-size:16px">Uzman ajan</text>
-        <text class="t-note" x="523" y="128">veri çekme · analiz</text>
-        <g id="loop-a">
-          <circle class="ring-track" cx="702" cy="115" r="30"/>
-          <circle class="ring-arc" id="arc-a" cx="702" cy="115" r="30"/>
-          <circle class="pdot" id="pd-a-0" cx="702" cy="85" r="4.5"/>
-          <circle class="pdot" id="pd-a-1" cx="728" cy="130" r="4.5"/>
-          <circle class="pdot" id="pd-a-2" cx="676" cy="130" r="4.5"/>
-          <text class="ring-count" id="cnt-a" x="702" y="119">0/2</text>
-          <text class="ring-cap" x="702" y="167">YİNELEME</text>
-        </g>
-        <text class="t-state" id="s-a" x="505" y="205">bekliyor</text>
-      </g>
-
-      <!-- ---------- uzman ajan B ---------- -->
-      <g class="node" id="n-b">
-        <rect class="card-body" x="505" y="265" width="250" height="130" rx="2"/>
-        <line class="divider" x1="650" y1="275" x2="650" y2="385"/>
-        <text class="t-eyebrow" x="523" y="292">DÜĞÜM 02 · ST-2</text>
-        <text class="t-title" x="523" y="318" style="font-size:16px">Uzman ajan</text>
-        <text class="t-note" x="523" y="338">kod üretimi · test</text>
-        <g id="loop-b">
-          <circle class="ring-track" cx="702" cy="325" r="30"/>
-          <circle class="ring-arc" id="arc-b" cx="702" cy="325" r="30"/>
-          <circle class="pdot" id="pd-b-0" cx="702" cy="295" r="4.5"/>
-          <circle class="pdot" id="pd-b-1" cx="728" cy="340" r="4.5"/>
-          <circle class="pdot" id="pd-b-2" cx="676" cy="340" r="4.5"/>
-          <text class="ring-count" id="cnt-b" x="702" y="329">0/1</text>
-          <text class="ring-cap" x="702" y="377">YİNELEME</text>
-        </g>
-        <text class="t-state" id="s-b" x="505" y="415">bekliyor</text>
-      </g>
-
-      <!-- ---------- a2a geçidi ---------- -->
-      <g class="node" id="n-gw">
-        <rect class="card-body" x="505" y="455" width="250" height="120" rx="2"/>
-        <text class="t-eyebrow" x="523" y="482">DÜĞÜM 03 · ST-3</text>
-        <text class="t-title" x="523" y="506">A2A geçidi</text>
-        <text class="t-note" x="523" y="526">agent card · yetenek keşfi</text>
-        <text class="t-state" id="s-gw" x="523" y="556">bekliyor</text>
-      </g>
-
-      <!-- ---------- harici yz ---------- -->
-      <g class="node" id="n-ext">
-        <rect class="card-body" x="800" y="455" width="205" height="120" rx="2"/>
-        <text class="t-eyebrow" x="818" y="482">KART DIŞI</text>
-        <text class="t-title" x="818" y="506">Harici uzman</text>
-        <text class="t-title" x="818" y="527">yapay zekâ</text>
-        <text class="t-state" id="s-ext" x="818" y="556">erişilebilir</text>
-      </g>
-
-      <!-- ---------- çıktı ---------- -->
-      <g class="node" id="n-out">
-        <rect class="card-body" x="215" y="520" width="200" height="84" rx="2"/>
-        <text class="t-eyebrow" x="233" y="546">ÇIKIŞ</text>
-        <text class="t-title" x="233" y="570">Birleşik çıktı</text>
-        <text class="t-state" id="s-out" x="233" y="592">bekliyor</text>
-      </g>
-    </svg>
+  <div class="now">
+    <div class="code"><span id="now-code">HAZIR</span><span id="now-n">0 / 41</span></div>
+    <div class="txt" id="now-txt">İleri tuşuna basın ya da oynatın.</div>
   </div>
+  <div class="prog"><span id="prog"></span></div>
 
-  <div class="console" id="log" aria-live="polite"></div>
+  <div class="stack">
+    <div class="rail"><div class="marker" id="marker"></div></div>
+    <div class="col">
 
-  <div class="grid">
-    <div class="cell">
-      <div class="k">Düğüm 00</div>
-      <h3>Orkestrasyon</h3>
-      <p>Tek bir istek gelir, orkestratör onu bağımsız alt görevlere böler ve her birini yetenek profiline uyan ajana yönlendirir. Sonuçları toplayıp tek yanıta indirger.</p>
-    </div>
-    <div class="cell">
-      <div class="k">Ajan içi</div>
-      <h3>Loop engineering</h3>
-      <p>Ajan çıktısını orkestratöre göndermeden önce kendi kendine doğrular. Başarısız kontrol yukarı taşmaz; ajan planı düzeltip yineler. Halkanın kırmızıya dönmesi bu anı gösterir.</p>
-    </div>
-    <div class="cell">
-      <div class="k">Düğüm 03</div>
-      <h3>A2A protokolü</h3>
-      <p>Yerel ajanların yeteneği yetmediğinde geçit devreye girer: agent card ile karşı tarafın ne yapabildiği okunur, görev standart bir zarfla dışarıya taşınır.</p>
-    </div>
-    <div class="cell">
-      <div class="k">Kart dışı</div>
-      <h3>Harici uzman</h3>
-      <p>Farklı satıcıya, farklı altyapıya ait bir ajan. Sistem sınırının ötesinde çalışır; sadece protokolü paylaşır, belleği ve araçlarını değil.</p>
+      <section class="layer" id="l0">
+        <div class="lcode">L0</div>
+        <div class="lname"><small>Interface layer</small>Giriş ve çıkış</div>
+        <p class="ldesc">İstek burada <b>request envelope</b>'a dönüşür: trace-id, kullanıcı bağlamı, beklenen çıktı biçimi. Yanıt da aynı katmandan çıkar.</p>
+        <div class="nodes">
+          <div class="node" id="n-req"><div class="nt">Request envelope</div><div class="ns">İstek + trace-id + çıktı sözleşmesi</div><div class="nstate" id="s-req">bekliyor</div></div>
+          <div class="node" id="n-res"><div class="nt">Response</div><div class="ns">Birleşik yanıt + kaynak referansları</div><div class="nstate" id="s-res">bekliyor</div></div>
+        </div>
+      </section>
+
+      <section class="layer" id="l1">
+        <div class="lcode">L1</div>
+        <div class="lname"><small>Orchestration layer</small>Merkezî orkestratör</div>
+        <p class="ldesc">Görevi böler, bağımlılıkları <b>task graph (DAG)</b> olarak tutar, her alt görevi yetenek profiline göre yönlendirir, sonunda birleştirir.</p>
+        <div class="nodes">
+          <div class="node" id="n-plan"><div class="nt">Planner</div><div class="ns">Niyet çözümleme · task decomposition</div><div class="nstate" id="s-plan">bekliyor</div></div>
+          <div class="node" id="n-route"><div class="nt">Router</div><div class="ns">Capability matching · ajan seçimi</div><div class="nstate" id="s-route">bekliyor</div></div>
+          <div class="node" id="n-state"><div class="nt">State store</div><div class="ns">Task graph · adım durumu · retry sayacı</div><div class="nstate" id="s-state">boş</div></div>
+        </div>
+      </section>
+
+      <section class="layer" id="l2">
+        <div class="lcode">L2</div>
+        <div class="lname"><small>Memory &amp; context layer</small>Bellek ve bağlam</div>
+        <p class="ldesc">Oturum geçmişi, kalıcı bilgi ve getirilen belgeler tek bir <b>context package</b> hâline gelir.</p>
+        <div class="nodes">
+          <div class="node" id="n-mems"><div class="nt">Session memory</div><div class="ns">Kısa vadeli · konuşma durumu</div><div class="nstate" id="s-mems">bekliyor</div></div>
+          <div class="node" id="n-meml"><div class="nt">Knowledge base (RAG)</div><div class="ns">Vector store · kalıcı bilgi</div><div class="nstate" id="s-meml">bekliyor</div></div>
+          <div class="node" id="n-ctx"><div class="nt">Context assembler</div><div class="ns">Rerank · budama · token bütçesi</div><div class="nstate" id="s-ctx">bekliyor</div></div>
+        </div>
+      </section>
+
+      <section class="layer" id="l3">
+        <div class="lcode">L3</div>
+        <div class="lname"><small>Agent runtime</small>Uzman ajanlar ve loop engineering</div>
+        <p class="ldesc">Her ajan kendi içinde <b>plan → act → verify</b> döngüsü çalıştırır. Doğrulama düşerse hata yukarı taşmaz; ajan planı düzeltip yineler.</p>
+        <div class="nodes">
+          <div class="node agent" id="n-a">
+            <svg class="ring" viewBox="0 0 100 100" aria-hidden="true">
+              <circle class="ring-track" cx="50" cy="50" r="34"/>
+              <circle class="ring-arc" id="arc-a" cx="50" cy="50" r="34"/>
+              <circle class="pdot" id="pd-a-0" cx="50" cy="16" r="5"/>
+              <circle class="pdot" id="pd-a-1" cx="79.4" cy="67" r="5"/>
+              <circle class="pdot" id="pd-a-2" cx="20.6" cy="67" r="5"/>
+              <text class="ring-count" id="cnt-a" x="50" y="57">0/2</text>
+            </svg>
+            <div class="abody">
+              <div class="nt">Agent 01 · ST-1</div><div class="ns">Veri çekme ve analiz</div>
+              <ul class="phases"><li id="ph-a-0">plan</li><li id="ph-a-1">act</li><li id="ph-a-2">verify</li></ul>
+              <div class="nstate" id="s-a">bekliyor</div>
+            </div>
+          </div>
+          <div class="node agent" id="n-b">
+            <svg class="ring" viewBox="0 0 100 100" aria-hidden="true">
+              <circle class="ring-track" cx="50" cy="50" r="34"/>
+              <circle class="ring-arc" id="arc-b" cx="50" cy="50" r="34"/>
+              <circle class="pdot" id="pd-b-0" cx="50" cy="16" r="5"/>
+              <circle class="pdot" id="pd-b-1" cx="79.4" cy="67" r="5"/>
+              <circle class="pdot" id="pd-b-2" cx="20.6" cy="67" r="5"/>
+              <text class="ring-count" id="cnt-b" x="50" y="57">0/1</text>
+            </svg>
+            <div class="abody">
+              <div class="nt">Agent 02 · ST-2</div><div class="ns">Kod üretimi ve test</div>
+              <ul class="phases"><li id="ph-b-0">plan</li><li id="ph-b-1">act</li><li id="ph-b-2">verify</li></ul>
+              <div class="nstate" id="s-b">bekliyor</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="layer" id="l4">
+        <div class="lcode">L4</div>
+        <div class="lname"><small>Tool &amp; data layer</small>Araçlar ve veri</div>
+        <p class="ldesc">Ajanın dünyaya dokunduğu yer. <b>Tool calling</b> ile sadece izinli araçlar, şemalı çağrılarla kullanılır.</p>
+        <div class="nodes">
+          <div class="node" id="n-mcp"><div class="nt">MCP tool server</div><div class="ns">Şemalı araçlar · yetki kapsamı</div><div class="nstate" id="s-mcp">boşta</div></div>
+          <div class="node" id="n-api"><div class="nt">REST API</div><div class="ns">Kurum içi servisler</div><div class="nstate" id="s-api">boşta</div></div>
+          <div class="node" id="n-db"><div class="nt">Database</div><div class="ns">Kayıt kaynağı · salt okunur erişim</div><div class="nstate" id="s-db">boşta</div></div>
+        </div>
+      </section>
+
+      <section class="layer" id="l5">
+        <div class="lcode">L5</div>
+        <div class="lname"><small>Interoperability layer</small>A2A · sistem dışı ajanlar</div>
+        <p class="ldesc">Geçit karşı tarafın <b>agent card</b>'ını okur, görevi standart zarfla sınırın dışına taşır, dönen yanıtı içeri almadan doğrular.</p>
+        <div class="nodes">
+          <div class="node" id="n-gw"><div class="nt">A2A gateway</div><div class="ns">Agent card · yetenek keşfi · şema doğrulama</div><div class="nstate" id="s-gw">bekliyor</div></div>
+          <div class="node" id="n-ext"><div class="nt">External agent</div><div class="ns">Farklı satıcı, farklı altyapı · kart dışı</div><div class="nstate" id="s-ext">erişilebilir</div></div>
+        </div>
+      </section>
+
+      <section class="layer cross" id="lx">
+        <div class="lcode">×</div>
+        <div class="lname"><small>Cross-cutting</small>Guardrails &amp; observability</div>
+        <p class="ldesc">Tek katman değil, hepsini saran kuşak: politika kontrolü, iz kaydı, değerlendirme, maliyet.</p>
+        <div class="meters">
+          <div class="meter"><div class="mv" id="m-span">0</div><div class="mk">trace span</div></div>
+          <div class="meter"><div class="mv" id="m-pol">0</div><div class="mk">policy check</div></div>
+          <div class="meter" id="mw-retry"><div class="mv" id="m-retry">0</div><div class="mk">retry</div></div>
+          <div class="meter"><div class="mv" id="m-tok">0</div><div class="mk">token · k</div></div>
+        </div>
+      </section>
+
     </div>
   </div>
 
-  <footer>Ajan orkestrasyonu · loop engineering · A2A</footer>
+  <h2>Adım defteri</h2>
+  <p class="sub">Bir adıma dokunarak doğrudan o ana atlayabilirsiniz.</p>
+  <div class="ledger" id="ledger"></div>
+
+  <h2>Terim sözlüğü</h2>
+  <div class="gloss">
+    <div><dt>Task decomposition</dt><dd>Tek isteği, ayrı yürütülebilen ve ayrı doğrulanabilen alt görevlere bölme.</dd></div>
+    <div><dt>Capability matching</dt><dd>Alt görevi o işi yapabilen ajanla eşleştirme. Eşleşme yoksa iş L5'e, dışarı çıkar.</dd></div>
+    <div><dt>Context package</dt><dd>Ajana giden hazır bağlam: geçmiş + belgeler + görev tanımı, token bütçesine göre budanmış.</dd></div>
+    <div><dt>Loop engineering</dt><dd>Ajanın çıktısını yukarı göndermeden doğrulaması, düşen kontrolde planı düzeltip yinelemesi.</dd></div>
+    <div><dt>Tool calling</dt><dd>Serbest metin yerine şemalı araç çağrısı. Yetki ve zaman aşımı çağrı düzeyinde yönetilir.</dd></div>
+    <div><dt>A2A protocol</dt><dd>Farklı sistemlerdeki ajanların ortak zarf ve yetenek tanımıyla konuşması. Bellek değil, sadece protokol paylaşılır.</dd></div>
+    <div><dt>Guardrails</dt><dd>Giriş ve çıkışta politika kontrolü: veri sızıntısı, izinsiz araç, sözleşmeye uymayan çıktı.</dd></div>
+    <div><dt>Observability</dt><dd>Her adımın trace span olarak kaydı; hata hangi katmanda çıktıysa orada okunur.</dd></div>
+  </div>
+
+  <footer>L0 interface · L1 orchestration · L2 memory · L3 agent runtime · L4 tools · L5 A2A</footer>
 </div>
 
 <script>
 (function(){
   const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let speed = 1, runId = 0, running = false, t0 = 0;
+  const $ = s=>document.querySelector(s), byId = id=>document.getElementById(id);
+  let speed=1, playing=false, cur=-1, token=0;
 
-  const $ = s => document.querySelector(s);
-  const logEl = $('#log');
-  const head = $('#head');
-
-  const nodes = {
-    task:$('#n-task'), orch:$('#n-orch'), a:$('#n-a'), b:$('#n-b'),
-    gw:$('#n-gw'), ext:$('#n-ext'), out:$('#n-out')
-  };
-
-  function sleep(ms){ return new Promise(r=>setTimeout(r, REDUCED ? Math.min(ms,120) : ms/speed)); }
-  function check(id){ if(id!==runId) throw 'cancel'; }
-
-  function stamp(){
-    const s = (performance.now()-t0)/1000;
-    return '['+String(Math.floor(s/60)).padStart(2,'0')+':'+s.toFixed(1).padStart(4,'0')+']';
+  /* ---------- temel yardımcılar ---------- */
+  function layer(id){
+    document.querySelectorAll('.layer').forEach(l=>l.classList.remove('on'));
+    if(!id) return;
+    const el=byId(id); el.classList.add('on');
+    if(id!=='lx'){ $('#marker').classList.add('on'); $('#marker').style.top=(el.offsetTop+14)+'px'; }
   }
-  function log(msg, kind){
-    const ln = document.createElement('div');
-    ln.className = 'ln' + (kind ? ' '+kind : '');
-    ln.innerHTML = '<span class="ts">'+stamp()+'</span><span class="msg">'+msg+'</span>';
-    logEl.appendChild(ln);
-    logEl.scrollTop = logEl.scrollHeight;
+  const on   = id=>{ byId('n-'+id).classList.add('on'); byId('n-'+id).classList.remove('done'); };
+  const done = id=>{ byId('n-'+id).classList.remove('on'); byId('n-'+id).classList.add('done'); };
+  const off  = id=>byId('n-'+id).classList.remove('on');
+  function st(k,txt,warn){ const e=byId('s-'+k); e.textContent=txt; e.classList.toggle('warn',!!warn); }
+
+  const M={span:0,pol:0,retry:0,tok:0};
+  function meters(d){
+    if(!d) return;
+    for(const k in d) M[k]+=d[k];
+    byId('m-span').textContent=M.span; byId('m-pol').textContent=M.pol;
+    byId('m-retry').textContent=M.retry; byId('m-tok').textContent=M.tok.toFixed(1);
+    byId('mw-retry').classList.toggle('warn',M.retry>0);
   }
 
-  function on(k){ nodes[k].classList.add('on'); nodes[k].classList.remove('done'); }
-  function done(k){ nodes[k].classList.remove('on'); nodes[k].classList.add('done'); }
-  function state(k, txt, warn){
-    const el = document.getElementById('s-'+k);
-    el.textContent = txt;
-    el.classList.toggle('warn', !!warn);
-  }
-  function chip(n, isOn){ document.getElementById('c-'+n).classList.toggle('on', isOn); }
-
-  function pulse(n, opts){
-    opts = opts || {};
-    const dur = (opts.dur || 640) / (REDUCED ? 6 : speed);
-    const rev = !!opts.reverse;
-    const path = document.getElementById('p'+n);
-    const glow = document.getElementById('g'+n);
-    const L = path.getTotalLength();
-    glow.style.strokeDasharray = L;
-    glow.style.strokeDashoffset = rev ? -L : L;
-    glow.style.opacity = 1;
-    glow.style.stroke = opts.color || 'var(--copper-bright)';
-    head.style.opacity = 1;
-    head.setAttribute('fill', opts.color || 'var(--copper-bright)');
-    const start = performance.now();
-    return new Promise(res=>{
-      function frame(now){
-        const t = Math.min(1,(now-start)/dur);
-        const e = t<.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2;
-        glow.style.strokeDashoffset = rev ? -L*(1-e) : L*(1-e);
-        const pt = path.getPointAtLength(rev ? L*(1-e) : L*e);
-        head.setAttribute('cx', pt.x); head.setAttribute('cy', pt.y);
-        if(t<1) requestAnimationFrame(frame);
-        else {
-          head.style.opacity = 0;
-          setTimeout(()=>{ glow.style.opacity = 0; res(); }, 160/speed);
-        }
-      }
-      requestAnimationFrame(frame);
-    });
-  }
-
-  const C = 2*Math.PI*30;
-  const PHASES = ['planla','araç çağır','doğrula'];
-
-  function ringClear(k){
-    const arc = document.getElementById('arc-'+k);
-    arc.style.strokeDasharray = C;
-    arc.style.strokeDashoffset = C;
-    arc.classList.remove('fail');
+  /* ---------- loop halkası ---------- */
+  const C=2*Math.PI*34;
+  function ringSet(k,{iter,total,phase,verdict}){
+    const arc=byId('arc-'+k), cnt=byId('cnt-'+k);
     for(let i=0;i<3;i++){
-      document.getElementById('pd-'+k+'-'+i).classList.remove('on','fail');
+      byId('pd-'+k+'-'+i).classList.toggle('on', phase!==null && i<=phase);
+      byId('ph-'+k+'-'+i).classList.toggle('on', phase!==null && i<=phase);
+      byId('pd-'+k+'-'+i).classList.toggle('fail', verdict==='fail');
+      byId('ph-'+k+'-'+i).classList.toggle('fail', verdict==='fail');
     }
+    arc.classList.toggle('fail',verdict==='fail');
+    cnt.classList.toggle('fail',verdict==='fail');
+    cnt.classList.toggle('on',iter>0);
+    cnt.textContent=iter+'/'+total;
+    arc.style.strokeDasharray=C;
+    arc.style.strokeDashoffset = phase===null ? C : C*(1-(phase+1)/3);
   }
-  function ringReset(k, total){
-    ringClear(k);
-    const cnt = document.getElementById('cnt-'+k);
-    cnt.classList.remove('on','fail');
-    if(total !== undefined) cnt.textContent = '0/'+total;
-  }
-  function ringPhase(k, idx, dur){
-    const arc = document.getElementById('arc-'+k);
-    document.getElementById('pd-'+k+'-'+idx).classList.add('on');
-    const from = C*(1-idx/3), to = C*(1-(idx+1)/3);
-    const d = dur/(REDUCED ? 8 : speed);
-    const start = performance.now();
-    return new Promise(res=>{
-      function frame(now){
-        const t = Math.min(1,(now-start)/d);
-        arc.style.strokeDashoffset = from + (to-from)*t;
-        if(t<1) requestAnimationFrame(frame); else res();
-      }
-      requestAnimationFrame(frame);
-    });
-  }
-  function ringVerdict(k, ok){
-    document.getElementById('arc-'+k).classList.toggle('fail', !ok);
-    document.getElementById('cnt-'+k).classList.toggle('fail', !ok);
-    if(!ok){
-      for(let i=0;i<3;i++) document.getElementById('pd-'+k+'-'+i).classList.add('fail');
-    }
+  function ringAnim(k,phase,dur){
+    const arc=byId('arc-'+k);
+    byId('pd-'+k+'-'+phase).classList.add('on');
+    byId('ph-'+k+'-'+phase).classList.add('on');
+    const from=C*(1-phase/3), to=C*(1-(phase+1)/3), d=dur/(REDUCED?8:speed), s=performance.now();
+    return new Promise(res=>{(function f(){
+      const t=Math.min(1,(performance.now()-s)/d);
+      arc.style.strokeDashoffset=from+(to-from)*t;
+      t<1?requestAnimationFrame(f):res();
+    })();});
   }
 
-  async function runLoop(k, id, verdicts, notes){
-    const total = verdicts.length;
-    ringReset(k, total);
-    const cnt = document.getElementById('cnt-'+k);
-    cnt.classList.add('on');
-    for(let i=0;i<total;i++){
-      ringClear(k);
-      cnt.textContent = (i+1)+'/'+total;
-      for(let p=0;p<PHASES.length;p++){
-        check(id);
-        state(k, 'yineleme '+(i+1)+' · '+PHASES[p]);
-        await ringPhase(k, p, 300);
-      }
-      check(id);
-      if(verdicts[i]==='fail'){
-        ringVerdict(k, false);
-        state(k, 'doğrulama düştü · yeniden deneniyor', true);
-        log(notes.fail, 'warn');
-        await sleep(680);
-      } else {
-        ringVerdict(k, true);
-        state(k, 'doğrulandı · sonuç hazır');
-        log(notes.pass);
-        await sleep(320);
-      }
-    }
-  }
+  /* ---------- adımlar ---------- */
+  const S=[];
+  const step=(b,l,en,tr,run,m,dur)=>S.push({b,l,en,tr,run,m,dur:dur||520});
 
-  function resetAll(){
-    runId++;
-    running = false;
-    logEl.innerHTML = '';
-    Object.keys(nodes).forEach(k=>nodes[k].classList.remove('on','done'));
-    ['orch','a','b','gw','out'].forEach(k=>state(k,'bekliyor'));
-    state('ext','erişilebilir');
-    [1,2,3].forEach(n=>chip(n,false));
-    ringReset('a',2); ringReset('b',1);
-    ['1','2','3','4','5','6'].forEach(n=>{ document.getElementById('g'+n).style.opacity = 0; });
-    head.style.opacity = 0;
-    $('#play').textContent = 'Senaryoyu oynat';
-  }
+  // L0 giriş
+  step('L0','l0','Request received','Kullanıcı isteği sisteme giriyor: rapor + kod + mevzuat yorumu.',
+    ()=>{ on('req'); st('req','istek alındı'); },{span:1});
+  step('L0','l0','Envelope built','İstek zarfa sarılıyor: trace-id, kullanıcı bağlamı, beklenen çıktı biçimi.',
+    ()=>st('req','zarf hazır · trace-id 7f31a'),{span:1,tok:.4});
+  step('×','lx','Input guardrail','Girişte politika kontrolü: hassas veri ve izinsiz istek taraması.',
+    ()=>st('req','policy check geçti'),{pol:1});
 
-  async function run(){
-    resetAll();
-    const id = ++runId;
-    running = true;
-    t0 = performance.now();
-    $('#play').textContent = 'Çalışıyor…';
+  // L1 planlama
+  step('L1','l1','Intent parse','Orkestratör isteğin ne istediğini çözümlüyor.',
+    ()=>{ done('req'); on('plan'); st('plan','niyet çözümlendi'); },{span:1,tok:1.2});
+  step('L1','l1','Task decomposition','Görev üçe bölünüyor: ST-1 veri/analiz, ST-2 kod, ST-3 mevzuat.',
+    ()=>st('plan','3 alt görev üretildi'),{span:1,tok:.9});
+  step('L1','l1','Dependency graph','Alt görevler arası bağımlılık task graph olarak yazılıyor.',
+    ()=>{ on('state'); st('state','task graph: 3 düğüm · 0 tamam'); },{span:1});
+  step('L1','l1','Capability matching','Router her alt görev için yetkin ajanı arıyor.',
+    ()=>{ off('plan'); on('route'); st('route','ST-1 ve ST-2 eşleşti'); },{span:1});
+  step('L1','l1','Capability gap','ST-3 için yerel eşleşme yok — bu iş sonra L5\'e çıkacak.',
+    ()=>st('route','ST-3 · eşleşme yok · A2A kuyruğuna alındı',true),{pol:1});
 
-    try{
-      log('oturum açıldı · orkestratör hazır', 'head');
-      on('task'); state('orch','dinlemede');
-      log('görev alındı: <b>üç parçalı rapor</b>');
-      await sleep(320); check(id);
-      await pulse(1); check(id);
-      done('task'); on('orch');
+  // L2 bağlam
+  step('L2','l2','Session memory read','Kısa vadeli bellekten konuşma geçmişi okunuyor.',
+    ()=>{ off('route'); on('mems'); st('mems','oturum geçmişi okundu'); },{span:1});
+  step('L2','l2','Retrieval (vector search)','Bilgi tabanından ilgili belgeler getiriliyor.',
+    ()=>{ on('meml'); st('meml','6 belge getirildi'); },{span:1,tok:1.4});
+  step('L2','l2','Rerank & filter','Getirilen belgeler yeniden sıralanıp eşiğin altındakiler atılıyor.',
+    ()=>{ on('ctx'); st('ctx','ilgi eşiği 0.78 · 4 belge kaldı'); },{span:1});
+  step('L2','l2','Context assembly','Her alt görev için ayrı context package hazırlanıyor.',
+    ()=>{ st('ctx','budandı · 12k token bütçesi'); ['mems','meml'].forEach(done); },{span:1,tok:2.2});
 
-      state('orch','görev ayrıştırılıyor');
-      log('bağımlılık analizi çalıştırıldı');
-      for(let n=1;n<=3;n++){ check(id); chip(n,true); await sleep(260); }
-      log('3 alt görev üretildi · <b>ST-1 ST-2 ST-3</b>');
-      state('orch','yönlendiriliyor');
-      await sleep(260); check(id);
+  // L3 ajan 01
+  step('L3','l3','Task dispatch → agent 01','ST-1 birinci uzman ajana veriliyor.',
+    ()=>{ done('ctx'); on('a'); st('a','görev kabul edildi'); ringSet('a',{iter:0,total:2,phase:null,verdict:null}); },{span:1});
+  step('L3','l3','Plan (iteration 1)','Ajan hangi aracı hangi sırayla çağıracağını planlıyor.',
+    ()=>{ st('a','yineleme 1 · plan'); ringSet('a',{iter:1,total:2,phase:0,verdict:null}); },{tok:.8},420);
+  step('L4','l4','Tool call → database','Act fazı: veritabanına şemalı, salt okunur sorgu gidiyor.',
+    ()=>{ on('db'); st('db','sorgu çalışıyor'); st('a','yineleme 1 · act'); ringSet('a',{iter:1,total:2,phase:1,verdict:null}); },{span:1,tok:1.1},620);
+  step('L4','l4','Tool result','Sonuç dönüyor, ajan çıktıyı ayrıştırıyor.',
+    ()=>{ st('db','yanıt döndü · 1.2s'); off('db'); },{span:1},420);
+  step('L3','l3','Verify — FAILED','Doğrulama düşüyor: çıktıda period_end alanı eksik.',
+    ()=>{ st('a','verify düştü · eksik alan period_end',true); ringSet('a',{iter:1,total:2,phase:2,verdict:'fail'}); },{span:1},700);
+  step('L3','l3','Retry decision','Hata yukarı taşınmıyor; ajan loop bütçesinden bir hak harcıyor.',
+    ()=>st('a','yeniden deneniyor · bütçe 1/3',true),{retry:1});
+  step('L3','l3','Plan (iteration 2)','Ajan planı düzeltiyor: eksik alan sorguya ekleniyor.',
+    ()=>{ st('a','yineleme 2 · plan'); ringSet('a',{iter:2,total:2,phase:0,verdict:null}); },{tok:.7},420);
+  step('L4','l4','Tool call → database','Düzeltilmiş sorgu tekrar çalışıyor.',
+    ()=>{ on('db'); st('db','düzeltilmiş sorgu'); st('a','yineleme 2 · act'); ringSet('a',{iter:2,total:2,phase:1,verdict:null}); },{span:1,tok:1.1},620);
+  step('L3','l3','Verify — PASSED','Şema doğrulaması geçti; çıktı artık sözleşmeye uygun.',
+    ()=>{ st('db','yanıt döndü'); off('db'); st('a','doğrulandı'); ringSet('a',{iter:2,total:2,phase:2,verdict:'pass'}); },{span:1,pol:1});
+  step('L3','l3','Result handoff','Orkestratöre yalnızca doğrulanmış çıktı gidiyor.',
+    ()=>{ done('a'); st('state','task graph: 3 düğüm · 1 tamam'); },{span:1});
 
-      // ST-1
-      log('ST-1 → düğüm 01 (veri & analiz)');
-      await pulse(2); check(id);
-      on('a'); state('a','görev kabul edildi');
-      await sleep(240); check(id);
-      await runLoop('a', id, ['fail','pass'], {
-        fail:'düğüm 01: şema doğrulaması düştü · eksik alan <b>period_end</b> · ajan kendi içinde yineliyor',
-        pass:'düğüm 01: doğrulama geçti · orkestratöre yalnızca <b>onaylı</b> çıktı gidiyor'
-      });
-      check(id); done('a');
+  // L3 ajan 02
+  step('L3','l3','Task dispatch → agent 02','ST-2 ikinci ajana veriliyor: kod üretimi ve testi.',
+    ()=>{ on('b'); st('b','görev kabul edildi'); ringSet('b',{iter:0,total:1,phase:null,verdict:null}); },{span:1});
+  step('L3','l3','Plan (iteration 1)','Ajan kod iskeletini ve test planını çıkarıyor.',
+    ()=>{ st('b','yineleme 1 · plan'); ringSet('b',{iter:1,total:1,phase:0,verdict:null}); },{tok:1.3},420);
+  step('L4','l4','Tool call → MCP run_tests','Act fazı: MCP üzerinden test aracı çağrılıyor.',
+    ()=>{ on('mcp'); st('mcp','run_tests çalışıyor'); st('b','yineleme 1 · act'); ringSet('b',{iter:1,total:1,phase:1,verdict:null}); },{span:1,tok:1.6},620);
+  step('L4','l4','Tool result','14 testin 14\'ü geçti.',
+    ()=>{ st('mcp','14/14 geçti'); off('mcp'); },{span:1},420);
+  step('L3','l3','Verify — PASSED','Ajan kendi çıktısını doğruladı, tek yinelemede tamam.',
+    ()=>{ st('b','doğrulandı'); ringSet('b',{iter:1,total:1,phase:2,verdict:'pass'}); },{span:1,pol:1});
+  step('L3','l3','Result handoff','İkinci sonuç orkestratöre döndü.',
+    ()=>{ done('b'); st('state','task graph: 3 düğüm · 2 tamam'); },{span:1});
 
-      // ST-2
-      log('ST-2 → düğüm 02 (kod üretimi)');
-      await pulse(3); check(id);
-      on('b'); state('b','görev kabul edildi');
-      await sleep(220); check(id);
-      await runLoop('b', id, ['pass'], {
-        fail:'', pass:'düğüm 02: birim testleri geçti · tek yinelemede tamam'
-      });
-      check(id); done('b');
+  // L5 A2A
+  step('L5','l5','Route to A2A','ST-3 yerel yetenekle karşılanamadığı için geçide yönlendiriliyor.',
+    ()=>{ on('gw'); st('gw','ST-3 alındı'); },{span:1});
+  step('L5','l5','Agent card discovery','Karşı tarafın yetenek tanımı okunuyor: mevzuat yorumu destekleniyor mu?',
+    ()=>st('gw','agent card okundu · yetenek uygun'),{span:1,pol:1});
+  step('L5','l5','Task envelope sent','Görev standart zarfla sistem sınırının dışına taşınıyor.',
+    ()=>{ st('gw','zarf gönderildi'); on('ext'); st('ext','görev işleniyor'); },{span:1,tok:1.2});
+  step('L5','l5','External processing','Farklı satıcıya ait ajan çalışıyor. Bellek değil, sadece protokol paylaşılıyor.',
+    ()=>st('ext','kart dışı yürütme'),{},760);
+  step('L5','l5','Response returned','Harici ajan yanıtı geri döndürüyor.',
+    ()=>{ st('ext','yanıt döndürüldü'); done('ext'); },{span:1,tok:1.4});
+  step('L5','l5','Schema validation','Gelen yanıt içeri alınmadan önce şemaya ve politikaya göre denetleniyor.',
+    ()=>{ st('gw','şemaya uygun · kabul edildi'); done('gw'); st('state','task graph: 3 düğüm · 3 tamam'); },{span:1,pol:1});
 
-      // ST-3 → A2A
-      log('ST-3: yerel yetenek eşleşmedi · yönlendirme <b>A2A geçidine</b>');
-      await pulse(4); check(id);
-      on('gw'); state('gw','agent card okunuyor');
-      log('geçit: karşı tarafın yetenek listesi alındı');
-      await sleep(420); check(id);
-      state('gw','görev zarfı gönderiliyor');
-      await pulse(5); check(id);
-      on('ext'); state('ext','görev işleniyor');
-      log('harici uzman yapay zekâ görevi devraldı · sistem sınırı aşıldı');
-      await sleep(760); check(id);
-      state('ext','yanıt döndürüldü');
-      await pulse(5, {reverse:true}); check(id);
-      done('ext');
-      state('gw','yanıt doğrulandı');
-      log('geçit: gelen yanıt şemaya uygun · kabul edildi');
-      await sleep(280); check(id);
+  // L1 birleştirme
+  step('L1','l1','Result aggregation','Üç sonuç orkestratörde toplanıyor.',
+    ()=>{ on('plan'); st('plan','3/3 sonuç toplandı'); },{span:1});
+  step('L1','l1','Conflict check','Sonuçlar arasında çelişki var mı diye karşılaştırılıyor.',
+    ()=>st('plan','çakışma yok'),{span:1,tok:.9});
+  step('L1','l1','Synthesis','Üç parça tek yanıta indirgeniyor, kaynak referansları ekleniyor.',
+    ()=>st('plan','tek yanıt oluşturuldu'),{span:1,tok:1.5});
 
-      // birleştirme
-      state('orch','sonuçlar birleştiriliyor');
-      on('orch');
-      await pulse(2,{reverse:true}); check(id);
-      await pulse(3,{reverse:true}); check(id);
-      await pulse(4,{reverse:true}); check(id);
-      done('gw');
-      log('3/3 alt görev tamam · çakışma yok');
-      state('orch','birleştirme tamam');
-      await sleep(300); check(id);
+  // kapanış
+  step('×','lx','Output guardrail','Çıkışta politika kontrolü: sözleşme uyumu, hassas veri, kaynak zorunluluğu.',
+    ()=>st('plan','çıkış guardrail geçti'),{pol:1});
+  step('L2','l2','Memory write-back','Sonuç özeti oturum belleğine işleniyor; sonraki istek bunu görecek.',
+    ()=>{ on('mems'); st('mems','özet belleğe yazıldı'); },{span:1});
+  step('L0','l0','Response delivered','Birleşik yanıt kullanıcıya dönüyor.',
+    ()=>{ done('mems'); done('plan'); done('state'); on('res'); st('res','teslim edildi'); },{span:1});
+  step('×','lx','Trace closed','İz kaydı kapanıyor: 1 retry, 2 araç çağrısı, 1 harici ajan.',
+    ()=>st('res','trace 7f31a kapandı'),{span:1});
 
-      // çıktı
-      await pulse(6); check(id);
-      done('orch'); on('out');
-      state('out','teslim edildi');
-      log('birleşik çıktı teslim edildi · 1 yineleme, 1 harici çağrı', 'head');
-      $('#play').textContent = 'Tekrar oynat';
-      running = false;
-    }catch(e){
-      if(e!=='cancel') throw e;
-    }
-  }
-
-  $('#play').addEventListener('click', ()=>{ if(!running) run(); });
-  $('#reset').addEventListener('click', resetAll);
-  document.querySelectorAll('.speed button').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      speed = Number(btn.dataset.speed);
-      document.querySelectorAll('.speed button').forEach(b=>b.setAttribute('aria-pressed', String(b===btn)));
-    });
+  /* ---------- defter ---------- */
+  const ledger=byId('ledger');
+  S.forEach((s,i)=>{
+    const el=document.createElement('div');
+    el.className='step'+(s.en.indexOf('FAILED')>-1||s.en.indexOf('gap')>-1||s.en.indexOf('Retry')>-1?' fail':'');
+    el.id='step-'+i;
+    el.innerHTML='<div class="sn">S'+String(i+1).padStart(2,'0')+'</div>'+
+                 '<div class="badge">'+s.b+'</div>'+
+                 '<div class="en">'+s.en+'</div>'+
+                 '<div class="stime" id="t-'+i+'"></div>'+
+                 '<div class="tr">'+s.tr+'</div>';
+    el.addEventListener('click',()=>{ playing=false; token++; $('#play').textContent='Oynat'; goto(i); });
+    ledger.appendChild(el);
   });
 
-  ringReset('a',2); ringReset('b',1);
-  t0 = performance.now();
-  log('kart hazır · <b>Senaryoyu oynat</b> ile başlatın', 'head');
+  /* ---------- durum yönetimi ---------- */
+  function clearAll(){
+    document.querySelectorAll('.layer').forEach(l=>l.classList.remove('on'));
+    document.querySelectorAll('.node').forEach(n=>n.classList.remove('on','done'));
+    $('#marker').classList.remove('on');
+    ['req','res','plan','route','mems','meml','ctx','a','b','gw'].forEach(k=>st(k,'bekliyor'));
+    st('state','boş'); st('ext','erişilebilir');
+    ['mcp','api','db'].forEach(k=>st(k,'boşta'));
+    M.span=M.pol=M.retry=0; M.tok=0; meters({span:0});
+    ringSet('a',{iter:0,total:2,phase:null,verdict:null});
+    ringSet('b',{iter:0,total:1,phase:null,verdict:null});
+    S.forEach((s,i)=>{ byId('step-'+i).classList.remove('done','now'); byId('t-'+i).textContent=''; });
+  }
+  function paint(i){
+    S.forEach((s,k)=>{
+      const el=byId('step-'+k);
+      el.classList.toggle('done',k<=i);
+      el.classList.toggle('now',k===i);
+    });
+    const s=S[i];
+    $('#now-code').textContent = s ? s.b+' · '+s.en : 'HAZIR';
+    $('#now-txt').textContent  = s ? s.tr : 'İleri tuşuna basın ya da oynatın.';
+    $('#now-n').textContent    = (i+1)+' / '+S.length;
+    $('#prog').style.width     = ((i+1)/S.length*100)+'%';
+    $('#prev').disabled = i<0;
+    $('#next').disabled = i>=S.length-1;
+    if(s) byId('step-'+i).scrollIntoView({block:'nearest',behavior:REDUCED?'auto':'smooth'});
+  }
+  function goto(target){
+    clearAll();
+    for(let i=0;i<=target;i++){
+      layer(S[i].l); S[i].run(); meters(S[i].m);
+      byId('t-'+i).textContent='S'+String(i+1).padStart(2,'0');
+    }
+    cur=target; paint(target);
+  }
+  function next(){ if(cur<S.length-1) goto(cur+1); }
+  function prev(){ if(cur>-1) goto(cur-1); }
+
+  async function play(){
+    const my=++token; playing=true; $('#play').textContent='Duraklat';
+    if(cur>=S.length-1) goto(-1) , cur=-1;
+    while(playing && my===token && cur<S.length-1){
+      next();
+      const s=S[cur];
+      await new Promise(r=>setTimeout(r, (REDUCED?140:s.dur)/speed));
+    }
+    if(my===token){ playing=false; $('#play').textContent = cur>=S.length-1 ? 'Baştan oynat' : 'Oynat'; }
+  }
+
+  $('#play').addEventListener('click',()=>{
+    if(playing){ playing=false; token++; $('#play').textContent='Oynat'; } else play();
+  });
+  $('#next').addEventListener('click',()=>{ playing=false; token++; $('#play').textContent='Oynat'; next(); });
+  $('#prev').addEventListener('click',()=>{ playing=false; token++; $('#play').textContent='Oynat'; prev(); });
+  $('#reset').addEventListener('click',()=>{ playing=false; token++; $('#play').textContent='Oynat'; clearAll(); cur=-1; paint(-1); });
+  document.querySelectorAll('.speed button').forEach(b=>b.addEventListener('click',()=>{
+    speed=Number(b.dataset.speed);
+    document.querySelectorAll('.speed button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+  }));
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'){ next(); } else if(e.key==='ArrowLeft'){ prev(); }
+  });
+  window.addEventListener('resize',()=>{ const c=document.querySelector('.layer.on:not(.cross)'); if(c) $('#marker').style.top=(c.offsetTop+14)+'px'; });
+
+  clearAll(); paint(-1);
 })();
 </script>
 </body>
