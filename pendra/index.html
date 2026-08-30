@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PENDRA — Swing. Cut. Fly.</title>
+<meta name="description" content="PENDRA is a swing-physics arcade game for iOS. Throw a rope, build momentum, let go at the right moment. 90 hand-tuned levels across 9 regions. By Osman Kose.">
+<meta name="theme-color" content="#0a0e1c">
+<link rel="canonical" href="https://osmank.github.io/pendra/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="PENDRA — Swing. Cut. Fly.">
+<meta property="og:description" content="A swing-physics arcade game for iOS. 90 hand-tuned levels across 9 regions.">
+<meta property="og:url" content="https://osmank.github.io/pendra/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* Palette is the GAME's palette — every colour here is lifted from
+     src/constants.js so the page and the app cannot drift apart. */
+  :root{
+    --bg:#0a0e1c;
+    --surface:#111729;
+    --edge:#1e2740;
+    --ink:#e8ecff;
+    --muted:#8792b5;
+    --rope:#ffd166;      /* amber — the rope */
+    --anchor:#4ecdc4;    /* cyan — anchors */
+    --saw:#ff5964;       /* red — kills */
+    --shear:#ff9f1c;     /* orange — takes your rope */
+    --crystal:#7bf1a8;   /* green — helps */
+    --exit:#b388ff;      /* violet — bends your path */
+    --display:"Space Grotesk",system-ui,sans-serif;
+    --body:"IBM Plex Sans",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  body{
+    background:var(--bg);color:var(--ink);font-family:var(--body);
+    line-height:1.65;-webkit-font-smoothing:antialiased;
+    min-height:100vh;display:flex;flex-direction:column;
+  }
+
+  a{color:var(--rope);text-decoration-thickness:1px;text-underline-offset:3px}
+  a:focus-visible,.btn:focus-visible,.lang:focus-visible{outline:2px solid var(--rope);outline-offset:3px;border-radius:2px}
+
+  .wrap{width:100%;max-width:680px;margin:0 auto;padding:0 24px}
+
+  /* ---- language ----
+     Both languages ship in the HTML and CSS hides one. Nothing is fetched,
+     so there is no flash of the wrong language on load. */
+  /* KOK ELEMANI HARIC. JS <html> uzerine lang="tr" yaziyor; kural body ile
+     sinirlandirilmazsa [lang="tr"] <html>in KENDISINI secip tum sayfayi
+     gizliyor. Turkce tarayicida sayfa bombos aciliyordu. */
+  body [lang="tr"]{display:none}
+  html[data-lang="tr"] body [lang="en"]{display:none}
+  html[data-lang="tr"] body [lang="tr"]{display:revert}
+
+  /* ---- masthead ---- */
+  .masthead{padding:32px 0 0}
+  .mast-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .back{
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--muted);text-decoration:none;
+  }
+  .back:hover{color:var(--ink)}
+  /* mirrors the EN/TR chip in the app's own menu */
+  .lang{
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;
+    color:var(--ink);background:rgba(232,236,255,.05);
+    border:1px solid rgba(232,236,255,.25);border-radius:8px;
+    padding:6px 14px;cursor:pointer;
+  }
+  .lang:hover{border-color:var(--muted)}
+
+  /* ---- hero ---- */
+  .hero{padding:52px 0 60px}
+  .eyebrow{
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.42em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:22px;
+  }
+  .eyebrow b{font-weight:500}
+  .eyebrow .s1{color:var(--anchor)}
+  .eyebrow .s2{color:var(--shear)}
+  .eyebrow .s3{color:var(--exit)}
+
+  /* LOGOTYPE — from the app's own drawing code (src/game/drawMenu.js).
+     The word is drawn twice and clipped along a diagonal: the cut sits at 56%
+     on the left and 36% on the right, so it slopes UP to the right. The lower
+     half is nudged 12px right. BOTH halves are #f5f7ff — the amber belongs to
+     the rope line running through the gap, not to the letters.
+     SKEW_LOGO = -0.19 in the app, i.e. skewX(-10.76deg) here. */
+  .logo{
+    font-family:var(--display);font-weight:700;
+    font-size:clamp(54px,14.5vw,104px);
+    line-height:.94;letter-spacing:-.015em;
+    transform:skewX(-10.76deg);
+    display:inline-block;position:relative;color:#f5f7ff;
+  }
+  .logo span{display:block;position:relative}
+  .logo .top{clip-path:polygon(0 0,100% 0,100% 36%,0 56%)}
+  .logo .bot{clip-path:polygon(0 56%,100% 36%,100% 100%,0 100%);margin-top:-1.04em;transform:translateX(12px)}
+  /* the amber rope through the cut — rotate(-4.6deg), pulse 0.9<->0.45 / 3.2s */
+  .logo i{
+    position:absolute;left:-5%;top:46%;width:110%;height:3px;
+    background:var(--rope);transform:rotate(-4.6deg);
+    box-shadow:0 0 18px 4px rgba(255,209,102,.65);
+    animation:ropePulse 3.2s ease-in-out infinite;
+  }
+  @keyframes ropePulse{0%,100%{opacity:.9}50%{opacity:.45}}
+
+  .tagline{margin-top:26px;font-size:1.08rem;color:var(--muted);max-width:34em}
+  .tagline strong{color:var(--ink);font-weight:500}
+
+  /* ---- live scene ---- */
+  .scene{
+    margin:38px 0 0;border:1px solid var(--edge);border-radius:14px;
+    background:linear-gradient(180deg,#0c1122,#0a0e1c);overflow:hidden;
+  }
+  .scene svg{display:block;width:100%;height:auto}
+
+  /* ---- sections ---- */
+  section{padding:44px 0;border-top:1px solid var(--edge)}
+  .label{
+    font-family:var(--mono);font-size:.7rem;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:16px;
+  }
+  h2{font-family:var(--display);font-weight:600;font-size:1.5rem;line-height:1.25;margin-bottom:14px}
+  h3{font-family:var(--display);font-weight:600;font-size:1.02rem;margin-bottom:4px}
+  p+p{margin-top:14px}
+  .lede{font-size:1.05rem}
+
+  /* ---- colour law ---- */
+  .laws{list-style:none;display:grid;gap:2px;margin-top:20px}
+  .law{
+    display:grid;grid-template-columns:44px 1fr;gap:16px;align-items:center;
+    padding:14px 16px;background:var(--surface);border:1px solid var(--edge);
+  }
+  .law:first-child{border-radius:12px 12px 0 0}
+  .law:last-child{border-radius:0 0 12px 12px}
+  .law svg{display:block}
+  .law-t{font-family:var(--display);font-weight:600;font-size:.95rem}
+  .law-d{color:var(--muted);font-size:.9rem;line-height:1.5}
+
+  /* ---- numbers ---- */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:6px}
+  .stat{background:var(--surface);border:1px solid var(--edge);padding:18px 16px;text-align:center}
+  .stat:first-child{border-radius:12px 0 0 12px}
+  .stat:last-child{border-radius:0 12px 12px 0}
+  .stat b{display:block;font-family:var(--display);font-weight:700;font-size:1.7rem;color:var(--rope);line-height:1.1}
+  .stat span{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+  /* ---- feature rows ---- */
+  .rows{display:grid;gap:18px;margin-top:20px}
+  .row{padding-left:16px;border-left:2px solid var(--edge)}
+  .row.a{border-color:var(--anchor)}
+  .row.b{border-color:var(--rope)}
+  .row.c{border-color:var(--exit)}
+  .row p{color:var(--muted);font-size:.94rem}
+
+  /* ---- meta table ---- */
+  .meta{
+    margin-top:22px;font-family:var(--mono);font-size:.8rem;
+    border:1px solid var(--edge);border-radius:12px;overflow:hidden;
+  }
+  .meta div{
+    display:flex;justify-content:space-between;gap:16px;
+    padding:11px 16px;border-bottom:1px solid var(--edge);
+  }
+  .meta div:last-child{border-bottom:0}
+  .meta dt{color:var(--muted)}
+  .meta dd{color:var(--ink);text-align:right}
+
+  /* ---- buttons ---- */
+  .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+  .btn{
+    display:inline-block;font-family:var(--display);font-weight:600;
+    font-size:.92rem;letter-spacing:.02em;text-decoration:none;
+    padding:12px 22px;border-radius:2px;transform:skewX(-8deg);
+  }
+  .btn > span{display:inline-block;transform:skewX(8deg)}
+  .btn-primary{background:var(--rope);color:#1a1405}
+  .btn-primary[aria-disabled="true"]{background:var(--edge);color:var(--muted);cursor:default}
+  .btn-ghost{border:1px solid var(--edge);color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--muted)}
+
+  footer{margin-top:auto;padding:28px 0 40px;border-top:1px solid var(--edge)}
+  .foot{
+    display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;
+    font-family:var(--mono);font-size:.74rem;color:var(--muted);
+  }
+  .foot a{color:var(--muted)}
+
+  @media (max-width:520px){
+    .stats{grid-template-columns:1fr;gap:2px}
+    .stat:first-child{border-radius:12px 12px 0 0}
+    .stat:last-child{border-radius:0 0 12px 12px}
+    .law{grid-template-columns:36px 1fr;gap:12px}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none !important}}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap mast-row">
+    <a class="back" href="/">← Osman Kose</a>
+    <button class="lang" id="langBtn" type="button" aria-label="Change language">EN</button>
+  </div>
+</header>
+
+<main>
+  <div class="wrap hero">
+    <p class="eyebrow"><b class="s1">Swing</b> · <b class="s2">Cut</b> · <b class="s3">Fly</b></p>
+    <h1 class="logo"><span class="top">PENDRA</span><span class="bot" aria-hidden="true">PENDRA</span><i aria-hidden="true"></i></h1>
+    <p class="tagline" lang="en">A swing-physics arcade game for iPhone. Throw a rope, build momentum, <strong>let go at the right moment</strong>. There is no jump button — everything you do comes from one touch, held or released.</p>
+    <p class="tagline" lang="tr">iPhone için bir sarkaç fiziği oyunu. İp at, hız kazan, <strong>doğru anda bırak</strong>. Zıplama düğmesi yok — yaptığın her şey tek bir dokunuştan çıkıyor: basılı tut ya da bırak.</p>
+
+    <!-- Every shape here is computed from the game's own drawing code, not
+         eyeballed: the saw path from drawSawBody() (14 asymmetric teeth, 3
+         expansion slots, arbor), the anchor from the collar/rim/diamond stack.
+         The gravity well and portal are deliberately ABSENT — they cannot be
+         reproduced faithfully in static SVG (7 in-flowing particles, a vortex),
+         and an approximation would be worse than leaving them out. -->
+    <div class="scene">
+      <svg viewBox="0 0 680 300" role="img" aria-label="A white ball swings on an amber rope from a cyan anchor, past a red circular saw.">
+        <defs>
+          <filter id="glow" x="-90%" y="-90%" width="280%" height="280%">
+            <feGaussianBlur stdDeviation="6" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="softglow" x="-90%" y="-90%" width="280%" height="280%">
+            <feGaussianBlur stdDeviation="9"/>
+          </filter>
+        </defs>
+
+        <g stroke="#788cc8" stroke-width="1">
+          <path stroke-opacity=".045" d="M0 50H680M0 100H680M0 150H680M0 250H680"/>
+          <path stroke-opacity=".045" d="M50 0V300M100 0V300M150 0V300M200 0V300M250 0V300M300 0V300M350 0V300M400 0V300M450 0V300M500 0V300M550 0V300M600 0V300M650 0V300"/>
+          <path stroke="#968cdc" stroke-opacity=".1" d="M0 200H680"/>
+        </g>
+
+        <g transform="translate(470,196)">
+          <g>
+            <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="2.6s" repeatCount="indefinite"/>
+            <path d="M20.8 0L25.12 6.69L19.89 6.07L18.74 9.02L19.73 16.93L15.29 14.1L12.97 16.26L10.43 23.82L7.66 19.34L4.63 20.28L-0.93 25.98L-1.49 20.75L-4.63 20.28L-12.11 23.01L-10.35 18.04L-12.97 16.26L-20.9 15.47L-17.15 11.77L-18.74 9.02L-25.54 4.87L-20.56 3.16L-20.8 0L-25.12 -6.69L-19.89 -6.07L-18.74 -9.02L-19.73 -16.93L-15.29 -14.1L-12.97 -16.26L-10.43 -23.82L-7.66 -19.34L-4.63 -20.28L0.93 -25.98L1.49 -20.75L4.63 -20.28L12.11 -23.01L10.35 -18.04L12.97 -16.26L20.9 -15.47L17.15 -11.77L18.74 -9.02L25.54 -4.87L20.56 -3.16Z" fill="#ff5964" filter="url(#softglow)" opacity=".55"/>
+            <path d="M20.8 0L25.12 6.69L19.89 6.07L18.74 9.02L19.73 16.93L15.29 14.1L12.97 16.26L10.43 23.82L7.66 19.34L4.63 20.28L-0.93 25.98L-1.49 20.75L-4.63 20.28L-12.11 23.01L-10.35 18.04L-12.97 16.26L-20.9 15.47L-17.15 11.77L-18.74 9.02L-25.54 4.87L-20.56 3.16L-20.8 0L-25.12 -6.69L-19.89 -6.07L-18.74 -9.02L-19.73 -16.93L-15.29 -14.1L-12.97 -16.26L-10.43 -23.82L-7.66 -19.34L-4.63 -20.28L0.93 -25.98L1.49 -20.75L4.63 -20.28L12.11 -23.01L10.35 -18.04L12.97 -16.26L20.9 -15.47L17.15 -11.77L18.74 -9.02L25.54 -4.87L20.56 -3.16Z" fill="#3a1119" stroke="#ff5964" stroke-width="2"/>
+            <path d="M15.14 5.53A16.12 16.12 0 0 1 11.19 11.61M-12.36 10.35A16.12 16.12 0 0 1 -15.64 3.89M-2.78 -15.88A16.12 16.12 0 0 1 4.46 -15.49" fill="none" stroke="#1d070c" stroke-width="2.34"/>
+            <circle r="7.8" fill="#8f2430" stroke="#ff5964" stroke-width="1.8"/>
+            <circle r="3.12" fill="#12040a"/>
+          </g>
+          <circle r="26" fill="none" stroke="#ff5964" stroke-opacity=".22" stroke-width="1.2"/>
+        </g>
+
+        <g transform="translate(200,56)">
+          <circle r="17" fill="none" stroke="#4ecdc4" stroke-width="3.5" filter="url(#softglow)" opacity=".5"/>
+          <g stroke="#4ecdc4" stroke-width="2.4" stroke-opacity=".9" fill="none">
+            <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="5.7s" repeatCount="indefinite"/>
+            <path d="M23 0A23 23 0 0 1 -0.54 22.99M-11.5 19.92A23 23 0 0 1 -19.64 -11.97M-11.5 -19.92A23 23 0 0 1 20.18 -11.03"/>
+          </g>
+          <circle r="16" fill="rgba(6,8,16,0.88)"/>
+          <circle r="17" fill="none" stroke="#4ecdc4" stroke-width="2.2"/>
+          <path d="M-16.42 -4.4A17 17 0 0 1 -3.82 -16.56" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="1.6"/>
+          <path d="M0 -11L11 0L0 11L-11 0Z" fill="#4ecdc4" filter="url(#glow)"/>
+        </g>
+
+        <g transform="translate(330,120)" filter="url(#glow)">
+          <path d="M0 -13L13 0L0 13L-13 0Z" fill="#7bf1a8"/>
+        </g>
+
+        <g>
+          <animateTransform attributeName="transform" type="rotate"
+            values="-42 200 56; 42 200 56; -42 200 56" dur="3.4s"
+            calcMode="spline" keySplines=".42 0 .58 1;.42 0 .58 1" repeatCount="indefinite"/>
+          <line x1="200" y1="56" x2="200" y2="216" stroke="#ffd166" stroke-width="2" stroke-opacity=".35" filter="url(#softglow)"/>
+          <line x1="200" y1="56" x2="200" y2="216" stroke="#ffd166" stroke-width="2.2"/>
+          <circle cx="200" cy="216" r="11" fill="#f5f7ff" filter="url(#glow)"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="btns">
+      <a class="btn btn-primary" aria-disabled="true" href="#status"><span lang="en">Coming to the App Store</span><span lang="tr">Yakında App Store'da</span></a>
+      <a class="btn btn-ghost" href="privacy.html"><span lang="en">Privacy Policy</span><span lang="tr">Gizlilik Politikası</span></a>
+      <a class="btn btn-ghost" href="support.html"><span lang="en">Support</span><span lang="tr">Destek</span></a>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <section>
+      <p class="label" lang="en">The game</p>
+      <p class="label" lang="tr">Oyun</p>
+      <div lang="en">
+        <h2>One touch. Two verbs.</h2>
+        <p class="lede">Hold to throw a rope at the nearest anchor and swing. Release to cut it and fly. That is the whole control scheme — every level is built from those two verbs and the momentum you carry between them.</p>
+        <p>Each level has a <strong>par</strong>: the number of ropes a clean route needs. Reaching the portal earns a star. Collecting every crystal earns a second. Doing both <em>under par</em> earns the third — and that last one is the game.</p>
+      </div>
+      <div lang="tr">
+        <h2>Tek dokunuş. İki fiil.</h2>
+        <p class="lede">Basılı tut, en yakın çengele ip atıp salın. Bırak, ipi kes ve uç. Kontrol şeması bundan ibaret — her level bu iki fiilden ve aralarında taşıdığın hızdan kuruluyor.</p>
+        <p>Her level'ın bir <strong>par</strong>'ı var: temiz bir rotanın kaç ip gerektirdiği. Portala varmak bir yıldız kazandırıyor. Bütün kristalleri toplamak ikincisini. İkisini birden <em>par'ın altında</em> yapmak üçüncüsünü — ve asıl oyun o sonuncusu.</p>
+      </div>
+      <div class="stats" role="list">
+        <div class="stat" role="listitem"><b>90</b><span lang="en">Levels</span><span lang="tr">Level</span></div>
+        <div class="stat" role="listitem"><b>9</b><span lang="en">Regions</span><span lang="tr">Bölge</span></div>
+        <div class="stat" role="listitem"><b>270</b><span lang="en">Stars</span><span lang="tr">Yıldız</span></div>
+      </div>
+    </section>
+
+    <section>
+      <p class="label" lang="en">How to read a level</p>
+      <p class="label" lang="tr">Level nasıl okunur</p>
+      <div lang="en">
+        <h2>Colour tells you the rule.</h2>
+        <p>Every object in PENDRA states what it does through colour alone. You never need a legend, and the game never explains twice.</p>
+      </div>
+      <div lang="tr">
+        <h2>Kuralı renk söyler.</h2>
+        <p>PENDRA'daki her nesne ne yaptığını yalnızca rengiyle anlatır. Bir efsaneye ihtiyacın olmaz ve oyun hiçbir şeyi iki kez açıklamaz.</p>
+      </div>
+      <ul class="laws">
+        <li class="law">
+          <svg width="44" height="30" viewBox="0 0 44 30" aria-hidden="true">
+            <g transform="translate(22,15) scale(0.46)">
+              <path fill="#3a1119" stroke="#ff5964" stroke-width="4"
+                d="M20.8 0L25.12 6.69L19.89 6.07L18.74 9.02L19.73 16.93L15.29 14.1L12.97 16.26L10.43 23.82L7.66 19.34L4.63 20.28L-0.93 25.98L-1.49 20.75L-4.63 20.28L-12.11 23.01L-10.35 18.04L-12.97 16.26L-20.9 15.47L-17.15 11.77L-18.74 9.02L-25.54 4.87L-20.56 3.16L-20.8 0L-25.12 -6.69L-19.89 -6.07L-18.74 -9.02L-19.73 -16.93L-15.29 -14.1L-12.97 -16.26L-10.43 -23.82L-7.66 -19.34L-4.63 -20.28L0.93 -25.98L1.49 -20.75L4.63 -20.28L12.11 -23.01L10.35 -18.04L12.97 -16.26L20.9 -15.47L17.15 -11.77L18.74 -9.02L25.54 -4.87L20.56 -3.16Z"/>
+            </g>
+          </svg>
+          <div>
+            <p class="law-t" style="color:var(--saw)"><span lang="en">Red kills</span><span lang="tr">Kırmızı öldürür</span></p>
+            <p class="law-d" lang="en">Saws and orbiting blades. Contact ends the run.</p>
+            <p class="law-d" lang="tr">Testereler ve yörünge bıçakları. Temas turu bitirir.</p>
+          </div>
+        </li>
+        <li class="law">
+          <svg width="44" height="30" viewBox="0 0 44 30" aria-hidden="true">
+            <g transform="translate(22,15)" fill="none" stroke="#ff9f1c" stroke-width="2">
+              <path d="M11 0A11 11 0 0 1 -2.86 10.62M-5.5 9.53A11 11 0 0 1 -9.4 -5.72M-5.5 -9.53A11 11 0 0 1 9.65 -5.28"/>
+              <path d="M0 -5L5 0L0 5L-5 0Z" fill="#ff9f1c" stroke="none"/>
+            </g>
+          </svg>
+          <div>
+            <p class="law-t" style="color:var(--shear)"><span lang="en">Orange takes your rope</span><span lang="tr">Turuncu ipini alır</span></p>
+            <p class="law-d" lang="en">Rusted anchors break after a single use. You keep moving; you just cannot hold on.</p>
+            <p class="law-d" lang="tr">Paslı çengeller tek kullanımda kırılır. Hareket etmeye devam edersin, sadece tutunamazsın.</p>
+          </div>
+        </li>
+        <li class="law">
+          <svg width="44" height="30" viewBox="0 0 44 30" aria-hidden="true">
+            <path d="M22 2L33 15L22 28L11 15Z" fill="#7bf1a8"/>
+          </svg>
+          <div>
+            <p class="law-t" style="color:var(--crystal)"><span lang="en">Green helps</span><span lang="tr">Yeşil yardım eder</span></p>
+            <p class="law-d" lang="en">Crystals to collect, bumpers that give energy back.</p>
+            <p class="law-d" lang="tr">Toplanacak kristaller, enerji geri veren tamponlar.</p>
+          </div>
+        </li>
+        <li class="law">
+          <svg width="44" height="30" viewBox="0 0 44 30" aria-hidden="true">
+            <circle cx="22" cy="15" r="12" fill="none" stroke="#b388ff" stroke-width="1.4" stroke-opacity=".4"/>
+            <circle cx="22" cy="15" r="6.5" fill="#b388ff" fill-opacity=".85"/>
+          </svg>
+          <div>
+            <p class="law-t" style="color:var(--exit)"><span lang="en">Violet bends your path</span><span lang="tr">Mor yolunu büker</span></p>
+            <p class="law-d" lang="en">Portals pull you in. Gravity wells curve the arc you thought you had.</p>
+            <p class="law-d" lang="tr">Portallar seni içine çeker. Çekim kuyuları, elinde sandığın arkı büker.</p>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <p class="label" lang="en">What is in it</p>
+      <p class="label" lang="tr">İçinde ne var</p>
+      <div lang="en">
+        <h2>Built to be replayed, not padded.</h2>
+        <div class="rows">
+          <div class="row a">
+            <h3>90 hand-tuned levels</h3>
+            <p>Nine regions, each with its own palette and its own idea. Difficulty is measured, not guessed — every level is simulated thousands of times to keep the curve honest.</p>
+          </div>
+          <div class="row b">
+            <h3>A shop that sells time, not skill</h3>
+            <p>Coins buy cosmetics and a small set of helps that reduce how often you repeat a level. Nothing plays the level for you.</p>
+          </div>
+          <div class="row c">
+            <h3>Deterministic physics</h3>
+            <p>Fixed timestep, seeded randomness, zero frame-rate dependence. The same input always produces the same run — on any device.</p>
+          </div>
+        </div>
+      </div>
+      <div lang="tr">
+        <h2>Şişirilmiş değil, tekrar oynanmak için kurulmuş.</h2>
+        <div class="rows">
+          <div class="row a">
+            <h3>90 elle ayarlanmış level</h3>
+            <p>Dokuz bölge, her birinin kendi paleti ve kendi fikri. Zorluk tahmin edilmiyor, ölçülüyor — her level binlerce kez simüle edilerek eğrinin dürüst kalması sağlanıyor.</p>
+          </div>
+          <div class="row b">
+            <h3>Beceri değil zaman satan bir mağaza</h3>
+            <p>COIN'ler kozmetikleri ve bir level'ı kaç kez tekrarladığını azaltan küçük bir yardım setini alır. Hiçbiri level'ı senin yerine oynamaz.</p>
+          </div>
+          <div class="row c">
+            <h3>Deterministik fizik</h3>
+            <p>Sabit zaman adımı, tohumlanmış rastgelelik, sıfır kare hızı bağımlılığı. Aynı girdi her zaman aynı turu üretir — hangi cihazda olursa olsun.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="status">
+      <p class="label" lang="en">Status</p>
+      <p class="label" lang="tr">Durum</p>
+      <div lang="en">
+        <h2>In final testing.</h2>
+        <p>PENDRA is feature-complete and going through device testing before submission. This page will link to the App Store listing as soon as it is live.</p>
+      </div>
+      <div lang="tr">
+        <h2>Son testlerde.</h2>
+        <p>PENDRA özellik olarak tamamlandı ve gönderim öncesi cihaz testlerinden geçiyor. Yayına girer girmez bu sayfa App Store bağlantısını gösterecek.</p>
+      </div>
+      <dl class="meta">
+        <div><dt><span lang="en">Platform</span><span lang="tr">Platform</span></dt><dd>iOS · iPhone</dd></div>
+        <div><dt><span lang="en">Bundle ID</span><span lang="tr">Paket kimliği</span></dt><dd>com.osmnks.pendra</dd></div>
+        <div><dt><span lang="en">Orientation</span><span lang="tr">Yönlendirme</span></dt><dd><span lang="en">Portrait</span><span lang="tr">Dikey</span></dd></div>
+        <div><dt><span lang="en">Languages</span><span lang="tr">Diller</span></dt><dd>English · Türkçe</dd></div>
+        <div><dt><span lang="en">Price</span><span lang="tr">Fiyat</span></dt><dd><span lang="en">Free, with optional purchases</span><span lang="tr">Ücretsiz, isteğe bağlı satın almalarla</span></dd></div>
+        <div><dt><span lang="en">Built with</span><span lang="tr">Geliştirme</span></dt><dd>React Native · Skia</dd></div>
+      </dl>
+    </section>
+
+    <section>
+      <p class="label" lang="en">Support</p>
+      <p class="label" lang="tr">Destek</p>
+      <div lang="en">
+        <h2>Made by one person.</h2>
+        <p>Bug reports, purchase problems, refund questions and feature requests all reach me at the same address, and I read every one.</p>
+      </div>
+      <div lang="tr">
+        <h2>Tek kişi tarafından yapılıyor.</h2>
+        <p>Hata bildirimleri, satın alma sorunları, iade soruları ve öneriler aynı adrese ulaşıyor ve hepsini okuyorum.</p>
+      </div>
+      <div class="btns">
+        <a class="btn btn-ghost" href="support.html"><span lang="en">Support &amp; FAQ</span><span lang="tr">Destek ve SSS</span></a>
+        <a class="btn btn-ghost" href="mailto:osmankose85@gmail.com"><span>osmankose85@gmail.com</span></a>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 Osman Kose</span>
+    <span>
+      <a href="support.html"><span lang="en">Support</span><span lang="tr">Destek</span></a> ·
+      <a href="privacy.html"><span lang="en">Privacy</span><span lang="tr">Gizlilik</span></a> ·
+      <a href="/"><span lang="en">All games</span><span lang="tr">Tüm oyunlar</span></a>
+    </span>
+  </div>
+</footer>
+
+<script>
+// Language toggle. Defaults to the browser's language, then remembers the
+// choice. Deliberately tiny — both languages are already in the HTML and CSS
+// hides one, so nothing is fetched and there is no flash of the wrong copy.
+(function () {
+  var KEY = 'pendra.lang';
+  var btn = document.getElementById('langBtn');
+  function apply(l) {
+    document.documentElement.setAttribute('data-lang', l);
+    document.documentElement.setAttribute('lang', l);
+    btn.textContent = l === 'tr' ? 'TR' : 'EN';
+  }
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch (e) {}
+  apply(saved || ((navigator.language || 'en').toLowerCase().indexOf('tr') === 0 ? 'tr' : 'en'));
+  btn.addEventListener('click', function () {
+    var next = document.documentElement.getAttribute('data-lang') === 'tr' ? 'en' : 'tr';
+    apply(next);
+    try { localStorage.setItem(KEY, next); } catch (e) {}
+  });
+})();
+</script>
+
+</body>
+</html>

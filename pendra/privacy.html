@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PENDRA — Privacy Policy</title>
+<meta name="description" content="Privacy policy for PENDRA (com.osmnks.pendra). No account, no server, no analytics. Advertising and purchases are handled by third parties described here.">
+<meta name="theme-color" content="#0a0e1c">
+<link rel="canonical" href="https://osmank.github.io/pendra/privacy.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e1c;--surface:#111729;--edge:#1e2740;
+    --ink:#e8ecff;--muted:#8792b5;--rope:#ffd166;--anchor:#4ecdc4;
+    --display:"Space Grotesk",system-ui,sans-serif;
+    --body:"IBM Plex Sans",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--bg);color:var(--ink);font-family:var(--body);
+    line-height:1.7;-webkit-font-smoothing:antialiased;
+    min-height:100vh;display:flex;flex-direction:column;
+  }
+  a{color:var(--rope);text-underline-offset:3px}
+  a:focus-visible{outline:2px solid var(--rope);outline-offset:3px}
+  .wrap{width:100%;max-width:680px;margin:0 auto;padding:0 24px}
+
+  /* ---- language ---- */
+  /* KOK ELEMANI HARIC. JS <html> uzerine lang="tr" yaziyor; kural body ile
+     sinirlandirilmazsa [lang="tr"] <html>in KENDISINI secip tum sayfayi
+     gizliyor. Turkce tarayicida sayfa bombos aciliyordu. */
+  body [lang="tr"]{display:none}
+  html[data-lang="tr"] body [lang="en"]{display:none}
+  html[data-lang="tr"] body [lang="tr"]{display:revert}
+  .mast-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .lang{
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;
+    color:var(--ink);background:rgba(232,236,255,.05);
+    border:1px solid rgba(232,236,255,.25);border-radius:8px;
+    padding:6px 14px;cursor:pointer;
+  }
+  .lang:hover{border-color:var(--muted)}
+  .lang:focus-visible{outline:2px solid var(--rope);outline-offset:3px}
+  .masthead{padding:32px 0 0}
+  .back{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--muted);text-decoration:none}
+  .back:hover{color:var(--ink)}
+  h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,6vw,42px);
+    line-height:1.12;margin:44px 0 10px;letter-spacing:-.01em}
+  .sub{font-family:var(--mono);font-size:.76rem;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:36px}
+  h2{font-family:var(--display);font-weight:600;font-size:1.22rem;
+    margin:36px 0 10px;padding-top:26px;border-top:1px solid var(--edge)}
+  h3{font-family:var(--display);font-weight:600;font-size:1rem;margin:22px 0 6px}
+  p+p{margin-top:13px}
+  ul{margin:12px 0 0 20px}
+  li{margin-bottom:8px}
+  .callout{
+    background:var(--surface);border:1px solid var(--edge);border-radius:12px;
+    padding:18px 20px;margin:22px 0;
+  }
+  .callout p:first-child{font-family:var(--display);font-weight:600;margin-bottom:6px}
+  code{font-family:var(--mono);font-size:.88em;color:var(--anchor)}
+  footer{margin-top:auto;padding:34px 0 44px;border-top:1px solid var(--edge)}
+  .foot{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;
+    font-family:var(--mono);font-size:.74rem;color:var(--muted)}
+  .foot a{color:var(--muted)}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap mast-row">
+    <a class="back" href="./">← PENDRA</a>
+    <button class="lang" id="langBtn" type="button" aria-label="Change language">EN</button>
+  </div>
+</header>
+
+<main class="wrap">
+<div lang="en">
+
+  <h1>Privacy Policy</h1>
+  <p class="sub">PENDRA · com.osmnks.pendra · Last updated 30 August 2026</p>
+
+  <div class="callout">
+    <p>The short version</p>
+    <p>PENDRA has no accounts, no login and no server of mine. Your progress stays on your device. I do not receive, store or sell any personal data about you. The only data that leaves your phone goes to Apple (for purchases) and to the advertising provider described below.</p>
+  </div>
+
+  <h2>Who is responsible</h2>
+  <p>PENDRA is developed and published by <strong>Osman Kose</strong>, an independent developer based in Türkiye. For any question about this policy or about your data, write to <a href="mailto:osmankose85@gmail.com">osmankose85@gmail.com</a>.</p>
+
+  <h2>What stays on your device</h2>
+  <p>The game saves the following locally, using the operating system's standard app storage. None of it is transmitted to me:</p>
+  <ul>
+    <li>Level progress, stars and best scores</li>
+    <li>Coin balance, owned items and equipped cosmetics</li>
+    <li>Settings — sound, haptics and language</li>
+    <li>A daily counter of how many rewarded ads you have watched</li>
+  </ul>
+  <p>Deleting the app removes all of it. There is no cloud backup on my side and nothing to restore from me.</p>
+
+  <h2>Advertising</h2>
+  <p>PENDRA shows ads through <strong>Unity LevelPlay</strong> (ironSource), a mobile advertising mediation service operated by Unity Technologies. To serve ads, the advertising SDK may collect and process:</p>
+  <ul>
+    <li>Device identifiers, including the Identifier for Advertisers (IDFA) <em>only if you allow tracking</em></li>
+    <li>Device and connection information such as model, operating system version, language and coarse location derived from IP address</li>
+    <li>Interaction data — that an ad was shown, viewed or clicked</li>
+  </ul>
+  <p>This processing is carried out by Unity as an independent controller. Their policy applies to it: <a href="https://unity.com/legal/game-player-and-app-user-privacy-policy">Unity Game Player and App User Privacy Policy</a>.</p>
+
+  <h3>App Tracking Transparency</h3>
+  <p>On first launch, iOS asks whether PENDRA may track you across other companies' apps and websites. <strong>If you decline, the IDFA is not shared and ads become non-personalised.</strong> The game works exactly the same either way — nothing is locked behind that permission. You can change your answer at any time in <code>Settings → Privacy &amp; Security → Tracking</code>.</p>
+
+  <h3>Removing ads</h3>
+  <p>The in-app purchase "Reklamsız / No Ads" removes interstitial advertising. Rewarded ads — the ones you choose to watch in exchange for coins or a help — remain available because they are opt-in by nature.</p>
+
+  <h2>Purchases</h2>
+  <p>In-app purchases are processed entirely by <strong>Apple</strong> through the App Store. I never see and never receive your name, card number, billing address or Apple ID. The app only learns whether a purchase completed, so it can deliver the item.</p>
+  <p>Refunds are handled by Apple at <a href="https://reportaproblem.apple.com">reportaproblem.apple.com</a>.</p>
+
+  <h2>What PENDRA does not do</h2>
+  <ul>
+    <li>No account, no sign-up, no email collection</li>
+    <li>No analytics or crash-reporting SDK</li>
+    <li>No contacts, photos, microphone, camera or precise location access</li>
+    <li>No selling or sharing of personal data by me</li>
+  </ul>
+
+  <h2>Children</h2>
+  <p>PENDRA is not directed at children under 13 and I do not knowingly collect personal information from them. If you believe a child has provided such information through the advertising SDK, contact me and I will help you raise it with the provider.</p>
+
+  <h2>Your rights</h2>
+  <p>Because I hold no personal data about you, there is nothing on my side to export or delete — uninstalling the app erases everything the game stored. For data held by the advertising provider, use the contact routes in the Unity policy linked above. If you are in the EEA, the UK or Türkiye, you keep your rights under GDPR and KVKK respectively; write to me and I will point you to the right controller.</p>
+
+  <h2>Changes</h2>
+  <p>If this policy changes, the date at the top of this page changes with it and the updated version is published here.</p>
+
+  </div>
+<div lang="tr">
+
+  <h1>Gizlilik Politikası</h1>
+  <p class="sub">PENDRA · com.osmnks.pendra · Son güncelleme 30 Ağustos 2026</p>
+
+  <div class="callout">
+    <p>Kısa özet</p>
+    <p>PENDRA'da hesap, giriş ve bana ait bir sunucu yok. İlerlemeniz cihazınızda kalır. Sizinle ilgili hiçbir kişisel veriyi almıyor, saklamıyor ve satmıyorum. Telefonunuzdan çıkan tek veri Apple'a (satın alma için) ve aşağıda açıklanan reklam sağlayıcısına gider.</p>
+  </div>
+
+  <h2>Cihazınızda kalanlar</h2>
+  <p>Oyun şunları yalnızca cihaza kaydeder, bana iletmez: level ilerlemesi ve yıldızlar, COIN bakiyesi ve sahip olunan eşyalar, ses/titreşim/dil ayarları, ve o gün kaç ödüllü reklam izlendiğinin sayacı. Uygulamayı silmek hepsini siler.</p>
+
+  <h2>Reklamlar</h2>
+  <p>PENDRA, Unity Technologies tarafından işletilen <strong>Unity LevelPlay</strong> (ironSource) üzerinden reklam gösterir. Reklam SDK'sı cihaz tanımlayıcılarını (izin verirseniz IDFA dâhil), cihaz ve bağlantı bilgilerini ve reklam etkileşim verisini işleyebilir. Bu işleme Unity'nin kendi sorumluluğundadır; <a href="https://unity.com/legal/game-player-and-app-user-privacy-policy">Unity gizlilik politikası</a> geçerlidir.</p>
+  <p>İlk açılışta iOS, sizi diğer şirketlerin uygulamalarında takip etmemize izin verip vermediğinizi sorar. <strong>Reddederseniz IDFA paylaşılmaz ve reklamlar kişiselleştirilmez.</strong> Oyun her iki durumda da birebir aynı çalışır; o izne bağlı kilitli hiçbir içerik yoktur. Cevabınızı <code>Ayarlar → Gizlilik ve Güvenlik → İzleme</code> bölümünden değiştirebilirsiniz.</p>
+
+  <h2>Satın almalar</h2>
+  <p>Uygulama içi satın almalar tamamen <strong>Apple</strong> tarafından yürütülür. Adınızı, kart bilgilerinizi veya Apple Kimliğinizi hiçbir zaman görmem. Uygulama yalnızca satın almanın tamamlanıp tamamlanmadığını öğrenir. İade talepleri için <a href="https://reportaproblem.apple.com">reportaproblem.apple.com</a>.</p>
+
+  <h2>Yapılmayanlar</h2>
+  <p>Hesap yok, e-posta toplanmıyor, analitik veya çökme raporlama SDK'sı yok, rehber/fotoğraf/mikrofon/kamera/kesin konum erişimi yok, ve tarafımdan kişisel veri satışı yok.</p>
+
+  <h2>Haklarınız ve iletişim</h2>
+  <p>Tarafımda kişisel veriniz bulunmadığı için silinecek ya da dışa aktarılacak bir kayıt yoktur; uygulamayı kaldırmak oyunun sakladığı her şeyi siler. KVKK ve GDPR kapsamındaki haklarınız saklıdır. Her türlü soru için: <a href="mailto:osmankose85@gmail.com">osmankose85@gmail.com</a></p>
+
+</div>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 Osman Kose</span>
+    <span><a href="./">PENDRA</a> · <a href="/"><span lang="en">All games</span><span lang="tr">Tüm oyunlar</span></a></span>
+  </div>
+</footer>
+
+<script>
+// Ayni dil anahtari — secim tum PENDRA sayfalarinda ortak (localStorage).
+(function () {
+  var KEY = 'pendra.lang';
+  var btn = document.getElementById('langBtn');
+  function apply(l) {
+    document.documentElement.setAttribute('data-lang', l);
+    document.documentElement.setAttribute('lang', l);
+    btn.textContent = l === 'tr' ? 'TR' : 'EN';
+  }
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch (e) {}
+  apply(saved || ((navigator.language || 'en').toLowerCase().indexOf('tr') === 0 ? 'tr' : 'en'));
+  btn.addEventListener('click', function () {
+    var next = document.documentElement.getAttribute('data-lang') === 'tr' ? 'en' : 'tr';
+    apply(next);
+    try { localStorage.setItem(KEY, next); } catch (e) {}
+  });
+})();
+</script>
+
+</body>
+</html>

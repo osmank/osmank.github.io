@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PENDRA — Support</title>
+<meta name="description" content="Support for PENDRA. Bug reports, purchase problems, restoring purchases and refunds. Contact: osmankose85@gmail.com">
+<meta name="theme-color" content="#0a0e1c">
+<link rel="canonical" href="https://osmank.github.io/pendra/support.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e1c;--surface:#111729;--edge:#1e2740;
+    --ink:#e8ecff;--muted:#8792b5;--rope:#ffd166;--anchor:#4ecdc4;
+    --display:"Space Grotesk",system-ui,sans-serif;
+    --body:"IBM Plex Sans",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--bg);color:var(--ink);font-family:var(--body);
+    line-height:1.7;-webkit-font-smoothing:antialiased;
+    min-height:100vh;display:flex;flex-direction:column;
+  }
+  a{color:var(--rope);text-underline-offset:3px}
+  a:focus-visible{outline:2px solid var(--rope);outline-offset:3px}
+  .wrap{width:100%;max-width:680px;margin:0 auto;padding:0 24px}
+
+  /* ---- language ---- */
+  /* KOK ELEMANI HARIC. JS <html> uzerine lang="tr" yaziyor; kural body ile
+     sinirlandirilmazsa [lang="tr"] <html>in KENDISINI secip tum sayfayi
+     gizliyor. Turkce tarayicida sayfa bombos aciliyordu. */
+  body [lang="tr"]{display:none}
+  html[data-lang="tr"] body [lang="en"]{display:none}
+  html[data-lang="tr"] body [lang="tr"]{display:revert}
+  .mast-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .lang{
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;
+    color:var(--ink);background:rgba(232,236,255,.05);
+    border:1px solid rgba(232,236,255,.25);border-radius:8px;
+    padding:6px 14px;cursor:pointer;
+  }
+  .lang:hover{border-color:var(--muted)}
+  .lang:focus-visible{outline:2px solid var(--rope);outline-offset:3px}
+  .masthead{padding:32px 0 0}
+  .back{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--muted);text-decoration:none}
+  .back:hover{color:var(--ink)}
+  h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,6vw,42px);
+    line-height:1.12;margin:44px 0 10px;letter-spacing:-.01em}
+  .sub{font-family:var(--mono);font-size:.76rem;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:34px}
+  h2{font-family:var(--display);font-weight:600;font-size:1.2rem;
+    margin:34px 0 10px;padding-top:26px;border-top:1px solid var(--edge)}
+  p+p{margin-top:13px}
+  ul{margin:12px 0 0 20px}
+  li{margin-bottom:7px}
+  code{font-family:var(--mono);font-size:.88em;color:var(--anchor)}
+  .card{
+    background:var(--surface);border:1px solid var(--edge);border-radius:12px;
+    padding:22px 24px;margin:26px 0;
+  }
+  .card p:first-child{font-family:var(--display);font-weight:600;margin-bottom:8px}
+  .mail{font-family:var(--mono);font-size:1.05rem;color:var(--rope);word-break:break-all}
+  .muted{color:var(--muted);font-size:.92rem}
+  footer{margin-top:auto;padding:34px 0 44px;border-top:1px solid var(--edge)}
+  .foot{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;
+    font-family:var(--mono);font-size:.74rem;color:var(--muted)}
+  .foot a{color:var(--muted)}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap mast-row">
+    <a class="back" href="./">← PENDRA</a>
+    <button class="lang" id="langBtn" type="button" aria-label="Change language">EN</button>
+  </div>
+</header>
+
+<main class="wrap">
+<div lang="en">
+
+  <h1>Support</h1>
+  <p class="sub">PENDRA · com.osmnks.pendra</p>
+
+  <div class="card">
+    <p>Write to me</p>
+    <p><a class="mail" href="mailto:osmankose85@gmail.com?subject=PENDRA%20support">osmankose85@gmail.com</a></p>
+    <p class="muted" style="margin-top:10px">PENDRA is made by one person. Every message reaches me directly and I answer all of them. I usually reply within a couple of days.</p>
+  </div>
+
+  <h2>Reporting a problem</h2>
+  <p>The more you can tell me, the faster it gets fixed. Useful details:</p>
+  <ul>
+    <li>Your iPhone model and iOS version</li>
+    <li>The level number, if it happened during a level</li>
+    <li>What you expected to happen, and what happened instead</li>
+    <li>A screenshot or screen recording, if you have one</li>
+  </ul>
+
+  <h2>I paid but did not get my item</h2>
+  <p>First try <strong>Restore Purchases</strong> in the shop — it re-delivers anything permanent you have bought (No Ads, the Prism Set). Coin packs are consumable and cannot be restored once delivered.</p>
+  <p>If restoring does not fix it, write to me with the date of the purchase and I will work out what happened.</p>
+
+  <h2>Refunds</h2>
+  <p>All purchases go through Apple, so refunds are handled by Apple rather than by me. Request one at <a href="https://reportaproblem.apple.com">reportaproblem.apple.com</a>. I cannot issue refunds directly, but tell me what went wrong anyway — if something in the game caused it, I want to fix it.</p>
+
+  <h2>My progress disappeared</h2>
+  <p>Progress is stored on the device only. Deleting the app, or restoring a phone from a backup that predates your progress, will lose it. There is no cloud save. If this happens to you, contact me — I cannot restore a save, but I can tell you what the game stored and where.</p>
+
+  <h2>Turning off ads</h2>
+  <p>The <strong>No Ads</strong> purchase removes interstitial adverts. Rewarded ads — the ones you choose to watch in exchange for coins or a help — stay available, because you decide whether to watch them. Nothing in the game is locked behind an advert.</p>
+  <p>You can also decline ad tracking entirely at the prompt on first launch, or later in <code>Settings → Privacy &amp; Security → Tracking</code>. The game plays identically either way.</p>
+
+  <h2>Privacy</h2>
+  <p>What the game stores and what the advertising provider collects is set out in full in the <a href="privacy.html">privacy policy</a>.</p>
+
+  </div>
+<div lang="tr">
+
+  <h1>Destek</h1>
+  <p class="sub">PENDRA · com.osmnks.pendra</p>
+
+  <p>PENDRA'yı tek kişi geliştiriyor. Hata bildirimi, satın alma sorunu, iade sorusu ve öneriler aynı adrese ulaşıyor ve hepsini okuyorum: <a class="mail" href="mailto:osmankose85@gmail.com?subject=PENDRA%20destek">osmankose85@gmail.com</a></p>
+
+  <h2>Sorun bildirirken</h2>
+  <p>Telefon modelin, iOS sürümün ve varsa level numarası çok işe yarıyor. Ekran görüntüsü ya da kaydı varsa daha da iyi.</p>
+
+  <h2>Ödedim ama ürünü alamadım</h2>
+  <p>Önce mağazadaki <strong>SATIN ALIMLARI GERİ YÜKLE</strong>'yi dene — kalıcı ürünleri (REKLAMSIZ, Prizma Seti) yeniden teslim eder. COIN paketleri tüketilebilir olduğu için bir kez teslim edildikten sonra geri yüklenemez. Düzelmezse satın alma tarihiyle birlikte bana yaz.</p>
+
+  <h2>İade</h2>
+  <p>Tüm satın almalar Apple üzerinden yapıldığı için iadeleri de Apple yürütüyor: <a href="https://reportaproblem.apple.com">reportaproblem.apple.com</a>. Ben doğrudan iade yapamıyorum, ama sorunun sebebini yine de bana yazmanı isterim.</p>
+
+  <h2>İlerlemem kayboldu</h2>
+  <p>İlerleme yalnızca cihazda saklanıyor; bulut yedeği yok. Uygulamayı silmek ya da eski bir yedekten dönmek kaydı götürür. Kaydı geri getiremem ama ne sakladığını ve nerede durduğunu anlatabilirim.</p>
+
+  <h2>Reklamlar</h2>
+  <p><strong>REKLAMSIZ</strong> ürünü araya giren reklamları kaldırır. Ödüllü reklamlar (COIN ya da yardım karşılığında kendi isteğinle izlediklerin) durmaya devam eder — hiçbir içerik reklam arkasına kilitlenmiş değil. İzleme iznini ilk açılıştaki soruda ya da sonradan <code>Ayarlar → Gizlilik ve Güvenlik → İzleme</code> bölümünden reddedebilirsin; oyun her iki durumda da aynı çalışır.</p>
+
+</div>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 Osman Kose</span>
+    <span><a href="./">PENDRA</a> · <a href="privacy.html">Privacy</a> · <a href="/"><span lang="en">All games</span><span lang="tr">Tüm oyunlar</span></a></span>
+  </div>
+</footer>
+
+<script>
+// Ayni dil anahtari — secim tum PENDRA sayfalarinda ortak (localStorage).
+(function () {
+  var KEY = 'pendra.lang';
+  var btn = document.getElementById('langBtn');
+  function apply(l) {
+    document.documentElement.setAttribute('data-lang', l);
+    document.documentElement.setAttribute('lang', l);
+    btn.textContent = l === 'tr' ? 'TR' : 'EN';
+  }
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch (e) {}
+  apply(saved || ((navigator.language || 'en').toLowerCase().indexOf('tr') === 0 ? 'tr' : 'en'));
+  btn.addEventListener('click', function () {
+    var next = document.documentElement.getAttribute('data-lang') === 'tr' ? 'en' : 'tr';
+    apply(next);
+    try { localStorage.setItem(KEY, next); } catch (e) {}
+  });
+})();
+</script>
+
+</body>
+</html>
