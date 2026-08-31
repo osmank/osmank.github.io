@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NOSLOW — Privacy Policy</title>
+<meta name="description" content="Privacy policy for NOSLOW. No account, no developer-run server, progress stored on your device. Advertising through Unity LevelPlay (ironSource).">
+<meta name="theme-color" content="#050311">
+<link rel="canonical" href="https://osmank.github.io/noslow/privacy.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#050311;--surface:#0f0b22;--edge:#241a3d;
+    --ink:#ece8ff;--muted:#9a8fbd;--ember:#ffc46b;--cyan:#7fd8ff;
+    --display:"Space Grotesk",system-ui,sans-serif;
+    --body:"IBM Plex Sans",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--bg);color:var(--ink);font-family:var(--body);
+    line-height:1.7;-webkit-font-smoothing:antialiased;
+    min-height:100vh;display:flex;flex-direction:column;
+  }
+  a{color:var(--ember);text-underline-offset:3px}
+  a:focus-visible{outline:2px solid var(--ember);outline-offset:3px}
+  .wrap{width:100%;max-width:680px;margin:0 auto;padding:0 24px}
+
+  /* ---- language ----
+     KOK ELEMANI HARIC. JS <html> uzerine lang="tr" yaziyor; kural body ile
+     sinirlandirilmazsa [lang="tr"] <html>in KENDISINI secip tum sayfayi gizler. */
+  body [lang="tr"]{display:none}
+  html[data-lang="tr"] body [lang="en"]{display:none}
+  html[data-lang="tr"] body [lang="tr"]{display:revert}
+  .mast-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .lang{
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;
+    color:var(--ink);background:rgba(236,232,255,.05);
+    border:1px solid rgba(236,232,255,.25);border-radius:8px;
+    padding:6px 14px;cursor:pointer;
+  }
+  .lang:hover{border-color:var(--muted)}
+  .lang:focus-visible{outline:2px solid var(--ember);outline-offset:3px}
+  .masthead{padding:32px 0 0}
+  .back{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--muted);text-decoration:none}
+  .back:hover{color:var(--ink)}
+  h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,6vw,42px);
+    line-height:1.12;margin:44px 0 10px;letter-spacing:-.01em}
+  .sub{font-family:var(--mono);font-size:.76rem;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:34px}
+  h2{font-family:var(--display);font-weight:600;font-size:1.2rem;
+    margin:34px 0 10px;padding-top:26px;border-top:1px solid var(--edge)}
+  p+p{margin-top:13px}
+  ul{margin:12px 0 0 20px}
+  li{margin-bottom:7px}
+  code{font-family:var(--mono);font-size:.88em;color:var(--cyan)}
+  .card{
+    background:var(--surface);border:1px solid var(--edge);border-radius:12px;
+    padding:22px 24px;margin:26px 0;
+  }
+  .card p:first-child{font-family:var(--display);font-weight:600;margin-bottom:8px}
+  .muted{color:var(--muted);font-size:.92rem}
+  .mail{font-family:var(--mono);color:var(--ember);word-break:break-all}
+  footer{margin-top:auto;padding:34px 0 44px;border-top:1px solid var(--edge)}
+  .foot{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;
+    font-family:var(--mono);font-size:.74rem;color:var(--muted)}
+  .foot a{color:var(--muted)}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap mast-row">
+    <a class="back" href="./">← NOSLOW</a>
+    <button class="lang" id="langBtn" type="button" aria-label="Change language">EN</button>
+  </div>
+</header>
+
+<main class="wrap">
+<div lang="en">
+
+  <h1>Privacy Policy</h1>
+  <p class="sub">NOSLOW · Last updated 1 September 2026</p>
+
+  <div class="card">
+    <p>The short version</p>
+    <p class="muted">NOSLOW has no account system and no server of mine. Your scores, Ember, cosmetics and progress sit on your device and nowhere else. The only data that leaves the phone goes to Apple and to the advertising mediation, and you can decline the advertising part at the first-launch prompt.</p>
+  </div>
+
+  <h2>1. Who this covers</h2>
+  <p>NOSLOW is developed by an independent developer, Osman Kose. This policy explains what information is collected when you use the app, how it is used, and what rights you have over it.</p>
+
+  <h2>2. What is collected</h2>
+  <p>I do not operate a server and do not collect personal information directly. Three third-party services used in the app may process a small amount of data on their own:</p>
+  <ul>
+    <li><strong>Unity LevelPlay (ironSource)</strong> — the advertising mediation that serves the optional in-run ads (revive, extra Daily attempt, double Ember). LevelPlay routes each request to one of several ad networks. Depending on the tracking choice described in section 3, these networks may use a device advertising identifier for ad delivery, measurement and fraud prevention.</li>
+    <li><strong>Apple Game Center</strong> — if it is enabled on your device, your Game Center player identifier and display name are used to run the leaderboards (Endless, Daily, and one board per arena). Governed by Apple's privacy policy.</li>
+    <li><strong>Apple In-App Purchases</strong> — purchases are processed entirely by Apple. I receive only a transaction result confirming that a purchase succeeded. I never see or store payment details.</li>
+  </ul>
+
+  <h2>3. Advertising and tracking</h2>
+  <p>Ads appear at a few clearly optional moments, served through Unity LevelPlay (ironSource). On first launch iOS asks, through the App Tracking Transparency prompt, whether you allow tracking. If you decline, your advertising identifier is not shared and the ads you see are not personalised from your activity in other apps. You can change your answer at any time in <code>Settings → Privacy &amp; Security → Tracking</code>. The game plays identically either way.</p>
+  <p>NOSLOW+ removes the interstitial ads. The rewarded ads stay available either way, because watching one is always your choice and nothing in the game is locked behind them.</p>
+
+  <h2>4. In-app purchases</h2>
+  <p>NOSLOW offers optional purchases: Ember packs (500 / 1,600 / 4,000 Ember) and NOSLOW+, which removes interstitial ads permanently. Everything the packs buy can also be earned by playing. All transactions run through Apple's App Store.</p>
+
+  <h2>5. Children</h2>
+  <p>NOSLOW is not directed at children under 13, and I do not knowingly collect personal data from children. If you believe a child has provided personal information, contact me and I will remove it.</p>
+
+  <h2>6. Where the data lives</h2>
+  <p>Best scores, Ember balance, unlocked cosmetics, mission and challenge progress are stored locally on your device and are removed when you delete the app. There is no cloud save and no backup held by me. Data collected by LevelPlay and its ad networks, by Game Center, and by Apple is subject to their own retention policies.</p>
+
+  <h2>7. Your rights</h2>
+  <p>Depending on where you live, you may have rights to access, correct or delete data held by these third parties. Their policies:</p>
+  <ul>
+    <li><a href="https://unity.com/legal/game-player-and-app-user-privacy-policy">Unity Privacy Policy</a> — LevelPlay / ironSource advertising</li>
+    <li><a href="https://www.apple.com/legal/privacy/">Apple Privacy Policy</a> — Game Center and In-App Purchases</li>
+  </ul>
+  <p>To remove the local data NOSLOW holds, delete the app. To remove Game Center activity, contact Apple.</p>
+
+  <h2>8. Changes</h2>
+  <p>This policy may be updated from time to time. Changes are posted at this URL with a new date at the top.</p>
+
+  <h2>9. Contact</h2>
+  <p>Questions about this policy: <a class="mail" href="mailto:osmankose85@gmail.com?subject=NOSLOW%20privacy">osmankose85@gmail.com</a></p>
+
+</div>
+<div lang="tr">
+
+  <h1>Gizlilik Politikası</h1>
+  <p class="sub">NOSLOW · Son güncelleme 1 Eylül 2026</p>
+
+  <div class="card">
+    <p>Kısa hâli</p>
+    <p class="muted">NOSLOW'da hesap sistemi yok, bana ait bir sunucu da yok. Skorların, Ember'ın, kozmetiklerin ve ilerlemen cihazında duruyor, başka hiçbir yerde değil. Telefondan çıkan tek veri Apple'a ve reklam aracılığına gidiyor; reklam kısmını ilk açılıştaki soruda reddedebilirsin.</p>
+  </div>
+
+  <h2>1. Kimi kapsıyor</h2>
+  <p>NOSLOW'u bağımsız bir geliştirici, Osman Köse geliştiriyor. Bu politika, uygulamayı kullanırken hangi bilgilerin toplandığını, nasıl kullanıldığını ve bunlar üzerindeki haklarını anlatıyor.</p>
+
+  <h2>2. Neler toplanıyor</h2>
+  <p>Bir sunucu işletmiyorum ve kişisel bilgi doğrudan toplamıyorum. Uygulamada kullanılan üç üçüncü taraf hizmet kendi başına az miktarda veri işleyebiliyor:</p>
+  <ul>
+    <li><strong>Unity LevelPlay (ironSource)</strong> — tur içindeki isteğe bağlı reklamları (canlanma, fazladan Daily denemesi, çift Ember) sunan reklam aracılığı. LevelPlay her isteği birkaç reklam ağından birine yönlendiriyor. 3. bölümdeki izleme tercihine bağlı olarak bu ağlar reklam teslimi, ölçüm ve sahtekârlık önleme için cihaz reklam tanımlayıcısını kullanabilir.</li>
+    <li><strong>Apple Game Center</strong> — cihazında açıksa, liderlik tablolarını (Endless, Daily ve her arena için bir tablo) çalıştırmak üzere Game Center oyuncu kimliğin ve görünen adın kullanılıyor. Apple'ın gizlilik politikasına tabi.</li>
+    <li><strong>Apple Uygulama İçi Satın Alma</strong> — satın almalar tümüyle Apple tarafından işleniyor. Bana yalnızca satın almanın başarılı olduğunu bildiren bir işlem sonucu geliyor. Ödeme bilgilerini hiçbir zaman görmüyorum ve saklamıyorum.</li>
+  </ul>
+
+  <h2>3. Reklam ve izleme</h2>
+  <p>Reklamlar oyunun birkaç açıkça isteğe bağlı anında, Unity LevelPlay (ironSource) üzerinden gösteriliyor. İlk açılışta iOS, App Tracking Transparency sorusuyla izlemeye izin verip vermediğini soruyor. Reddedersen reklam tanımlayıcın paylaşılmıyor ve gördüğün reklamlar diğer uygulamalardaki etkinliğine göre kişiselleştirilmiyor. Cevabını istediğin zaman <code>Ayarlar → Gizlilik ve Güvenlik → İzleme</code> bölümünden değiştirebilirsin. Oyun her iki durumda da aynı çalışıyor.</p>
+  <p>NOSLOW+ araya giren reklamları kaldırıyor. Ödüllü reklamlar her hâlükârda duruyor, çünkü izlemek her zaman senin tercihin ve hiçbir içerik onların arkasına kilitlenmiş değil.</p>
+
+  <h2>4. Uygulama içi satın almalar</h2>
+  <p>NOSLOW'da isteğe bağlı satın almalar var: Ember paketleri (500 / 1.600 / 4.000 Ember) ve araya giren reklamları kalıcı olarak kaldıran NOSLOW+. Paketlerin verdiği her şey oynayarak da kazanılabiliyor. Tüm işlemler Apple App Store üzerinden yürüyor.</p>
+
+  <h2>5. Çocuklar</h2>
+  <p>NOSLOW 13 yaş altı çocuklara yönelik değil ve çocuklardan bilerek kişisel veri toplamıyorum. Bir çocuğun kişisel bilgi verdiğini düşünüyorsan bana yaz, kaldırayım.</p>
+
+  <h2>6. Veri nerede duruyor</h2>
+  <p>Rekorlar, Ember bakiyesi, açılmış kozmetikler, görev ve meydan okuma ilerlemesi cihazında yerel olarak saklanıyor ve uygulamayı sildiğinde gidiyor. Bulut yedeği yok, bende duran bir yedek de yok. LevelPlay ve reklam ağlarının, Game Center'ın ve Apple'ın topladığı veriler kendi saklama politikalarına tabi.</p>
+
+  <h2>7. Hakların</h2>
+  <p>Yaşadığın yere bağlı olarak bu üçüncü tarafların elindeki verilere erişme, düzeltme veya sildirme hakkın olabilir. Politikaları:</p>
+  <ul>
+    <li><a href="https://unity.com/legal/game-player-and-app-user-privacy-policy">Unity Gizlilik Politikası</a> — LevelPlay / ironSource reklamcılığı</li>
+    <li><a href="https://www.apple.com/legal/privacy/">Apple Gizlilik Politikası</a> — Game Center ve Uygulama İçi Satın Alma</li>
+  </ul>
+  <p>NOSLOW'un tuttuğu yerel veriyi silmek için uygulamayı sil. Game Center etkinliğini kaldırmak için Apple ile iletişime geç.</p>
+
+  <h2>8. Değişiklikler</h2>
+  <p>Bu politika zaman zaman güncellenebilir. Değişiklikler bu adreste, üstteki tarih yenilenerek yayımlanır.</p>
+
+  <h2>9. İletişim</h2>
+  <p>Bu politikayla ilgili sorular: <a class="mail" href="mailto:osmankose85@gmail.com?subject=NOSLOW%20gizlilik">osmankose85@gmail.com</a></p>
+
+</div>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 Osman Kose</span>
+    <span><a href="./">NOSLOW</a> · <a href="support.html">Support</a> · <a href="/"><span lang="en">All games</span><span lang="tr">Tüm oyunlar</span></a></span>
+  </div>
+</footer>
+
+<script>
+// Ayni dil anahtari — secim tum NOSLOW sayfalarinda ortak (localStorage).
+(function () {
+  var KEY = 'noslow.lang';
+  var btn = document.getElementById('langBtn');
+  function apply(l) {
+    document.documentElement.setAttribute('data-lang', l);
+    document.documentElement.setAttribute('lang', l);
+    btn.textContent = l === 'tr' ? 'TR' : 'EN';
+  }
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch (e) {}
+  apply(saved || ((navigator.language || 'en').toLowerCase().indexOf('tr') === 0 ? 'tr' : 'en'));
+  btn.addEventListener('click', function () {
+    var next = document.documentElement.getAttribute('data-lang') === 'tr' ? 'en' : 'tr';
+    apply(next);
+    try { localStorage.setItem(KEY, next); } catch (e) {}
+  });
+})();
+</script>
+
+</body>
+</html>

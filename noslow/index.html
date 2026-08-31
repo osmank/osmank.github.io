@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NOSLOW — Never Slow Down</title>
+<meta name="description" content="A one-touch arcade game for iPhone. Your ball never loses speed, and every orb makes you permanently faster. Burn your heat to hunt the mines, or stay cold and climb.">
+<meta name="theme-color" content="#050311">
+<link rel="canonical" href="https://osmank.github.io/noslow/">
+<meta property="og:title" content="NOSLOW — Never Slow Down">
+<meta property="og:description" content="Your ball never loses speed. Every orb makes you permanently faster. Your success is your difficulty.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://osmank.github.io/noslow/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#050311;--surface:#0f0b22;--edge:#241a3d;
+    --ink:#ece8ff;--muted:#9a8fbd;
+    --ember:#ffc46b;--cyan:#7fd8ff;
+    --t1:#7fd8ff;--t2:#a85ae0;--t3:#e14a9b;--t4:#ff8a3d;--t5:#fff1e0;
+    --mine:#ff5468;
+    --display:"Space Grotesk",system-ui,sans-serif;
+    --body:"IBM Plex Sans",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--bg);color:var(--ink);font-family:var(--body);
+    line-height:1.7;-webkit-font-smoothing:antialiased;
+    min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;
+  }
+  a{color:var(--ember);text-underline-offset:3px}
+  a:focus-visible{outline:2px solid var(--ember);outline-offset:3px}
+  .wrap{width:100%;max-width:760px;margin:0 auto;padding:0 24px}
+
+  /* ---- language ----
+     KOK ELEMANI HARIC. JS <html> uzerine lang="tr" yaziyor; kural body ile
+     sinirlandirilmazsa [lang="tr"] <html>in KENDISINI secip tum sayfayi gizler. */
+  body [lang="tr"]{display:none}
+  html[data-lang="tr"] body [lang="en"]{display:none}
+  html[data-lang="tr"] body [lang="tr"]{display:revert}
+
+  .mast-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .lang{
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;
+    color:var(--ink);background:rgba(236,232,255,.05);
+    border:1px solid rgba(236,232,255,.25);border-radius:8px;
+    padding:6px 14px;cursor:pointer;
+  }
+  .lang:hover{border-color:var(--muted)}
+  .lang:focus-visible{outline:2px solid var(--ember);outline-offset:3px}
+  .masthead{padding:32px 0 0}
+  .back{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--muted);text-decoration:none}
+  .back:hover{color:var(--ink)}
+
+  /* ---- hero ---- */
+  .hero{padding:56px 0 12px;text-align:center;position:relative}
+  .hero::before{
+    content:"";position:absolute;inset:-10% -40% 40%;z-index:-1;
+    background:radial-gradient(ellipse at 50% 30%,rgba(255,138,61,.16),rgba(168,90,224,.10) 42%,transparent 70%);
+    pointer-events:none;
+  }
+  .eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:18px}
+  .eyebrow b{font-weight:500}
+  .eyebrow .s1{color:var(--t1)}.eyebrow .s2{color:var(--t3)}.eyebrow .s3{color:var(--t4)}
+  .logo{
+    font-family:var(--display);font-weight:700;
+    font-size:clamp(52px,15vw,108px);line-height:.92;letter-spacing:-.03em;
+    background:linear-gradient(180deg,#fff 0%,var(--ember) 55%,#ff7a3d 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    margin-bottom:16px;
+  }
+  .tagline{max-width:52ch;margin:0 auto;color:var(--muted);font-size:1.02rem}
+  .tagline strong{color:var(--ink);font-weight:500}
+
+  .scene{margin:34px auto 8px;max-width:560px}
+  .scene svg{width:100%;height:auto;display:block}
+
+  .btns{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:30px 0 8px}
+  .btn{
+    font-family:var(--mono);font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;
+    text-decoration:none;border-radius:10px;padding:13px 22px;border:1px solid transparent;
+  }
+  .btn-primary{background:var(--ember);color:#1a0d02;font-weight:500}
+  .btn-primary[aria-disabled="true"]{background:rgba(255,196,107,.16);color:var(--ember);
+    border-color:rgba(255,196,107,.4);cursor:default}
+  .btn-ghost{border-color:var(--edge);color:var(--muted)}
+  .btn-ghost:hover{border-color:var(--muted);color:var(--ink)}
+
+  /* ---- sections ---- */
+  section{padding:52px 0;border-top:1px solid var(--edge)}
+  section:first-of-type{border-top:none}
+  .label{font-family:var(--mono);font-size:.7rem;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+  h2{font-family:var(--display);font-weight:600;font-size:clamp(22px,4.4vw,30px);
+    line-height:1.22;letter-spacing:-.01em;margin-bottom:12px}
+  .lede{color:var(--muted);max-width:60ch}
+  .lede+.lede{margin-top:12px}
+  .lede strong{color:var(--ink);font-weight:500}
+
+  .stats{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+  .stat{
+    flex:1 1 130px;background:var(--surface);border:1px solid var(--edge);
+    border-radius:12px;padding:16px 18px;
+  }
+  .stat b{display:block;font-family:var(--display);font-size:1.7rem;line-height:1.1;color:var(--ember)}
+  .stat span{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--muted)}
+
+  /* heat ladder */
+  .ladder{list-style:none;margin:26px 0 0;padding:0;display:grid;gap:8px}
+  .rung{
+    display:flex;align-items:center;gap:14px;background:var(--surface);
+    border:1px solid var(--edge);border-radius:10px;padding:12px 16px;
+  }
+  .swatch{width:12px;height:12px;border-radius:99px;flex:none}
+  .rung-n{font-family:var(--mono);font-size:.8rem;letter-spacing:.12em;flex:1}
+  .rung-m{font-family:var(--display);font-weight:600;color:var(--muted)}
+  .od{
+    margin-top:14px;border:1px dashed rgba(255,138,61,.5);border-radius:10px;
+    padding:14px 16px;color:var(--muted);font-size:.94rem;
+  }
+  .od b{color:var(--t4);font-family:var(--mono);font-size:.8rem;letter-spacing:.14em}
+
+  /* mode list */
+  .modes{list-style:none;margin:24px 0 0;padding:0;display:grid;gap:10px}
+  .mode{background:var(--surface);border:1px solid var(--edge);border-radius:12px;padding:16px 18px}
+  .mode-t{font-family:var(--mono);font-size:.76rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--cyan);margin-bottom:4px}
+  .mode-d{color:var(--muted);font-size:.95rem}
+
+  .quote{
+    font-family:var(--display);font-weight:600;font-size:clamp(20px,4vw,27px);
+    line-height:1.35;text-align:center;color:var(--ink);max-width:22ch;margin:0 auto;
+  }
+  .quote span{color:var(--t4)}
+
+  footer{margin-top:auto;padding:34px 0 44px;border-top:1px solid var(--edge)}
+  .foot{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;
+    font-family:var(--mono);font-size:.74rem;color:var(--muted)}
+  .foot a{color:var(--muted)}
+
+  @media (prefers-reduced-motion:no-preference){
+    .pulse{animation:pulse 2.6s ease-in-out infinite}
+    @keyframes pulse{0%,100%{opacity:.35}50%{opacity:.9}}
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap mast-row">
+    <a class="back" href="/">← Osman Kose</a>
+    <button class="lang" id="langBtn" type="button" aria-label="Change language">EN</button>
+  </div>
+</header>
+
+<div class="wrap hero">
+  <p class="eyebrow"><b class="s1">Steer</b> · <b class="s2">Burn</b> · <b class="s3">Climb</b></p>
+  <h1 class="logo">NOSLOW</h1>
+  <p class="tagline" lang="en">A one-touch arcade game for iPhone. Your ball is perfectly elastic — it never loses speed, and every orb you collect makes you <strong>permanently faster</strong>. Your success is your difficulty.</p>
+  <p class="tagline" lang="tr">iPhone için tek dokunuşlu bir arcade oyunu. Topun mükemmel esnek — hızını hiç kaybetmiyor ve topladığın her küre seni <strong>kalıcı olarak hızlandırıyor</strong>. Başarın, zorluğun oluyor.</p>
+
+  <div class="scene" aria-hidden="true">
+    <svg viewBox="0 0 560 300" role="presentation">
+      <defs>
+        <linearGradient id="trail" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#7fd8ff" stop-opacity="0"/>
+          <stop offset="45%" stop-color="#e14a9b" stop-opacity=".55"/>
+          <stop offset="100%" stop-color="#ffc46b" stop-opacity="1"/>
+        </linearGradient>
+        <radialGradient id="glow">
+          <stop offset="0%" stop-color="#fff1e0" stop-opacity=".9"/>
+          <stop offset="55%" stop-color="#ffc46b" stop-opacity=".35"/>
+          <stop offset="100%" stop-color="#ffc46b" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+
+      <!-- field -->
+      <rect x="14" y="14" width="532" height="272" rx="16" fill="none" stroke="#241a3d" stroke-width="2"/>
+
+      <!-- orbs -->
+      <circle cx="120" cy="96" r="5" fill="#7fd8ff" opacity=".8"/>
+      <circle cx="238" cy="212" r="5" fill="#7fd8ff" opacity=".8"/>
+      <circle cx="352" cy="84" r="5" fill="#7fd8ff" opacity=".8"/>
+
+      <!-- mines -->
+      <g stroke="#ff5468" stroke-width="2" fill="none" opacity=".85">
+        <g transform="translate(186,132)"><circle r="9"/><path d="M0-15V-11M0 15V11M-15 0H-11M15 0H11"/></g>
+        <g transform="translate(300,168)"><circle r="9"/><path d="M0-15V-11M0 15V11M-15 0H-11M15 0H11"/></g>
+        <g transform="translate(430,120)"><circle r="9"/><path d="M0-15V-11M0 15V11M-15 0H-11M15 0H11"/></g>
+      </g>
+
+      <!-- the line the ball has travelled: bounces, never slows -->
+      <polyline points="30,180 120,96 208,236 300,60 388,214 452,150"
+        fill="none" stroke="url(#trail)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+      <!-- flare ring charging around the ball -->
+      <circle cx="452" cy="150" r="30" fill="none" stroke="#ff8a3d" stroke-width="2"
+        stroke-dasharray="140 48" stroke-linecap="round" class="pulse" transform="rotate(-90 452 150)"/>
+
+      <!-- ball -->
+      <circle cx="452" cy="150" r="34" fill="url(#glow)"/>
+      <circle cx="452" cy="150" r="9" fill="#fff1e0"/>
+
+      <!-- aim line, dashed, the moment before release -->
+      <path d="M452 150 L534 96" stroke="#ece8ff" stroke-opacity=".35" stroke-width="2" stroke-dasharray="5 7"/>
+    </svg>
+  </div>
+
+  <div class="btns">
+    <a class="btn btn-primary" aria-disabled="true" href="#status"><span lang="en">Coming to the App Store</span><span lang="tr">Yakında App Store'da</span></a>
+    <a class="btn btn-ghost" href="privacy.html"><span lang="en">Privacy Policy</span><span lang="tr">Gizlilik Politikası</span></a>
+    <a class="btn btn-ghost" href="support.html"><span lang="en">Support</span><span lang="tr">Destek</span></a>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <section>
+    <p class="label" lang="en">The game</p>
+    <p class="label" lang="tr">Oyun</p>
+    <div lang="en">
+      <h2>One touch. No brakes.</h2>
+      <p class="lede">Hold anywhere and time slows to a crawl. Drag to aim, release to fly — <strong>same speed, new direction</strong>. There is no jump, no boost, no brake. Steering costs FAZ energy; orbs refill it. Run dry and you are a passenger.</p>
+      <p class="lede">Chain orbs without touching a wall to build your combo. Graze a mine by a hair and score more for it. Cowards score less.</p>
+    </div>
+    <div lang="tr">
+      <h2>Tek dokunuş. Fren yok.</h2>
+      <p class="lede">Ekranın herhangi bir yerine bas, zaman yavaşlar. Sürükleyerek nişan al, bırakınca uç — <strong>aynı hız, yeni yön</strong>. Zıplama yok, hızlanma yok, fren yok. Yönlendirmek FAZ enerjisi harcıyor; küreler onu dolduruyor. Enerjin biterse yolcu olursun.</p>
+      <p class="lede">Duvara değmeden küre topla, komboyu büyüt. Bir mayının kılpayı yanından geç, fazladan puan al. Korkaklar az kazanır.</p>
+    </div>
+    <div class="stats" role="list">
+      <div class="stat" role="listitem"><b>5</b><span lang="en">Modes</span><span lang="tr">Mod</span></div>
+      <div class="stat" role="listitem"><b>3</b><span lang="en">Arenas</span><span lang="tr">Arena</span></div>
+      <div class="stat" role="listitem"><b>×2.5</b><span lang="en">Top heat tier</span><span lang="tr">En üst ısı katmanı</span></div>
+    </div>
+  </section>
+
+  <section>
+    <p class="label" lang="en">The decision</p>
+    <p class="label" lang="tr">Karar</p>
+    <div lang="en">
+      <h2>Burn, or climb.</h2>
+      <p class="lede">Hold longer and a ring fills around your ball. Let go once it is full and you erupt — a burst of speed, and for a second and a half <strong>every mine on the field is prey</strong>.</p>
+      <p class="lede">Hunting is not free. It costs tier heat: the same pool that carries you up the ladder. Never your speed — your ball never slows. So every flare is a real decision. Clear the field, or stay cold and climb higher? <strong>The best scores belong to players who barely needed to hunt.</strong></p>
+    </div>
+    <div lang="tr">
+      <h2>Yak, ya da tırman.</h2>
+      <p class="lede">Daha uzun basılı tut, topunun etrafında bir halka dolar. Dolduğu anda bırakırsan patlarsın — bir hız patlaması ve bir buçuk saniye boyunca <strong>sahadaki her mayın av olur</strong>.</p>
+      <p class="lede">Avlanmak bedava değil. Tier ısısına mal oluyor: seni merdivende yukarı taşıyan havuzun ta kendisi. Hızına asla — topun hiç yavaşlamıyor. Yani her flare gerçek bir karar. Sahayı temizle, yoksa soğuk kalıp daha yükseğe mi tırman? <strong>En iyi skorlar, avlanmaya neredeyse hiç ihtiyaç duymayanların.</strong></p>
+    </div>
+  </section>
+
+  <section>
+    <p class="label" lang="en">The ladder</p>
+    <p class="label" lang="tr">Merdiven</p>
+    <div lang="en">
+      <h2>Heat is the score multiplier.</h2>
+      <p class="lede">The faster you are, the more every point is worth — and the less room you have to think.</p>
+    </div>
+    <div lang="tr">
+      <h2>Isı, puan çarpanıdır.</h2>
+      <p class="lede">Ne kadar hızlıysan her puan o kadar değerli — ve düşünecek o kadar az yerin var.</p>
+    </div>
+    <ul class="ladder">
+      <li class="rung"><span class="swatch" style="background:var(--t1)"></span><span class="rung-n">CYAN</span><span class="rung-m">×1.0</span></li>
+      <li class="rung"><span class="swatch" style="background:var(--t2)"></span><span class="rung-n">VIOLET</span><span class="rung-m">×1.3</span></li>
+      <li class="rung"><span class="swatch" style="background:var(--t3)"></span><span class="rung-n">MAGENTA</span><span class="rung-m">×1.6</span></li>
+      <li class="rung"><span class="swatch" style="background:var(--t4)"></span><span class="rung-n">EMBER</span><span class="rung-m">×2.0</span></li>
+      <li class="rung"><span class="swatch" style="background:var(--t5)"></span><span class="rung-n">WHITE-HOT</span><span class="rung-m">×2.5</span></li>
+    </ul>
+    <p class="od" lang="en"><b>OVERDRIVE</b><br>Push to the ceiling and it begins: double score, and a world that closes in around you.</p>
+    <p class="od" lang="tr"><b>OVERDRIVE</b><br>Tavana dayan ve başlasın: çift puan, ve üstüne kapanan bir dünya.</p>
+  </section>
+
+  <section>
+    <p class="label" lang="en">Five ways to play</p>
+    <p class="label" lang="tr">Beş oynama biçimi</p>
+    <div lang="en"><h2>One game, five appetites.</h2></div>
+    <div lang="tr"><h2>Tek oyun, beş iştah.</h2></div>
+    <ul class="modes">
+      <li class="mode">
+        <p class="mode-t">Endless</p>
+        <p class="mode-d" lang="en">The pure run, and an all-time leaderboard.</p>
+        <p class="mode-d" lang="tr">Saf tur, ve tüm zamanların liderlik tablosu.</p>
+      </li>
+      <li class="mode">
+        <p class="mode-t">Daily</p>
+        <p class="mode-d" lang="en">One seed, everyone, best try counts. Fresh every day, with its own board.</p>
+        <p class="mode-d" lang="tr">Tek tohum, herkes aynı tur, en iyi deneme sayılır. Her gün yenilenir, kendi tablosu vardır.</p>
+      </li>
+      <li class="mode">
+        <p class="mode-t">Arenas</p>
+        <p class="mode-d" lang="en">ORBIT bends the walls into a circle. WARP turns the edges into portals. TWIN splits the field in two. Each keeps its own leaderboard.</p>
+        <p class="mode-d" lang="tr">ORBIT duvarları çembere büker. WARP kenarları portala çevirir. TWIN sahayı ikiye böler. Her biri kendi tablosunu tutar.</p>
+      </li>
+      <li class="mode">
+        <p class="mode-t">Challenges</p>
+        <p class="mode-d" lang="en">Three always-on goals that carry across runs and raise your RANK.</p>
+        <p class="mode-d" lang="tr">Turlar arasında taşınan ve RANK'ini yükselten, hep açık üç hedef.</p>
+      </li>
+      <li class="mode">
+        <p class="mode-t">Missions</p>
+        <p class="mode-d" lang="en">In-run goals that adapt to how you actually play.</p>
+        <p class="mode-d" lang="tr">Nasıl oynadığına göre şekillenen tur içi hedefler.</p>
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <p class="label" lang="en">Money</p>
+    <p class="label" lang="tr">Para</p>
+    <div lang="en">
+      <h2>Earn, don't pay.</h2>
+      <p class="lede">Ember is earned by playing — runs, missions, daily streaks, tier records. You spend it on cosmetics and arenas. <strong>Never on power. Never on score.</strong> Prestige styles cannot be bought at any price, only earned. Every leaderboard score was set under the same rules as yours.</p>
+      <p class="lede">There are optional Ember packs, and NOSLOW+ removes the interstitial ads. Rewarded ads stay optional either way, and nothing in the game hides behind one.</p>
+    </div>
+    <div lang="tr">
+      <h2>Kazan, satın alma.</h2>
+      <p class="lede">Ember oynayarak kazanılır — turlar, görevler, günlük seriler, tier rekorları. Kozmetiklere ve arenalara harcarsın. <strong>Asla güce değil. Asla puana değil.</strong> Prestij stilleri hiçbir fiyata satın alınamaz, yalnızca kazanılır. Tablodaki her skor seninkiyle aynı kurallar altında yapıldı.</p>
+      <p class="lede">İsteğe bağlı Ember paketleri var, ve NOSLOW+ araya giren reklamları kaldırıyor. Ödüllü reklamlar her hâlükârda isteğe bağlı, ve oyunda hiçbir şey onların arkasına saklanmıyor.</p>
+    </div>
+  </section>
+
+  <section id="status">
+    <p class="label" lang="en">Status</p>
+    <p class="label" lang="tr">Durum</p>
+    <div lang="en">
+      <h2>Coming to the App Store.</h2>
+      <p class="lede">NOSLOW is finished and submitted for review. iPhone, iOS. Made by one person. When it lands, this page gets the link — until then, questions are welcome at <a href="mailto:osmankose85@gmail.com?subject=NOSLOW">osmankose85@gmail.com</a>.</p>
+    </div>
+    <div lang="tr">
+      <h2>Yakında App Store'da.</h2>
+      <p class="lede">NOSLOW bitti ve incelemeye gönderildi. iPhone, iOS. Tek kişi tarafından yapıldı. Yayına girdiğinde bağlantı bu sayfaya düşecek — o zamana kadar sorular için <a href="mailto:osmankose85@gmail.com?subject=NOSLOW">osmankose85@gmail.com</a>.</p>
+    </div>
+  </section>
+
+  <section>
+    <p class="quote" lang="en">One hand. One touch.<br>Can you go <span>WHITE-HOT</span>?</p>
+    <p class="quote" lang="tr">Tek el. Tek dokunuş.<br><span>WHITE-HOT</span> olabilir misin?</p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 Osman Kose</span>
+    <span><a href="privacy.html">Privacy</a> · <a href="support.html">Support</a> · <a href="/"><span lang="en">All games</span><span lang="tr">Tüm oyunlar</span></a></span>
+  </div>
+</footer>
+
+<script>
+// Ayni dil anahtari — secim tum NOSLOW sayfalarinda ortak (localStorage).
+(function () {
+  var KEY = 'noslow.lang';
+  var btn = document.getElementById('langBtn');
+  function apply(l) {
+    document.documentElement.setAttribute('data-lang', l);
+    document.documentElement.setAttribute('lang', l);
+    btn.textContent = l === 'tr' ? 'TR' : 'EN';
+  }
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch (e) {}
+  apply(saved || ((navigator.language || 'en').toLowerCase().indexOf('tr') === 0 ? 'tr' : 'en'));
+  btn.addEventListener('click', function () {
+    var next = document.documentElement.getAttribute('data-lang') === 'tr' ? 'en' : 'tr';
+    apply(next);
+    try { localStorage.setItem(KEY, next); } catch (e) {}
+  });
+})();
+</script>
+
+</body>
+</html>

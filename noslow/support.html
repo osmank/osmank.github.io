@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NOSLOW — Support</title>
+<meta name="description" content="Support for NOSLOW. Bug reports, purchase problems, restoring purchases, the Daily Challenge and refunds. Contact: osmankose85@gmail.com">
+<meta name="theme-color" content="#050311">
+<link rel="canonical" href="https://osmank.github.io/noslow/support.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#050311;--surface:#0f0b22;--edge:#241a3d;
+    --ink:#ece8ff;--muted:#9a8fbd;--ember:#ffc46b;--cyan:#7fd8ff;
+    --display:"Space Grotesk",system-ui,sans-serif;
+    --body:"IBM Plex Sans",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--bg);color:var(--ink);font-family:var(--body);
+    line-height:1.7;-webkit-font-smoothing:antialiased;
+    min-height:100vh;display:flex;flex-direction:column;
+  }
+  a{color:var(--ember);text-underline-offset:3px}
+  a:focus-visible{outline:2px solid var(--ember);outline-offset:3px}
+  .wrap{width:100%;max-width:680px;margin:0 auto;padding:0 24px}
+
+  /* ---- language ----
+     KOK ELEMANI HARIC. JS <html> uzerine lang="tr" yaziyor; kural body ile
+     sinirlandirilmazsa [lang="tr"] <html>in KENDISINI secip tum sayfayi gizler. */
+  body [lang="tr"]{display:none}
+  html[data-lang="tr"] body [lang="en"]{display:none}
+  html[data-lang="tr"] body [lang="tr"]{display:revert}
+  .mast-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .lang{
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;
+    color:var(--ink);background:rgba(236,232,255,.05);
+    border:1px solid rgba(236,232,255,.25);border-radius:8px;
+    padding:6px 14px;cursor:pointer;
+  }
+  .lang:hover{border-color:var(--muted)}
+  .lang:focus-visible{outline:2px solid var(--ember);outline-offset:3px}
+  .masthead{padding:32px 0 0}
+  .back{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--muted);text-decoration:none}
+  .back:hover{color:var(--ink)}
+  h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,6vw,42px);
+    line-height:1.12;margin:44px 0 10px;letter-spacing:-.01em}
+  .sub{font-family:var(--mono);font-size:.76rem;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:34px}
+  h2{font-family:var(--display);font-weight:600;font-size:1.2rem;
+    margin:34px 0 10px;padding-top:26px;border-top:1px solid var(--edge)}
+  p+p{margin-top:13px}
+  ul{margin:12px 0 0 20px}
+  li{margin-bottom:7px}
+  code{font-family:var(--mono);font-size:.88em;color:var(--cyan)}
+  .card{
+    background:var(--surface);border:1px solid var(--edge);border-radius:12px;
+    padding:22px 24px;margin:26px 0;
+  }
+  .card p:first-child{font-family:var(--display);font-weight:600;margin-bottom:8px}
+  .mail{font-family:var(--mono);font-size:1.05rem;color:var(--ember);word-break:break-all}
+  .muted{color:var(--muted);font-size:.92rem}
+  footer{margin-top:auto;padding:34px 0 44px;border-top:1px solid var(--edge)}
+  .foot{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;
+    font-family:var(--mono);font-size:.74rem;color:var(--muted)}
+  .foot a{color:var(--muted)}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap mast-row">
+    <a class="back" href="./">← NOSLOW</a>
+    <button class="lang" id="langBtn" type="button" aria-label="Change language">EN</button>
+  </div>
+</header>
+
+<main class="wrap">
+<div lang="en">
+
+  <h1>Support</h1>
+  <p class="sub">NOSLOW · com.osmnks.noslow</p>
+
+  <div class="card">
+    <p>Write to me</p>
+    <p><a class="mail" href="mailto:osmankose85@gmail.com?subject=NOSLOW%20support">osmankose85@gmail.com</a></p>
+    <p class="muted" style="margin-top:10px">NOSLOW is made by one person. Every message reaches me directly and I answer all of them. I usually reply within a couple of days.</p>
+  </div>
+
+  <h2>Reporting a problem</h2>
+  <p>The more you can tell me, the faster it gets fixed. Useful details:</p>
+  <ul>
+    <li>Your iPhone model and iOS version</li>
+    <li>Which mode it happened in — Endless, Daily, or one of the arenas</li>
+    <li>What you expected to happen, and what happened instead</li>
+    <li>A screenshot or screen recording, if you have one</li>
+  </ul>
+
+  <h2>I paid but did not get my Ember</h2>
+  <p>Ember packs are consumable: the balance is added the moment the purchase clears, so they cannot be restored a second time. If a purchase went through and the balance did not move, write to me with the date and the pack size and I will work out what happened.</p>
+  <p><strong>NOSLOW+</strong> is permanent, so it <em>can</em> be restored — open <strong>STORE</strong> and tap <strong>Restore Purchases</strong>. Do this after reinstalling the app or moving to a new device.</p>
+
+  <h2>Refunds</h2>
+  <p>All purchases go through Apple, so refunds are handled by Apple rather than by me. Request one at <a href="https://reportaproblem.apple.com">reportaproblem.apple.com</a>. I cannot issue refunds directly, but tell me what went wrong anyway — if something in the game caused it, I want to fix it.</p>
+
+  <h2>How the Daily Challenge works</h2>
+  <p>Everyone plays the same run each day, built from that day's seed. You get one free attempt. Extra attempts cost Ember or a rewarded ad, up to five per day, and only your best score counts. The day — and the leaderboard — resets at midnight UTC.</p>
+  <p>If the Daily board looks empty, it is usually Game Center rather than the game: check that you are signed in under <code>Settings → Game Center</code>.</p>
+
+  <h2>My progress disappeared</h2>
+  <p>Progress is stored on the device only — best scores, Ember balance, unlocked cosmetics, mission and challenge progress. There is no cloud save. Deleting the app, or restoring a phone from a backup that predates your progress, will lose it. Scores you already submitted to Game Center survive, because Apple holds those. If this happens to you, contact me — I cannot restore a save, but I can tell you what the game stored and where.</p>
+
+  <h2>Turning off ads</h2>
+  <p><strong>NOSLOW+</strong> removes the interstitial ads. Rewarded ads — revive, an extra Daily attempt, double Ember — stay available, because you decide whether to watch them. Nothing in the game is locked behind an advert, and no cosmetic or mode can only be bought with money.</p>
+  <p>You can also decline ad tracking entirely at the prompt on first launch, or later in <code>Settings → Privacy &amp; Security → Tracking</code>. The game plays identically either way.</p>
+
+  <h2>Privacy</h2>
+  <p>What the game stores, and what the advertising mediation collects, is set out in full in the <a href="privacy.html">privacy policy</a>.</p>
+
+</div>
+<div lang="tr">
+
+  <h1>Destek</h1>
+  <p class="sub">NOSLOW · com.osmnks.noslow</p>
+
+  <div class="card">
+    <p>Bana yaz</p>
+    <p><a class="mail" href="mailto:osmankose85@gmail.com?subject=NOSLOW%20destek">osmankose85@gmail.com</a></p>
+    <p class="muted" style="margin-top:10px">NOSLOW'u tek kişi geliştiriyor. Hata bildirimi, satın alma sorunu, iade sorusu ve öneriler aynı adrese ulaşıyor; hepsini okuyorum ve genelde birkaç gün içinde yanıtlıyorum.</p>
+  </div>
+
+  <h2>Sorun bildirirken</h2>
+  <p>Ne kadar çok şey anlatırsan o kadar hızlı düzelir. İşe yarayanlar:</p>
+  <ul>
+    <li>iPhone modelin ve iOS sürümün</li>
+    <li>Hangi modda olduğu — Endless, Daily ya da arenalardan biri</li>
+    <li>Ne olmasını beklediğin, onun yerine ne olduğu</li>
+    <li>Varsa ekran görüntüsü ya da ekran kaydı</li>
+  </ul>
+
+  <h2>Ödedim ama Ember gelmedi</h2>
+  <p>Ember paketleri tüketilebilir ürün: bakiye satın alma tamamlanır tamamlanmaz ekleniyor, bu yüzden ikinci kez geri yüklenemiyor. Satın alma geçtiği hâlde bakiye değişmediyse tarihi ve paket boyutuyla birlikte bana yaz, ne olduğunu çıkarırım.</p>
+  <p><strong>NOSLOW+</strong> kalıcı bir ürün, dolayısıyla geri yüklenebilir — <strong>STORE</strong> ekranını açıp <strong>SATIN ALIMLARI GERİ YÜKLE</strong>'ye dokun. Uygulamayı yeniden kurduysan ya da yeni bir cihaza geçtiysen bunu yap.</p>
+
+  <h2>İade</h2>
+  <p>Tüm satın almalar Apple üzerinden yapıldığı için iadeleri de Apple yürütüyor: <a href="https://reportaproblem.apple.com">reportaproblem.apple.com</a>. Ben doğrudan iade yapamıyorum, ama sorunun sebebini yine de bana yazmanı isterim — oyundan kaynaklanan bir şeyse düzeltmek istiyorum.</p>
+
+  <h2>Daily Challenge nasıl işliyor</h2>
+  <p>Her gün herkes aynı turu oynuyor; tur o günün tohumundan üretiliyor. Bir ücretsiz denemen var. Fazladan denemeler Ember'a ya da ödüllü reklama mal oluyor, günde en fazla beş tane, ve yalnız en iyi skorun sayılıyor. Gün de tablo da UTC gece yarısında sıfırlanıyor.</p>
+  <p>Daily tablosu boş görünüyorsa sorun genelde oyunda değil Game Center'da: <code>Ayarlar → Game Center</code> altından oturumunun açık olduğunu kontrol et.</p>
+
+  <h2>İlerlemem kayboldu</h2>
+  <p>İlerleme yalnızca cihazda saklanıyor — rekorlar, Ember bakiyesi, açılmış kozmetikler, görev ve meydan okuma ilerlemesi. Bulut yedeği yok. Uygulamayı silmek ya da ilerlemenden eski bir yedekten dönmek bunları götürür. Game Center'a gönderdiğin skorlar durmaya devam eder, çünkü onları Apple tutuyor. Başına gelirse bana yaz — kaydı geri getiremem ama neyi nerede sakladığını anlatabilirim.</p>
+
+  <h2>Reklamları kapatmak</h2>
+  <p><strong>NOSLOW+</strong> araya giren reklamları kaldırır. Ödüllü reklamlar — canlanma, fazladan Daily denemesi, çift Ember — durmaya devam eder, çünkü izleyip izlememeye sen karar veriyorsun. Hiçbir içerik reklam arkasına kilitlenmiş değil ve hiçbir kozmetik ya da mod yalnızca parayla alınamıyor.</p>
+  <p>İzleme iznini ilk açılıştaki soruda tümden reddedebilir, sonradan <code>Ayarlar → Gizlilik ve Güvenlik → İzleme</code> bölümünden değiştirebilirsin. Oyun her iki durumda da aynı çalışır.</p>
+
+  <h2>Gizlilik</h2>
+  <p>Oyunun ne sakladığı ve reklam aracılığının ne topladığı <a href="privacy.html">gizlilik politikasında</a> tam olarak yazıyor.</p>
+
+</div>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 Osman Kose</span>
+    <span><a href="./">NOSLOW</a> · <a href="privacy.html">Privacy</a> · <a href="/"><span lang="en">All games</span><span lang="tr">Tüm oyunlar</span></a></span>
+  </div>
+</footer>
+
+<script>
+// Ayni dil anahtari — secim tum NOSLOW sayfalarinda ortak (localStorage).
+(function () {
+  var KEY = 'noslow.lang';
+  var btn = document.getElementById('langBtn');
+  function apply(l) {
+    document.documentElement.setAttribute('data-lang', l);
+    document.documentElement.setAttribute('lang', l);
+    btn.textContent = l === 'tr' ? 'TR' : 'EN';
+  }
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch (e) {}
+  apply(saved || ((navigator.language || 'en').toLowerCase().indexOf('tr') === 0 ? 'tr' : 'en'));
+  btn.addEventListener('click', function () {
+    var next = document.documentElement.getAttribute('data-lang') === 'tr' ? 'en' : 'tr';
+    apply(next);
+    try { localStorage.setItem(KEY, next); } catch (e) {}
+  });
+})();
+</script>
+
+</body>
+</html>
