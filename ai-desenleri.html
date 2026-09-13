@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Açık kaynak projelerde AI desenleri — inceleme ve uygulama kılavuzu</title>
+<meta name="description" content="On açık kaynak projenin AI kullanım yöntemleri, ortak paydaları ve bunların kendi projelerinde adım adım nasıl uygulanacağı.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E3E6E2;
+    --panel:#EDEFEB;
+    --ink:#161B18;
+    --ink-soft:#4A534D;
+    --ink-faint:#77807A;
+    --rule:#C3C9C2;
+    --rule-soft:#D4D9D3;
+
+    --c-model:#1B4D3E;
+    --c-orch:#2C3E8F;
+    --c-pipe:#8A5A12;
+    --c-infra:#4A5D2A;
+    --c-skill:#6B3B6E;
+    --c-graph:#5A5F63;
+
+    --sans:"Archivo", "Helvetica Neue", Arial, sans-serif;
+    --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+
+    --measure:68ch;
+  }
+
+  *{box-sizing:border-box}
+
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    *{transition:none !important}
+  }
+
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--serif);
+    font-size:18px;
+    line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+
+  a{color:inherit}
+  a:focus-visible,
+  button:focus-visible{
+    outline:2px solid var(--c-orch);
+    outline-offset:3px;
+  }
+
+  /* ---------- masthead ---------- */
+
+  .masthead{
+    border-bottom:1px solid var(--rule);
+    padding:clamp(2rem,6vw,4.5rem) clamp(1.25rem,4vw,3rem) 0;
+  }
+  .masthead-inner{max-width:1180px;margin:0 auto}
+
+  .masthead h1{
+    font-family:var(--sans);
+    font-weight:700;
+    font-size:clamp(1.9rem,5.2vw,3.4rem);
+    line-height:1.06;
+    letter-spacing:-0.022em;
+    margin:0 0 .9rem;
+    max-width:20ch;
+  }
+  .masthead p{
+    margin:0 0 .5rem;
+    max-width:62ch;
+    color:var(--ink-soft);
+    font-size:1.06rem;
+  }
+  .masthead .meta{
+    font-family:var(--sans);
+    font-size:.82rem;
+    font-weight:500;
+    color:var(--ink-faint);
+    margin:1.4rem 0 0;
+    letter-spacing:.01em;
+  }
+
+  /* ---------- classification strip ---------- */
+
+  .strip{
+    margin:2.4rem 0 0;
+    padding:0 0 2.2rem;
+  }
+  .strip-head{
+    font-family:var(--sans);
+    font-size:.86rem;
+    font-weight:600;
+    color:var(--ink-soft);
+    margin:0 0 .85rem;
+  }
+  .strip-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin:0;
+    padding:0;
+    list-style:none;
+  }
+  .chip{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    min-width:118px;
+    flex:1 1 118px;
+    padding:.6rem .7rem .65rem;
+    background:var(--panel);
+    border-top:3px solid var(--chip,var(--ink));
+    text-decoration:none;
+    transition:background .14s ease;
+  }
+  .chip:hover{background:#F6F7F4}
+  .chip b{
+    font-family:var(--sans);
+    font-weight:600;
+    font-size:.92rem;
+    line-height:1.2;
+    letter-spacing:-0.01em;
+  }
+  .chip span{
+    font-family:var(--sans);
+    font-size:.74rem;
+    font-weight:500;
+    color:var(--chip,var(--ink-soft));
+  }
+  .chip i{
+    font-style:normal;
+    font-family:var(--sans);
+    font-size:.7rem;
+    color:var(--ink-faint);
+  }
+
+  /* ---------- shell ---------- */
+
+  .shell{
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 clamp(1.25rem,4vw,3rem) 6rem;
+    display:grid;
+    grid-template-columns:230px minmax(0,1fr);
+    gap:clamp(2rem,5vw,4.5rem);
+    align-items:start;
+  }
+
+  /* ---------- table of contents ---------- */
+
+  .toc{
+    position:sticky;
+    top:2rem;
+    max-height:calc(100vh - 4rem);
+    overflow-y:auto;
+    padding:2.6rem 0 2rem;
+    font-family:var(--sans);
+    font-size:.83rem;
+  }
+  .toc h2{
+    font-size:.8rem;
+    font-weight:600;
+    color:var(--ink-faint);
+    margin:0 0 .7rem;
+    letter-spacing:.01em;
+  }
+  .toc ol{
+    list-style:none;
+    margin:0 0 1.6rem;
+    padding:0;
+    border-left:1px solid var(--rule);
+  }
+  .toc li{margin:0}
+  .toc a{
+    display:block;
+    padding:.28rem 0 .28rem .8rem;
+    margin-left:-1px;
+    border-left:2px solid transparent;
+    color:var(--ink-soft);
+    text-decoration:none;
+    line-height:1.32;
+  }
+  .toc a:hover{color:var(--ink)}
+  .toc a.active{
+    color:var(--ink);
+    font-weight:600;
+    border-left-color:var(--ink);
+  }
+  .toc .toc-group{
+    display:block;
+    font-weight:600;
+    color:var(--ink);
+    margin:0 0 .45rem;
+    padding-top:1rem;
+    border-top:1px solid var(--rule-soft);
+  }
+  .toc .toc-group:first-of-type{padding-top:0;border-top:0}
+
+  /* ---------- content ---------- */
+
+  main{padding-top:2.6rem;min-width:0}
+
+  .part{
+    margin:0 0 4.5rem;
+  }
+  .part-head{
+    margin:0 0 2.2rem;
+    padding-bottom:1.1rem;
+    border-bottom:2px solid var(--ink);
+  }
+  .part-head h2{
+    font-family:var(--sans);
+    font-weight:700;
+    font-size:clamp(1.35rem,3.4vw,1.95rem);
+    letter-spacing:-0.018em;
+    line-height:1.12;
+    margin:0 0 .4rem;
+  }
+  .part-head p{
+    margin:0;
+    max-width:var(--measure);
+    color:var(--ink-soft);
+    font-size:1rem;
+  }
+
+  article.entry{
+    margin:0 0 3.2rem;
+    scroll-margin-top:1.5rem;
+  }
+  article.entry > h3{
+    font-family:var(--sans);
+    font-weight:600;
+    font-size:1.28rem;
+    letter-spacing:-0.014em;
+    line-height:1.2;
+    margin:0 0 .35rem;
+    display:flex;
+    align-items:baseline;
+    gap:.55rem;
+  }
+  article.entry > h3 .num{
+    font-variant-numeric:tabular-nums;
+    color:var(--tone,var(--ink-faint));
+    font-weight:700;
+    flex:none;
+  }
+  .tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:.5rem .9rem;
+    align-items:center;
+    margin:0 0 1rem;
+    font-family:var(--sans);
+    font-size:.78rem;
+  }
+  .tag{
+    display:inline-flex;
+    align-items:center;
+    gap:.38rem;
+    color:var(--tone,var(--ink-soft));
+    font-weight:600;
+  }
+  .tag::before{
+    content:"";
+    width:9px;height:9px;
+    background:var(--tone,var(--ink));
+    flex:none;
+  }
+  .tag-plain{color:var(--ink-faint);font-weight:500}
+
+  article.entry p{
+    margin:0 0 1rem;
+    max-width:var(--measure);
+  }
+  article.entry p:last-child{margin-bottom:0}
+
+  .lede{
+    border-left:3px solid var(--tone,var(--ink));
+    padding-left:1rem;
+  }
+
+  .xref{
+    font-family:var(--sans);
+    font-size:.82rem;
+    margin-top:1rem;
+  }
+  .xref a{
+    color:var(--tone,var(--ink));
+    text-decoration:none;
+    border-bottom:1px solid currentColor;
+    padding-bottom:1px;
+    font-weight:600;
+  }
+  .xref a:hover{background:var(--panel)}
+
+  /* ---------- steps ---------- */
+
+  .where{
+    background:var(--panel);
+    padding:.8rem 1rem;
+    margin:0 0 1.2rem;
+    max-width:var(--measure);
+    border-left:3px solid var(--tone,var(--ink));
+  }
+  .where b{
+    font-family:var(--sans);
+    font-size:.8rem;
+    display:block;
+    color:var(--tone,var(--ink));
+    margin-bottom:.15rem;
+  }
+  .where span{font-size:.98rem}
+
+  ol.steps{
+    counter-reset:step;
+    list-style:none;
+    margin:0;
+    padding:0;
+    max-width:var(--measure);
+  }
+  ol.steps > li{
+    counter-increment:step;
+    position:relative;
+    padding:0 0 .85rem 2.5rem;
+    margin:0;
+  }
+  ol.steps > li::before{
+    content:counter(step);
+    position:absolute;
+    left:0;
+    top:.18rem;
+    width:1.55rem;
+    height:1.55rem;
+    display:grid;
+    place-items:center;
+    font-family:var(--sans);
+    font-size:.78rem;
+    font-weight:700;
+    font-variant-numeric:tabular-nums;
+    color:#fff;
+    background:var(--tone,var(--ink));
+  }
+  ol.steps > li:last-child{padding-bottom:0}
+
+  code{
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    font-size:.86em;
+    background:var(--panel);
+    padding:.08em .34em;
+    border:1px solid var(--rule-soft);
+  }
+
+  /* ---------- common ground list ---------- */
+
+  ul.ground{
+    list-style:none;
+    margin:0;
+    padding:0;
+    max-width:var(--measure);
+  }
+  ul.ground > li{
+    padding:1rem 0;
+    border-top:1px solid var(--rule);
+  }
+  ul.ground > li:last-child{border-bottom:1px solid var(--rule)}
+  ul.ground b{
+    font-family:var(--sans);
+    font-weight:600;
+    font-size:1rem;
+    display:block;
+    margin-bottom:.2rem;
+  }
+
+  .verdict{
+    margin:2rem 0 0;
+    padding:1.2rem 1.3rem;
+    background:var(--panel);
+    max-width:var(--measure);
+  }
+  .verdict p{margin:0;font-size:1rem}
+
+  /* ---------- order section ---------- */
+
+  .order{
+    border-top:2px solid var(--ink);
+    padding-top:1.8rem;
+    max-width:var(--measure);
+  }
+  .order h2{
+    font-family:var(--sans);
+    font-weight:700;
+    font-size:1.35rem;
+    letter-spacing:-0.016em;
+    margin:0 0 .8rem;
+  }
+  ol.phases{
+    list-style:none;
+    counter-reset:phase;
+    margin:1.2rem 0 0;
+    padding:0;
+  }
+  ol.phases > li{
+    counter-increment:phase;
+    display:grid;
+    grid-template-columns:4.5rem 1fr;
+    gap:1rem;
+    padding:.9rem 0;
+    border-top:1px solid var(--rule);
+    align-items:baseline;
+  }
+  ol.phases > li::before{
+    content:"Adım " counter(phase);
+    font-family:var(--sans);
+    font-size:.76rem;
+    font-weight:600;
+    color:var(--ink-faint);
+  }
+  ol.phases b{
+    font-family:var(--sans);
+    font-weight:600;
+    font-size:.98rem;
+  }
+
+  footer{
+    border-top:1px solid var(--rule);
+    padding:2rem clamp(1.25rem,4vw,3rem) 3rem;
+    font-family:var(--sans);
+    font-size:.82rem;
+    color:var(--ink-faint);
+  }
+  footer div{max-width:1180px;margin:0 auto;max-width:var(--measure)}
+
+  /* ---------- responsive ---------- */
+
+  @media (max-width: 900px){
+    .shell{grid-template-columns:1fr;gap:0}
+    .toc{
+      position:static;
+      max-height:none;
+      overflow:visible;
+      padding:2rem 0 0;
+      border-bottom:1px solid var(--rule);
+      padding-bottom:1.5rem;
+    }
+    .toc ol{
+      columns:2;
+      column-gap:1.2rem;
+    }
+    main{padding-top:2rem}
+    body{font-size:17px}
+    .chip{min-width:calc(50% - 3px);flex:1 1 calc(50% - 3px)}
+  }
+  @media (max-width: 520px){
+    .toc ol{columns:1}
+    ol.phases > li{grid-template-columns:1fr;gap:.2rem}
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <h1>Açık kaynak projelerde AI, gerçekte ne yapıyor</h1>
+    <p>On popüler açık kaynak projenin hangi teknolojiyle “AI” sayıldığı, aralarındaki ortak yöntemler ve bu yöntemlerin kendi projelerimde adım adım nasıl uygulanacağı.</p>
+    <p>Birinci bölüm inceleme, ikinci bölüm uygulama. Her projenin analizi kendi uygulama adımlarına bağlı.</p>
+    <p class="meta">İnceleme notu · Eylül 2026</p>
+
+    <nav class="strip" aria-label="Projeler">
+      <p class="strip-head">On projenin sınıflandırması — renk, projenin AI’ı nasıl kullandığını gösteriyor</p>
+      <ul class="strip-row">
+        <li><a class="chip" href="#p1" style="--chip:var(--c-orch)"><b>TradingAgents</b><span>Ajan döngüsü</span><i>01</i></a></li>
+        <li><a class="chip" href="#p2" style="--chip:var(--c-infra)"><b>LibreChat</b><span>Altyapı</span><i>02</i></a></li>
+        <li><a class="chip" href="#p3" style="--chip:var(--c-pipe)"><b>HyperFrames</b><span>Medya zinciri</span><i>03</i></a></li>
+        <li><a class="chip" href="#p4" style="--chip:var(--c-orch)"><b>Fincept Terminal</b><span>Ajan döngüsü</span><i>04</i></a></li>
+        <li><a class="chip" href="#p5" style="--chip:var(--c-pipe)"><b>MoneyPrinterTurbo</b><span>Medya zinciri</span><i>05</i></a></li>
+        <li><a class="chip" href="#p6" style="--chip:var(--c-orch)"><b>Agentic Inbox</b><span>Ajan döngüsü</span><i>06</i></a></li>
+        <li><a class="chip" href="#p7" style="--chip:var(--c-model)"><b>VoxCPM</b><span>Model</span><i>07</i></a></li>
+        <li><a class="chip" href="#p8" style="--chip:var(--c-graph)"><b>Flowsint</b><span>Graph, AI değil</span><i>08</i></a></li>
+        <li><a class="chip" href="#p9" style="--chip:var(--c-skill)"><b>agent-skills</b><span>Talimat</span><i>09</i></a></li>
+        <li><a class="chip" href="#p10" style="--chip:var(--c-infra)"><b>Nango</b><span>Altyapı</span><i>10</i></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="shell">
+
+  <nav class="toc" aria-label="İçindekiler">
+    <h2>İçindekiler</h2>
+
+    <span class="toc-group">Bölüm 1 — İnceleme</span>
+    <ol>
+      <li><a href="#p1">1 · TradingAgents</a></li>
+      <li><a href="#p2">2 · LibreChat</a></li>
+      <li><a href="#p3">3 · HyperFrames</a></li>
+      <li><a href="#p4">4 · Fincept Terminal</a></li>
+      <li><a href="#p5">5 · MoneyPrinterTurbo</a></li>
+      <li><a href="#p6">6 · Agentic Inbox</a></li>
+      <li><a href="#p7">7 · VoxCPM</a></li>
+      <li><a href="#p8">8 · Flowsint</a></li>
+      <li><a href="#p9">9 · agent-skills</a></li>
+      <li><a href="#p10">10 · Nango</a></li>
+      <li><a href="#ortak">Ortak payda</a></li>
+    </ol>
+
+    <span class="toc-group">Bölüm 2 — Uygulama</span>
+    <ol>
+      <li><a href="#u1">1 · Çok-ajanlı tartışma</a></li>
+      <li><a href="#u2">2 · Provider abstraction</a></li>
+      <li><a href="#u3">3 · Modelin bildiği format</a></li>
+      <li><a href="#u4">4 · Persona + BYOK</a></li>
+      <li><a href="#u5">5 · Medya pipeline</a></li>
+      <li><a href="#u6">6 · Onay kapılı ajan</a></li>
+      <li><a href="#u7">7 · Ses üretimi</a></li>
+      <li><a href="#u8">8 · Graph çıkarımı</a></li>
+      <li><a href="#u9">9 · Skill paketleme</a></li>
+      <li><a href="#u10">10 · Mantığı dışarı çıkarmak</a></li>
+      <li><a href="#sira">Uygulama sırası</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <!-- ================= BÖLÜM 1 ================= -->
+
+    <section class="part" id="inceleme">
+      <div class="part-head">
+        <h2>Bölüm 1 — Bu projeleri “AI” yapan şey ne?</h2>
+        <p>Listedeki on proje birbirinden çok farklı şeyler yapıyor. Üçü gerçekten model eğitiyor ya da çalıştırıyor, kalanı hazır modelleri orkestre ediyor. Birinde ise AI etiketi neredeyse hiç yerini bulmuyor.</p>
+      </div>
+
+      <article class="entry" id="p1" style="--tone:var(--c-orch)">
+        <h3><span class="num">01</span> TradingAgents</h3>
+        <div class="tags">
+          <span class="tag">Ajan döngüsü</span>
+          <span class="tag-plain">AI Çoklu Ajan Kantitatif Ticaret Çerçevesi · TauricResearch</span>
+        </div>
+        <p class="lede">Saf LLM orkestrasyonu. Temel analist, duygu uzmanı, teknik analist, trader ve risk yönetimi gibi uzmanlaşmış LLM ajanları rol bazlı çalışıyor ve optimal stratejiyi bulmak için birbirleriyle tartışıyor.</p>
+        <p>Çatı LangGraph üzerine kurulu — yani ajanlar bir <b>state graph</b>’ta düğüm olarak duruyor, aralarındaki geçişler ve durum akışı grafik tarafından yönetiliyor. Bu, ajan sırasını elle kodlamak yerine akışı modüler ve dallanabilir tutuyor.</p>
+        <p>Karar veren ajanlar (Research Manager, Trader, Portfolio Manager) <code>llm.with_structured_output(Schema)</code> ile tipli Pydantic nesnesi döndürüyor. Her sağlayıcının kendi structured-output modu otomatik seçiliyor: OpenAI ve xAI’da <code>json_schema</code>, Gemini’de <code>response_schema</code>, Anthropic’te tool-use, OpenAI-uyumlu sağlayıcılarda function calling.</p>
+        <p>Ayrıca sonuç-temelli “reflection” logu var: kalıcı bir karar günlüğü tutuluyor ve gerçekleşen sonuçlarla birlikte modele geri besleniyor. Yani sistem geçmiş kararlarından bir tür bellek oluşturuyor.</p>
+        <p>Model bağımsız çalışıyor — OpenAI, Google, Anthropic, xAI, DeepSeek, Qwen, GLM, MiniMax, OpenRouter, yerel modeller için Ollama ve kurumsal için Azure OpenAI destekleniyor. Proje kendi belgelerinde araştırma amaçlı olduğunu, finansal veya yatırım tavsiyesi olmadığını açıkça belirtiyor.</p>
+        <p class="xref"><a href="#u1">Bunu kendi projemde nasıl kullanırım →</a></p>
+      </article>
+
+      <article class="entry" id="p2" style="--tone:var(--c-infra)">
+        <h3><span class="num">02</span> LibreChat</h3>
+        <div class="tags">
+          <span class="tag">Altyapı</span>
+          <span class="tag-plain">Tek arayüzden çoklu model erişimi · danny-avila</span>
+        </div>
+        <p class="lede">Model değil, arayüz ve orkestrasyon katmanı. Kendi zekâsı yok; zekâyı taşıyan bir boru hattı.</p>
+        <p>AI yöntemi şunlardan oluşuyor: provider abstraction (tek API şeması altında OpenAI, Anthropic, Gemini ve yerel modeller), streaming yanıt, dosya yükleyip embedding üretme ve vektör arama ile RAG, tool calling, MCP sunucu bağlama, agent tanımlama.</p>
+        <p>Buradaki asıl ders mimari: uygulama kodunun hiçbir yeri hangi modelle konuştuğunu bilmiyor. Model, koda gömülü bir bağımlılık değil, takılabilir bir parça.</p>
+        <p class="xref"><a href="#u2">Bunu kendi projemde nasıl kullanırım →</a></p>
+      </article>
+
+      <article class="entry" id="p3" style="--tone:var(--c-pipe)">
+        <h3><span class="num">03</span> HyperFrames (HeyGen)</h3>
+        <div class="tags">
+          <span class="tag">Medya zinciri</span>
+          <span class="tag-plain">Açık kaynak video oluşturma motoru · heygen-com</span>
+        </div>
+        <p class="lede">Listedeki en ilginç örnek. Render motorunun kendisi AI değil — HTML, GSAP, Puppeteer ve FFmpeg üzerine kurulu. AI’lık tasarım kararında saklı.</p>
+        <p>HeyGen mühendisi Joshua Xu’nun anlattığına göre HTML seçilmesinin nedeni, LLM’lerin HTML üzerinde yoğun biçimde eğitilmiş olması; React ve Remotion ise eğitim verisinin çok küçük bir kısmını oluşturuyor. Yani <b>LLM’in en iyi bildiği dili çıktı formatı yapmak</b> başlı başına bir AI yöntemi. Ajanlar React hook’ları ve yaşam döngüsü kurallarıyla boğuşmadan geçerli kod üretebiliyor.</p>
+        <p>Bu tasarım sayesinde “başlığı iki kat büyüt, koyu moda geç, sona bir fade-out ekle” gibi doğal dil komutları doğrudan uygulanabiliyor. Ajanlara özel <code>/hyperframes</code> komutları ve kurulabilir skill paketleri var; kurulum <code>npx skills add heygen-com/hyperframes</code> ile Claude Code, Cursor, Gemini CLI ve Codex gibi araçlara yapılıyor.</p>
+        <p>Üstüne bir “medya OS” katmanı var: müzik, ses efekti, görsel, ikon, logo, seslendirme gibi ihtiyaçları katalogda bulamadığında TTS, müzik ve görsel modelleriyle üretiyor, ayrıca transkript çıkarıyor, altyazı ekliyor ve arka plan siliyor. CSV verisini animasyonlu grafik videosuna çevirme, TTS ve altyazıyla eğitim videosu üretme, toplu ürün tanıtımı hazırlama gibi kullanımlar bunun üzerine kuruluyor.</p>
+        <p class="xref"><a href="#u3">Bunu kendi projemde nasıl kullanırım →</a></p>
+      </article>
+
+      <article class="entry" id="p4" style="--tone:var(--c-orch)">
+        <h3><span class="num">04</span> Fincept Terminal</h3>
+        <div class="tags">
+          <span class="tag">Ajan döngüsü</span>
+          <span class="tag-plain">Açık kaynak Bloomberg Terminal · Fincept Corporation</span>
+        </div>
+        <p class="lede">Tek katman değil, iki katman birden: persona tabanlı LLM ajanları ve klasik ML/RL yan yana çalışıyor.</p>
+        <p>37 trader/yatırımcı, ekonomi ve jeopolitik ajanı var ve hepsi BYOK modeliyle çalışıyor — kullanıcı kendi anahtarını getiriyor: OpenAI, Anthropic, Gemini, Groq, DeepSeek, OpenRouter veya yerel için Ollama.</p>
+        <p>Mimaride MCP altyapısı (24 araç modülü), <code>ai_chat/</code> altında AI sohbet arayüzü ve <code>LlmService</code>, <code>agents/</code> altında ajan çerçeveleri (finagent_core, Geopolitics, HedgeFund) ve <code>ai_quant_lab/</code> altında makine öğrenmesi, faktör keşfi, HFT ve pekiştirmeli öğrenme modülleri bulunuyor.</p>
+        <p>Teknik olarak native C++20 ve Qt6 üzerine kurulu, analitik için gömülü Python çalıştırıyor, 100’den fazla veri konnektörü ve 50’den fazla ekranı var. AI burada uygulamanın tamamı değil, kalın bir analitik yığınının üstüne oturan bir katman.</p>
+        <p class="xref"><a href="#u4">Bunu kendi projemde nasıl kullanırım →</a></p>
+      </article>
+
+      <article class="entry" id="p5" style="--tone:var(--c-pipe)">
+        <h3><span class="num">05</span> MoneyPrinterTurbo</h3>
+        <div class="tags">
+          <span class="tag">Medya zinciri</span>
+          <span class="tag-plain">AI ile tek tıkla kısa video · harry0703</span>
+        </div>
+        <p class="lede">Klasik çok-modelli pipeline. AI burada tek bir model değil, zincirin her halkasında ayrı bir model.</p>
+        <p>Akış şöyle: LLM senaryoyu ve görsel anahtar kelimeleri üretir → bu anahtar kelimelerle stok video havuzundan (Pexels, Pixabay) klipler çekilir → TTS ile seslendirme yapılır → altyazılar zamanlamaya hizalanır → MoviePy ile hepsi montajlanır.</p>
+        <p>Öğretici tarafı şu: “tek tıkla video” denen şey aslında beş ayrı modelin ve servisin ardışık çalıştırılmasıdır. Her halka bağımsız değiştirilebilir ve bağımsız test edilebilir.</p>
+        <p class="xref"><a href="#u5">Bunu kendi projemde nasıl kullanırım →</a></p>
+      </article>
+
+      <article class="entry" id="p6" style="--tone:var(--c-orch)">
+        <h3><span class="num">06</span> Agentic Inbox (Cloudflare)</h3>
+        <div class="tags">
+          <span class="tag">Ajan döngüsü</span>
+          <span class="tag-plain">Açık kaynak AI e-posta asistanı · cloudflare</span>
+        </div>
+        <p class="lede">Tam bir tool-calling agent loop örneği, üstelik üretim kalitesinde güvenlik desenleriyle birlikte.</p>
+        <p>Cloudflare Agents SDK (AIChatAgent), AI SDK v6 ve Workers AI üzerine kurulu; kullandığı model <code>@cf/moonshotai/kimi-k2.5</code>. Ajanın elinde okuma, arama, taslak yazma ve gönderme için dokuz e-posta aracı var.</p>
+        <p>En kritik deseni şu: gelen e-postayı otomatik okuyup taslak cevap üretiyor, ama göndermeden önce <b>her zaman açık onay istiyor</b>. Ajan otonomisi arttıkça standartlaşan insan onay kapısı deseninin temiz bir uygulaması.</p>
+        <p>Bunun yanında posta kutusu başına özelleştirilebilir system prompt, kalıcı sohbet geçmişi, streaming markdown yanıtlar ve tool çağrılarının kullanıcıya görünür olması var. Ayrıca <code>/mcp</code> ucuyla dışarıdaki AI araçlarına (Claude Code, Cursor gibi) da açılıyor.</p>
+        <p>Altyapı tarafında her posta kutusu kendi Durable Object’i içinde SQLite ile izole çalışıyor, ekler R2’de saklanıyor, kimlik doğrulama Cloudflare Access JWT ile yapılıyor. Deponun kendi güvenlik notu açık: Access politikasını geçen herkes tüm posta kutularına erişebiliyor, posta kutusu bazlı yetkilendirme yok — yani tek güven sınırı Access politikası.</p>
+        <p class="xref"><a href="#u6">Bunu kendi projemde nasıl kullanırım →</a></p>
+      </article>
+
+      <article class="entry" id="p7" style="--tone:var(--c-model)">
+        <h3><span class="num">07</span> VoxCPM</h3>
+        <div class="tags">
+          <span class="tag">Model</span>
+          <span class="tag-plain">AI ses klonlama aracı · OpenBMB</span>
+        </div>
+        <p class="lede">Listedeki gerçek model bu. Diğerleri model çağırıyor; bu, modelin kendisi.</p>
+        <p>Tokenizer-free bir metin-konuşma sistemi: uçtan uca diffusion-autoregressive mimariyle doğrudan sürekli konuşma temsilleri üretiyor, ayrık tokenizasyon adımını tamamen atlıyor. Token yöntemlerindeki bilgi kaybı böylece ortadan kalkıyor.</p>
+        <p>VoxCPM2 sürümü MiniCPM-4 omurgası üzerine kurulu, 2 milyar parametre, 2 milyon saatten fazla çok dilli konuşma verisiyle eğitilmiş, 30 dil destekliyor ve 48 kHz stüdyo kalitesinde çıktı veriyor. Boru hattı LocEnc → TSLM → RALM → LocDiT şeklinde ve tamamen AudioVAE V2’nin latent uzayında çalışıyor.</p>
+        <p>Üç yeteneği ayrı ayrı önemli: dil etiketi gerekmeden 30 dilde doğrudan sentez, sadece doğal dil tarifiyle (cinsiyet, yaş, ton, duygu, tempo) sıfırdan ses tasarımı, ve kısa bir referans klipten kontrollü ses klonlama — orijinal tını korunurken duygu ve tempo yönlendirilebiliyor.</p>
+        <p>En dikkat çekici kısım: referans ses verilmezse model metnin anlamına bakıp uygun konuşma stilini kendisi çıkarıyor. Bunu MiniCPM-4 omurgasının metin anlayışına borçlu — yani bir dil modelini ses üretiminin omurgası yapmanın doğrudan kazancı.</p>
+        <p>Ağırlıklar ve kod Apache-2.0 ile açık. Önceki 0.5B sürümü tüketici sınıfı RTX 4090 üzerinde 0.17 kadar düşük bir Real-Time Factor ile streaming sentez yapabiliyordu, yani gerçek zamanlı kullanım mümkün.</p>
+        <p class="xref"><a href="#u7">Bunu kendi projemde nasıl kullanırım →</a></p>
+      </article>
+
+      <article class="entry" id="p8" style="--tone:var(--c-graph)">
+        <h3><span class="num">08</span> Flowsint</h3>
+        <div class="tags">
+          <span class="tag">Graph analizi — AI etiketi yerini bulmuyor</span>
+          <span class="tag-plain">Açık kaynak OSINT analiz aracı · reconurge</span>
+        </div>
+        <p class="lede">Burada dürüst olmak gerekiyor: bu listede “AI” etiketi en zayıf duran proje bu.</p>
+        <p>Flowsint modüler bir OSINT araştırma ve keşif platformu. Görsel graph arayüzüyle varlıklar arası ilişkileri gösteriyor ve otomatik enricher/transform zincirleriyle bu ilişkileri zenginleştiriyor. Araçlar dağınık scriptler yerine takılabilir eklentiler olarak entegre ediliyor.</p>
+        <p>Teknik yığın: Neo4j graph veritabanı, kullanıcı yönetimi için PostgreSQL, FastAPI backend, ayrı bir frontend, tamamı Docker ile ayağa kalkıyor. Modüler yapı flowsint-api, flowsint-app, flowsint-core, flowsint-enrichers ve flowsint-types parçalarından oluşuyor.</p>
+        <p>Gizlilik tasarımın merkezinde: her şey kullanıcının kendi makinesinde saklanıyor. Depo ayrıca sorumlu kullanım için ayrı bir etik dosyası tutuyor.</p>
+        <p>Proje tanımlarında LLM ya da üretken AI çekirdek bir bileşen olarak geçmiyor. Graph tabanlı çıkarım güçlü bir analiz yöntemi ama üretken AI ile aynı şey değil — bu ayrımı karıştırmamak gerekiyor.</p>
+        <p class="xref"><a href="#u8">Bunu kendi projemde nasıl kullanırım →</a></p>
+      </article>
+
+      <article class="entry" id="p9" style="--tone:var(--c-skill)">
+        <h3><span class="num">09</span> agent-skills</h3>
+        <div class="tags">
+          <span class="tag">Talimat paketleme</span>
+          <span class="tag-plain">Claude Code beceri kütüphanesi · addyosmani</span>
+        </div>
+        <p class="lede">Hiç kod çalıştıran AI yok. Saf prompt mühendisliği ve paketleme.</p>
+        <p>Depo üç katmandan oluşuyor ve bunlar karıştırılmamalı: <b>Skills</b> (<code>skills/&lt;ad&gt;/SKILL.md</code>) adımları ve çıkış kriterleri olan iş akışlarıdır — yani “nasıl”. <b>Personalar</b> (<code>agents/&lt;rol&gt;.md</code>) bir bakış açısı ve çıktı formatı olan rollerdir — yani “kim”: code-reviewer, security-auditor, test-engineer, web-performance-auditor. <b>Slash komutları</b> (<code>.claude/commands/*.md</code>) kullanıcıya bakan giriş noktalarıdır — yani “ne zaman”: /spec, /plan, /build, /test, /review, /code-simplify, /ship.</p>
+        <p>Çalışma mantığı niyet eşleştirmesi: yeni özellik geldiğinde spec-driven-development sonra incremental-implementation ve test-driven-development; planlama gerektiğinde planning-and-task-breakdown; hata ya da beklenmedik davranışta debugging-and-error-recovery devreye giriyor. Beceriler define → plan → build → verify → review → ship hattına dağılmış durumda.</p>
+        <p>Kurulum tek komutla, 70’ten fazla ajana yapılabiliyor: <code>npx skills add addyosmani/agent-skills</code>. Claude Code, Cursor, Codex, Copilot, Cline gibi araçlar destekleniyor; ayrıca eval vakaları ve referans kontrol listeleri de depoda tutuluyor.</p>
+        <p>Yöntemin adı: <b>context engineering</b> ve kademeli açığa çıkarma — modele her şeyi değil, o an gereken talimatı yüklemek.</p>
+        <p class="xref"><a href="#u9">Bunu kendi projemde nasıl kullanırım →</a></p>
+      </article>
+
+      <article class="entry" id="p10" style="--tone:var(--c-infra)">
+        <h3><span class="num">10</span> Nango</h3>
+        <div class="tags">
+          <span class="tag">Altyapı</span>
+          <span class="tag-plain">Açık kaynak API entegrasyon platformu · NangoHQ</span>
+        </div>
+        <p class="lede">Ajanların eli kolu. İki yönlü AI: hem ajan entegrasyonu yazıyor, hem ajan entegrasyonu tüketiyor.</p>
+        <p>Kodlama ajanlarının API entegrasyonu inşa ettiği açık kaynak bir platform. Dahili bir MCP sunucusu bu entegrasyonları üründeki AI ajanlarına açıyor — 900’den fazla API ve 5.000’den fazla hazır araçla.</p>
+        <p>Birinci yön: kodlama ajanları “AI builder skill” ile entegrasyon yazıyor. Skill, Claude Code, Cursor, Codex, Gemini CLI ve OpenCode gibi araçlara API’yi araştırma, entegrasyonu yazma, gerçek bir bağlantıya karşı test etme ve gerçek hatalar üzerinden iterasyon yapma bağlamını veriyor.</p>
+        <p>İkinci yön: üründeki AI ajanları bu entegrasyonları MCP, tool call, webhook ve veri senkronizasyonu üzerinden tüketiyor. Burada altı çizilen nokta şu — <b>özel tool call’lar önemlidir çünkü deterministik mantığı LLM’in dışına taşıyıp halüsinasyonu azaltırlar</b>.</p>
+        <p>Entegrasyonlar kendi deponda kod olarak yaşıyor, CI/CD ile deploy ediliyor. Runtime, konnektörler ve şablonlar Elastic License 2.0 altında açık — inceleyebiliyor, fork edebiliyor, kendi sunucunda barındırabiliyorsun. Kimlik doğrulama tarafında OAuth 2.0, API anahtarı, JWT, MCP Auth ve basic auth tek arayüz altında toplanmış durumda.</p>
+        <p class="xref"><a href="#u10">Bunu kendi projemde nasıl kullanırım →</a></p>
+      </article>
+
+      <!-- ORTAK PAYDA -->
+
+      <article class="entry" id="ortak">
+        <h3>Ortak payda — asıl cevap</h3>
+        <p class="lede" style="--tone:var(--ink)">Bu on projenin sekizi kendi modelini eğitmiyor. Gerçek soru “hangi modeli kullanıyorlar” değil, “modeli neyin etrafına sarıyorlar”.</p>
+
+        <ul class="ground">
+          <li>
+            <b>Tool calling / function calling</b>
+            En büyük ortak payda. TradingAgents, Agentic Inbox, Fincept, Nango ve LibreChat hepsi aynı şeyi yapıyor: modele bir araç listesi veriliyor, model hangisini çağıracağına karar veriyor, sonuç geri besleniyor, döngü tekrar ediyor.
+          </li>
+          <li>
+            <b>MCP — Model Context Protocol</b>
+            2026’nın ortak dili. Fincept, Agentic Inbox, Nango ve LibreChat’te ayrı ayrı karşımıza çıkıyor. Araç tanımını sistemden ayırıp standartlaştırıyor, böylece aynı araçlar farklı ajanlar tarafından kullanılabiliyor.
+          </li>
+          <li>
+            <b>Rol ve persona ayrıştırma</b>
+            Tek dev prompt yerine uzmanlaşmış ajanlar. TradingAgents’ta analist/trader/risk, Fincept’te 37 ajan, agent-skills’te reviewer ve auditor personaları. Sebep hep aynı: dar context, daha az halüsinasyon.
+          </li>
+          <li>
+            <b>Structured output</b>
+            Modelden serbest metin değil şema uyumlu JSON ya da Pydantic nesnesi istemek. Model çıktısını koda bağlanabilir hale getiren şey bu; doğrulanabilirliği de buradan geliyor.
+          </li>
+          <li>
+            <b>Provider abstraction ve BYOK</b>
+            Hiçbiri tek modele çivilenmiş değil. Kullanıcı kendi anahtarını getiriyor, Ollama ile yerel çalışma seçeneği duruyor. Model bir bağımlılık değil, takılabilir parça.
+          </li>
+          <li>
+            <b>Skill paketleme</b>
+            Markdown talimat dosyalarıyla iş akışı dağıtmak. agent-skills, HyperFrames ve Nango aynı <code>npx skills add</code> ekosistemini kullanıyor. Yeni ve hızla yayılan bir desen.
+          </li>
+          <li>
+            <b>İnsan onay kapısı</b>
+            Agentic Inbox’ın “göndermeden önce açık onay” kuralı gibi. Ajan otonomisi arttıkça standartlaşan güvenlik deseni; kritik eylemlerde modelin son sözü olmaması.
+          </li>
+        </ul>
+
+        <div class="verdict">
+          <p><b>Kaba sınıflandırma:</b> 7 model üretiyor. 3 ve 5 model zinciri kuruyor (medya pipeline’ı). 1, 4 ve 6 ajan döngüsü kuruyor. 2 ve 10 altyapı ve köprü görevi görüyor. 9 sadece talimat. 8 ise aslında AI değil — graph analizi.</p>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- ================= BÖLÜM 2 ================= -->
+
+    <section class="part" id="uygulama">
+      <div class="part-head">
+        <h2>Bölüm 2 — Bu desenleri kendi projelerimde nasıl kullanırım</h2>
+        <p>Her desen sırayla, kendi yığınımda (React&nbsp;Native / Expo / Skia, Java Spring Boot ve Spring Batch, tarayıcı prototipleri) nasıl uygulanacağı olarak açılıyor.</p>
+      </div>
+
+      <article class="entry" id="u1" style="--tone:var(--c-orch)">
+        <h3><span class="num">01</span> Çok-ajanlı tartışma</h3>
+        <div class="tags"><span class="tag">TradingAgents deseni</span></div>
+        <div class="where"><b>Nerede</b><span>Crypto Analyst. RSI/MACD/Bollinger sinyallerini tek prompt’a verip “al mı sat mı” diye sormak yerine.</span></div>
+        <ol class="steps">
+          <li>Rolleri ayır: <code>TeknikAnalist</code>, <code>HaberAnalisti</code>, <code>RiskYöneticisi</code>, <code>Karar</code>. Her biri ayrı system prompt, ayrı ve dar input.</li>
+          <li>Her ajana sadece kendi verisini ver — teknik ajan haber görmesin. Context daraldıkça halüsinasyon düşer.</li>
+          <li>İlk üçünü paralel çalıştır, çıktılarını <code>Karar</code> ajanına topla.</li>
+          <li><code>Karar</code> ajanından şema zorunlu çıktı iste: <code>{sinyal, güven, gerekçe, stopLoss, hedef}</code>.</li>
+          <li>Kararı tarihiyle logla. Bir hafta sonra gerçekleşen sonucu yanına yaz ve bu logu bir sonraki çağrıya “geçmiş performansın” olarak besle. Bu, TradingAgents’taki reflection deseninin en basit hali.</li>
+          <li>Bunu sinyal üretmek için değil, gerekçe yazdırmak için kullan — karar mantığı indikatörlerde deterministik kalsın.</li>
+        </ol>
+      </article>
+
+      <article class="entry" id="u2" style="--tone:var(--c-infra)">
+        <h3><span class="num">02</span> Provider abstraction</h3>
+        <div class="tags"><span class="tag">LibreChat deseni</span></div>
+        <div class="where"><b>Nerede</b><span>Küpçük’ün tur üretimi. Tur üretimini kendi AI modellerine bağlarken, bağlantıyı tek modele çivileme.</span></div>
+        <ol class="steps">
+          <li>Tek bir <code>llmClient.js</code> yaz: <code>generate(prompt, schema)</code> imzasıyla.</li>
+          <li>İçinde bir <code>provider</code> switch’i olsun: <code>openai | anthropic | gemini | ollama</code>. Her biri kendi endpoint’ini bilsin, hepsi aynı tipi döndürsün.</li>
+          <li>API anahtarını <code>.env</code>’e al, koda gömme.</li>
+          <li>Yerel geliştirme için Ollama dalını da yaz — Küpçük’ü internetsiz test edebilirsin.</li>
+          <li>Retry, timeout ve fallback ekle: birincil sağlayıcı düşerse ikincisine geç.</li>
+          <li>Uygulama kodu sadece <code>llmClient</code>’i tanısın; hiçbir ekran hangi modelle konuştuğunu bilmesin.</li>
+        </ol>
+      </article>
+
+      <article class="entry" id="u3" style="--tone:var(--c-pipe)">
+        <h3><span class="num">03</span> Modelin en iyi bildiği formatı çıktı formatı yapmak</h3>
+        <div class="tags"><span class="tag">HyperFrames deseni</span></div>
+        <div class="where"><b>Nerede</b><span>Her prototipte. Bu bir kod yazma stratejisi, runtime özelliği değil.</span></div>
+        <ol class="steps">
+          <li>AI’dan üreteceğin şeyi HTML, CSS, SVG, JSON gibi eğitim verisinde bol bulunan bir formatta iste.</li>
+          <li>Küpçük’te tur tanımını düz JSON tut: <code>{gorev, secenekler, dogruCevap, zorluk}</code>. Modele “React bileşeni yaz” deme, veri yazdır.</li>
+          <li>Skia sahnelerinde de aynısı: model Skia kodu üretmesin, sahne tanımı üretsin. Render tarafı senin elinde kalsın.</li>
+          <li>Böylece model çıktısını doğrulayabilirsin — bozuk JSON’u yakalarsın, bozuk Skia kodunu yakalayamazsın.</li>
+        </ol>
+      </article>
+
+      <article class="entry" id="u4" style="--tone:var(--c-orch)">
+        <h3><span class="num">04</span> Persona kütüphanesi ve BYOK</h3>
+        <div class="tags"><span class="tag">Fincept deseni</span></div>
+        <div class="where"><b>Nerede</b><span>Folio veya Crypto Analyst’te “kişilik seçimi” özelliği olarak.</span></div>
+        <ol class="steps">
+          <li>Personaları veri olarak tanımla: <code>personas.json</code> → <code>{ad, systemPrompt, risk, ufuk}</code>.</li>
+          <li>Kullanıcı persona seçsin: “temkinli uzun vadeci”, “momentum avcısı” gibi.</li>
+          <li>Anahtarı kullanıcı girsin (BYOK) — sen API maliyeti taşıma, App Store tarafında veri işleme yükün de azalır.</li>
+          <li>Personayı yalnızca system prompt olarak enjekte et; iş mantığı bütün personalarda ortak kalsın.</li>
+          <li>Yeni persona eklemek kod değişikliği değil, JSON’a bir satır olsun.</li>
+        </ol>
+      </article>
+
+      <article class="entry" id="u5" style="--tone:var(--c-pipe)">
+        <h3><span class="num">05</span> Çok-modelli medya pipeline</h3>
+        <div class="tags"><span class="tag">MoneyPrinterTurbo deseni</span></div>
+        <div class="where"><b>Nerede</b><span>Oyunların App Store tanıtım videoları ve trailer üretimi. Yayında birden fazla oyun var, her biri için video gerekiyor.</span></div>
+        <ol class="steps">
+          <li>Zinciri kur: LLM (senaryo ve sahne anahtar kelimeleri) → ekran kaydı ve gameplay klipleri → TTS seslendirme → altyazı → FFmpeg montaj.</li>
+          <li>LLM’den sahne listesi iste, düz metin değil: <code>[{sure, anlatim, gorselAnahtar}]</code>.</li>
+          <li>Görsel kaynağı olarak stok video değil kendi gameplay kayıtlarını kullan; <code>gorselAnahtar</code>’ı klip dosya adıyla eşleştir.</li>
+          <li>Seslendirme İngilizce olsun — pazarlama içeriği zaten İngilizce.</li>
+          <li>Tüm adımı tek bir Node script’ine bağla ve parametre olarak oyun adını al. Bir kez yaz, bütün oyunlarda çalıştır.</li>
+        </ol>
+      </article>
+
+      <article class="entry" id="u6" style="--tone:var(--c-orch)">
+        <h3><span class="num">06</span> Onay kapılı tool-calling ajanı</h3>
+        <div class="tags"><span class="tag">Agentic Inbox deseni</span></div>
+        <div class="where"><b>Nerede</b><span>Kurumsal Spring Batch ortamında operasyon desteği. Getirisi en yüksek kalem bu olabilir.</span></div>
+        <ol class="steps">
+          <li>Önce beş altı adet <b>salt okunur</b> araç tanımla: <code>jobDurumuGetir</code>, <code>sonCalismalariListele</code>, <code>hataLoguAra</code>, <code>stepIstatistikleri</code>.</li>
+          <li>Bunları JSON schema ile tarif et — isim, açıklama, parametreler — ve LLM’e araç listesi olarak ver.</li>
+          <li>Döngüyü kur: model → araç çağrısı → sen çalıştır → sonucu geri ver → model cevabı.</li>
+          <li>Yazma araçlarını (<code>jobYenidenCalistir</code>, <code>stepAtla</code>) ayrı tut ve açık onay kapısına bağla: model sadece öneri üretsin, düğmeye insan bassın.</li>
+          <li>Her araç çağrısını denetim logu olarak yaz — kurumsal ortamda bu pazarlık konusu değil.</li>
+          <li>Model seçimi ve veri çıkışı konusunda önce kurum politikasını netleştir. Onaylı ya da yerel bir model yoksa bunu önce kişisel bir projede prototiple.</li>
+        </ol>
+      </article>
+
+      <article class="entry" id="u7" style="--tone:var(--c-model)">
+        <h3><span class="num">07</span> Küçük özel model çalıştırma</h3>
+        <div class="tags"><span class="tag">VoxCPM deseni</span></div>
+        <div class="where"><b>Nerede</b><span>Oyun içi anlatım, karakter sesleri, Küpçük’te çocuğa talimat okuma.</span></div>
+        <ol class="steps">
+          <li>Önce TTS’i bulut servisiyle çöz (Edge TTS gibi ucuz bir seçenek), çalıştığını gör.</li>
+          <li>Sesleri build zamanında üret, runtime’da değil — oyun açılışında model yüklemeye kalkma.</li>
+          <li>Üretilen ses dosyalarını asset olarak paketle; Expo tarafında <code>expo-av</code> ile çal.</li>
+          <li>Küpçük’te tur metni AI ile üretiliyorsa ses üretimi de aynı pipeline’ın son adımı olsun: metin üret → sesi üret → ikisini birlikte cache’le.</li>
+          <li>Cihazda model çalıştırma fikrini şimdilik ertele; mobilde 2 milyar parametrelik bir TTS pratik değil.</li>
+        </ol>
+      </article>
+
+      <article class="entry" id="u8" style="--tone:var(--c-graph)">
+        <h3><span class="num">08</span> Graph tabanlı ilişki çıkarımı</h3>
+        <div class="tags"><span class="tag">Flowsint deseni — bu AI değil, graph analizi</span></div>
+        <div class="where"><b>Nerede</b><span>Doğrudan bir oyunda değil, Folio’da. Bu deseni AI ile karıştırmamak gerekiyor.</span></div>
+        <ol class="steps">
+          <li>Varlıkları düğüm yap: hisse ya da coin, sektör, ülke, haber kaynağı.</li>
+          <li>Kenarları ilişki yap: “aynı sektör”, “korelasyon 0.8 üzeri”, “aynı haberde geçti”.</li>
+          <li>Portföy konsantrasyonunu graph üzerinde göster — “sekiz farklı varlığın var ama beşi aynı kümede”.</li>
+          <li>LLM’i yalnızca graph’ı yorumlamak için kullan, ilişkileri uydurmak için değil. İlişkiler veriden gelsin.</li>
+        </ol>
+      </article>
+
+      <article class="entry" id="u9" style="--tone:var(--c-skill)">
+        <h3><span class="num">09</span> Skill paketleme ve context engineering</h3>
+        <div class="tags"><span class="tag">agent-skills deseni</span></div>
+        <div class="where"><b>Nerede</b><span>Kendi geliştirme akışında. Claude Code zaten kullanılıyorsa en hızlı kazanç bu.</span></div>
+        <ol class="steps">
+          <li>Proje köküne <code>.claude/skills/</code> klasörünü aç.</li>
+          <li>Tekrarlayan işleri SKILL.md’ye yaz. Net adaylar: <code>expo-skia-oyun-iskeleti</code>, <code>spring-batch-job-yazimi</code>, <code>app-store-metadata</code>, <code>tek-dosya-prototip</code>.</li>
+          <li>Her SKILL.md’de şunlar bulunsun: ne zaman tetiklenir, adımlar, çıkış kriteri, kaçınılacak hatalar.</li>
+          <li>Kendi kurallarını kodla: tek dosya teslim, sıfır dış bağımlılık, oyun içi metin İngilizce, minimal estetik. Bunları her sohbette yeniden yazmayı bırak.</li>
+          <li>Personaları ayır: <code>kod-gozden-gecirici</code>, <code>oyun-denge-elestirmeni</code>. İkincisi tasarım ve balans sezgine eşlik eder.</li>
+          <li>Bir skill’i bir hafta kullan, çıktıda tekrar eden hatayı SKILL.md’ye “anti-pattern” olarak ekle. Skill’ler yaşayan doküman.</li>
+        </ol>
+      </article>
+
+      <article class="entry" id="u10" style="--tone:var(--c-infra)">
+        <h3><span class="num">10</span> Deterministik mantığı LLM’in dışına çıkarmak</h3>
+        <div class="tags"><span class="tag">Nango deseni — en önemli madde</span></div>
+        <div class="where"><b>Nerede</b><span>Her AI’lı projede. Aslında listedeki en kritik kural bu.</span></div>
+        <ol class="steps">
+          <li>Her özellikte şunu ayır: <b>karar mı, hesap mı?</b> Hesabı asla modele yaptırma.</li>
+          <li>Küpçük örneği: zorluk seviyesi hesabı, doğru cevap kontrolü ve puanlama koda; yalnızca tur içeriğinin yaratıcı kısmı modele.</li>
+          <li>Crypto örneği: RSI ve MACD hesabı koda; sinyallerin metinle açıklanması modele.</li>
+          <li>Modele araç olarak dar ve tipli fonksiyonlar ver — genel amaçlı API sarmalayıcısı değil.</li>
+          <li>Her model çıktısını şema ile doğrula. Doğrulama düşerse bir kez retry, ikincisinde fallback içerik göster.</li>
+          <li>Küpçük gibi çocuk uygulamalarında ek adım: üretilen içeriği kullanıcıya göstermeden önce bir uygunluk filtresinden geçir ve yalnızca onaylananları cache’le. Aynı turu iki kez üretmek hem para hem risk.</li>
+        </ol>
+      </article>
+
+      <div class="order" id="sira">
+        <h2>Uygulama sırası</h2>
+        <p>Hepsine aynı anda girmek yerine, birbirini besleyen bir sırayla ilerlemek daha hızlı sonuç veriyor.</p>
+        <ol class="phases">
+          <li><span><b>9 → 10 → 2 ile başla.</b> Skill paketleme, mantığı dışarı çıkarma ve provider abstraction. Bunlar geliştirme hızını ve mimariyi düzeltir; üstüne kurulacak her şey bunlardan fayda görür.</span></li>
+          <li><span><b>3 ve 10’u birlikte kullanarak Küpçük’ün tur üretimini bitir.</b> JSON çıktı formatı ve deterministik kontrollerin koda alınması, çocuk uygulamasında hem kaliteyi hem güvenliği çözer.</span></li>
+          <li><span><b>5’i trailer üretimi için otomatikleştir.</b> Bir kez kurulan zincir, yayındaki bütün oyunlarda tekrar tekrar çalışır.</span></li>
+          <li><span><b>6’yı en son ve dikkatli ele al.</b> Kurumsal ortamda araç çağıran bir ajan, önce salt okunur araçlarla ve denetim loguyla başlamalı.</span></li>
+        </ol>
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div>Kişisel inceleme notu. Projelerin kendi depolarındaki tanımlara dayanıyor; sürümler ve mimariler hızla değiştiği için kritik kararlar öncesi kaynağı tekrar kontrol et.</div>
+</footer>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var map = {};
+  var targets = [];
+
+  links.forEach(function(a){
+    var id = a.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if(el){ map[id] = a; targets.push(el); }
+  });
+
+  if(!('IntersectionObserver' in window) || !targets.length) return;
+
+  var visible = {};
+
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      visible[e.target.id] = e.isIntersecting ? e.boundingClientRect.top : null;
+    });
+
+    var best = null;
+    targets.forEach(function(t){
+      var r = t.getBoundingClientRect();
+      if(r.top <= window.innerHeight * 0.35){ best = t.id; }
+    });
+
+    links.forEach(function(a){ a.classList.remove('active'); });
+    if(best && map[best]) map[best].classList.add('active');
+  }, { rootMargin: '0px 0px -60% 0px', threshold: 0 });
+
+  targets.forEach(function(t){ io.observe(t); });
+})();
+</script>
+
+</body>
+</html>
