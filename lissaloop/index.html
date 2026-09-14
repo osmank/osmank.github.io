@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lissaloop — Your shape runs the loop</title>
+<meta name="description" content="Lissaloop is a loop-defense idle arcade game for iPhone, built on Lissajous curves. Your shape runs the loop, and the loop guards the core. Evolve new forms, rewire denser loops, Ascend for prisms. By Osman Kose.">
+<meta name="theme-color" content="#10132E">
+<link rel="canonical" href="https://osmank.github.io/lissaloop/">
+<link rel="icon" type="image/png" href="icon-64.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Lissaloop — Your shape runs the loop">
+<meta property="og:description" content="A loop-defense idle arcade game for iPhone, built on Lissajous curves. Your shape runs the loop. The loop guards the core.">
+<meta property="og:url" content="https://osmank.github.io/lissaloop/">
+<meta property="og:image" content="https://osmank.github.io/lissaloop/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Bricolage+Grotesque:wght@400;600;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* Palette and fonts are the GAME's: colours from src/ui/kit.ts (COL), type from
+     assets/fonts (Unbounded, Bricolage Grotesque), so the page and the app cannot drift apart. */
+  :root{
+    --bg:#10132E;      /* deep */
+    --ink2:#141838;    /* ink: the field */
+    --surface:#1B1F4A; /* card */
+    --band:#232857;    /* the loop's track band */
+    --edge:#2E3468;    /* line */
+    --ink:#F3EEFF;     /* paper */
+    --muted:#9A9CCB;   /* mute */
+    --pink:#FF5C8A;    /* riso pink */
+    --mint:#5CE1C6;    /* riso mint */
+    --sun:#FFC93C;     /* the core, coins, Play */
+    --display:"Unbounded",system-ui,sans-serif;
+    --body:"Bricolage Grotesque",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  body{
+    background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;
+    line-height:1.62;-webkit-font-smoothing:antialiased;
+    min-height:100vh;display:flex;flex-direction:column;
+  }
+
+  a{color:var(--mint);text-decoration-thickness:1px;text-underline-offset:3px}
+  a:focus-visible,.btn:focus-visible,.lang:focus-visible,.chip:focus-visible{outline:2px solid var(--sun);outline-offset:3px;border-radius:6px}
+
+  .wrap{width:100%;max-width:720px;margin:0 auto;padding:0 24px}
+
+  /* ---- language ----
+     Both languages ship in the HTML and CSS hides one. Nothing is fetched,
+     so there is no flash of the wrong language on load. */
+  /* KOK ELEMANI HARIC. JS <html> uzerine lang="tr" yaziyor; kural body ile
+     sinirlandirilmazsa [lang="tr"] <html>in KENDISINI secip tum sayfayi gizler. */
+  body [lang="tr"]{display:none}
+  html[data-lang="tr"] body [lang="en"]{display:none}
+  html[data-lang="tr"] body [lang="tr"]{display:revert}
+
+  /* ---- masthead ---- */
+  .masthead{padding:32px 0 0}
+  .mast-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .back{
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--muted);text-decoration:none;
+  }
+  .back:hover{color:var(--ink)}
+  /* the game's EN/TR corner chip: radius 12 */
+  .lang{
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;
+    color:var(--ink);background:rgba(27,31,74,.85);
+    border:1px solid var(--edge);border-radius:12px;
+    padding:6px 14px;cursor:pointer;
+  }
+  .lang:hover{border-color:var(--muted)}
+
+  /* ---- hero ---- */
+  .hero{padding:40px 0 60px}
+  .hero-top{display:flex;align-items:center;gap:16px;margin-bottom:26px}
+  .appicon{width:72px;height:72px;border-radius:17px;display:block;flex:none;
+    box-shadow:0 0 0 1px rgba(243,238,255,.08),0 10px 30px rgba(0,0,0,.35)}
+  .eyebrow{
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.34em;
+    text-transform:uppercase;color:var(--muted);
+  }
+  .eyebrow b{font-weight:500}
+  .eyebrow .s1{color:var(--mint)}
+  .eyebrow .s2{color:var(--pink)}
+  .eyebrow .s3{color:var(--sun)}
+  .platform{display:block;margin-top:6px;font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+  /* LOGOTYPE — the title screen's: "Lissa" over "loop", Unbounded 900, letter-spacing
+     −0.04 em, line height 0.95, printed three times like a riso pass: pink and mint
+     layers that settle into register over 1.1 s (ui/overlays.ts logo()). */
+  .logo{
+    font-family:var(--display);font-weight:900;
+    font-size:clamp(58px,15vw,108px);
+    line-height:.95;letter-spacing:-.04em;color:var(--ink);
+    text-shadow:-2px -2px 0 var(--pink),3px 3px 0 var(--mint);
+    animation:register 1.1s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .logo span{display:block}
+  @keyframes register{
+    from{text-shadow:-12px -8px 0 var(--pink),14px 10px 0 var(--mint);opacity:0;transform:scale(1.06)}
+    to{text-shadow:-2px -2px 0 var(--pink),3px 3px 0 var(--mint);opacity:1;transform:none}
+  }
+  .etym{display:inline-block;margin-top:16px;font-family:var(--mono);font-size:.76rem;letter-spacing:.06em;color:var(--muted);text-decoration:none}
+  .etym i{font-style:normal;color:var(--ink)}
+  .etym:hover{color:var(--ink)}
+
+  .tagline{margin-top:20px;font-size:1.12rem;color:var(--muted);max-width:34em}
+  .tagline strong{color:var(--ink);font-weight:600}
+
+  /* ---- fields (hero scene and the lab) ---- */
+  .scene,.lab{
+    border:1px solid var(--edge);border-radius:20px;
+    background:var(--ink2);overflow:hidden;
+  }
+  .scene{margin:36px 0 0;box-shadow:6px 6px 0 var(--pink)}
+  .scene svg,.lab svg.fig{display:block;width:100%;height:auto}
+  .ink{mix-blend-mode:screen}
+  .spin{transform-box:fill-box;transform-origin:center;animation:spin 14s linear infinite}
+  .spin.r{animation-direction:reverse;animation-duration:11s}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .pulse{transform-box:fill-box;transform-origin:center;animation:pulse 1.8s ease-out infinite}
+  @keyframes pulse{from{transform:scale(1);opacity:.7}to{transform:scale(2.3);opacity:0}}
+
+  /* ---- sections ---- */
+  section{padding:48px 0;border-top:1px solid var(--edge)}
+  .label{
+    font-family:var(--mono);font-size:.7rem;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:16px;
+  }
+  h2{font-family:var(--display);font-weight:700;font-size:1.36rem;line-height:1.3;letter-spacing:-.02em;margin-bottom:14px}
+  h3{font-family:var(--body);font-weight:800;font-size:1.06rem;margin-bottom:4px}
+  p+p{margin-top:14px}
+  .lede{font-size:1.08rem}
+  .muted{color:var(--muted)}
+
+  /* ---- the name: Lissa + loop ---- */
+  .name-h{font-family:var(--display);font-weight:900;font-size:clamp(34px,8vw,54px);line-height:1.02;letter-spacing:-.04em;margin-bottom:18px}
+  .name-h .l1{color:var(--ink);text-shadow:-2px -2px 0 var(--pink),3px 3px 0 var(--mint)}
+  .name-h .plus{color:var(--muted);font-weight:700;padding:0 .12em}
+  .name-h .l2{color:var(--sun)}
+  .lab{margin-top:28px;box-shadow:6px 6px 0 var(--mint)}
+  .lab text{font-family:var(--mono)}
+  .lab-panel{display:grid;grid-template-columns:1.25fr 1fr;border-top:1px solid var(--edge)}
+  .formula{padding:16px 18px;font-family:var(--mono);font-size:.98rem;line-height:1.95;border-right:1px solid var(--edge);white-space:nowrap}
+  .formula .v{display:inline-block;min-width:.7em;text-align:center;font-weight:500}
+  .formula .a{color:var(--pink)}
+  .formula .b{color:var(--mint)}
+  /* the caption holds the [lang] spans: a display rule on them would beat the language switch */
+  .formula .cap{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);line-height:1.6;margin-bottom:4px}
+  .readout{padding:16px 18px;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-content:center;font-family:var(--mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .readout b{font-family:var(--display);font-weight:700;font-size:.9rem;letter-spacing:0;text-transform:none;color:var(--ink)}
+  .chips{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;padding:12px;border-top:1px solid var(--edge)}
+  .chip{
+    background:var(--surface);border:1px solid var(--edge);border-radius:12px;
+    padding:8px 2px 7px;color:var(--muted);font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;
+    cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;
+  }
+  .chip svg{width:34px;height:34px;display:block}
+  .chip b{color:var(--ink);font-family:var(--body);font-weight:800;font-size:.8rem;letter-spacing:0}
+  .chip:hover{border-color:var(--muted)}
+  .chip[aria-pressed="true"]{border-color:var(--sun);background:var(--band)}
+  .chip[aria-pressed="true"] b{color:var(--sun)}
+  .caption{margin-top:16px;color:var(--muted);font-size:.95rem}
+
+  /* ---- how to play: the title screen's three lines ---- */
+  .howto{list-style:none;display:grid;gap:2px;margin-top:20px}
+  .how{
+    display:grid;grid-template-columns:40px 1fr;gap:14px;align-items:center;
+    padding:14px 16px;background:var(--surface);border:1px solid var(--edge);
+  }
+  .how:first-child{border-radius:16px 16px 0 0}
+  .how:last-child{border-radius:0 0 16px 16px}
+  .how svg{display:block}
+  .how p{font-weight:600}
+
+  /* ---- numbers: the pause sheet's stat boxes ---- */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:22px}
+  .stat{background:var(--surface);border:1px solid var(--edge);border-radius:12px;padding:16px 12px;text-align:center}
+  .stat b{display:block;font-family:var(--display);font-weight:700;font-size:1.6rem;color:var(--sun);line-height:1.15}
+  .stat span{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+  /* ---- feature rows ---- */
+  .rows{display:grid;gap:20px;margin-top:20px}
+  .row{padding-left:16px;border-left:3px solid var(--edge)}
+  .row.a{border-color:var(--mint)}
+  .row.b{border-color:var(--sun)}
+  .row.c{border-color:var(--pink)}
+  .row p{color:var(--muted);font-size:.97rem}
+
+  /* ---- meta table ---- */
+  .meta{
+    margin-top:22px;font-family:var(--mono);font-size:.8rem;
+    border:1px solid var(--edge);border-radius:16px;overflow:hidden;
+  }
+  .meta div{
+    display:flex;justify-content:space-between;gap:16px;
+    padding:11px 16px;border-bottom:1px solid var(--edge);
+  }
+  .meta div:last-child{border-bottom:0}
+  .meta dt{color:var(--muted)}
+  .meta dd{color:var(--ink);text-align:right}
+
+  /* ---- buttons: the game's Play button, a sun face over a pink shadow ---- */
+  .btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+  .btn{
+    display:inline-block;font-family:var(--display);font-weight:700;
+    font-size:.84rem;letter-spacing:.01em;text-decoration:none;
+    padding:12px 20px;border-radius:16px;
+  }
+  .btn-primary{background:var(--sun);color:var(--ink2);box-shadow:5px 5px 0 var(--pink)}
+  .btn-primary[aria-disabled="true"]{background:var(--band);color:var(--muted);box-shadow:none;cursor:default}
+  .btn-ghost{border:1px solid var(--edge);color:var(--ink);background:rgba(27,31,74,.6)}
+  .btn-ghost:hover{border-color:var(--muted)}
+
+  footer{margin-top:auto;padding:28px 0 40px;border-top:1px solid var(--edge)}
+  .foot{
+    display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;
+    font-family:var(--mono);font-size:.74rem;color:var(--muted);
+  }
+  .foot a{color:var(--muted)}
+
+  @media (max-width:560px){
+    .appicon{width:60px;height:60px;border-radius:14px}
+    .lab-panel{grid-template-columns:1fr}
+    .formula{border-right:0;border-bottom:1px solid var(--edge);font-size:.86rem}
+    .chips{grid-template-columns:repeat(3,1fr)}
+    .stats{gap:6px}
+    .stat{padding:14px 6px}
+    .stat b{font-size:1.3rem}
+    .meta div{flex-wrap:wrap;gap:2px 16px}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none !important}}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap mast-row">
+    <a class="back" href="/">← Osman Kose</a>
+    <button class="lang" id="langBtn" type="button" aria-label="Change language">EN</button>
+  </div>
+</header>
+
+<main>
+  <div class="wrap hero">
+    <div class="hero-top">
+      <img class="appicon" src="icon-256.png" width="72" height="72" alt="Lissaloop app icon">
+      <div>
+        <p class="eyebrow"><b class="s1">Run</b> · <b class="s2">Surge</b> · <b class="s3">Evolve</b></p>
+        <span class="platform"><span lang="en">For iPhone</span><span lang="tr">iPhone için</span></span>
+      </div>
+    </div>
+    <h1 class="logo" aria-label="Lissaloop"><span>Lissa</span><span>loop</span></h1>
+    <a class="etym" href="#name"><span lang="en"><i>Lissa</i>jous curve + <i>loop</i> ↓</span><span lang="tr"><i>Lissa</i>jous eğrisi + <i>loop</i> ↓</span></a>
+    <p class="tagline" lang="en">A loop-defense idle arcade game. <strong>Your shape runs the loop. The loop guards the core.</strong> Runners aim and fire on their own; you decide when to surge and what to grow.</p>
+    <p class="tagline" lang="tr">Bir döngü savunması oyunu. <strong>Şeklin döngüde koşar. Döngü çekirdeği korur.</strong> Koşucular kendi kendine nişan alıp ateş eder; ne zaman Surge yapacağına ve neyi büyüteceğine sen karar verirsin.</p>
+
+    <!-- The loop is the game's own Eight (config.ts TRACKS[1]: x = sin(t + π/2),
+         y = sin(2t)), the first loop a player opens and the one on the app icon.
+         The core sits where the lobes cross. The runners are Dots, the first form;
+         the script moves them along the same formula. -->
+    <div class="scene">
+      <svg viewBox="0 0 680 340" role="img" aria-label="A glowing gold core where a figure-eight loop crosses itself. Runners circle the loop while paper hexagon threats close in.">
+        <defs>
+          <radialGradient id="field" cx="50%" cy="50%" r="60%">
+            <stop offset="0" stop-color="#1B1F4A"/>
+            <stop offset="1" stop-color="#141838"/>
+          </radialGradient>
+          <pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse">
+            <circle cx="10" cy="10" r="1" fill="#9A9CCB" fill-opacity=".14"/>
+          </pattern>
+          <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+            <feGaussianBlur stdDeviation="5" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="soft" x="-100%" y="-100%" width="300%" height="300%">
+            <feGaussianBlur stdDeviation="12"/>
+          </filter>
+          <path id="eight" d="M472.0 170.0L471.7 187.2L470.9 204.2L469.5 220.5L467.5 236.0L465.0 250.4L462.0 263.3L458.4 274.7L454.3 284.3L449.8 292.0L444.7 297.5L439.2 300.9L433.3 302.0L427.0 300.9L420.4 297.5L413.3 292.0L406.0 284.3L398.4 274.7L390.5 263.3L382.4 250.4L374.2 236.0L365.8 220.5L357.2 204.2L348.6 187.2L340.0 170.0L331.4 152.8L322.8 135.8L314.2 119.5L305.8 104.0L297.6 89.6L289.5 76.7L281.6 65.3L274.0 55.7L266.7 48.0L259.6 42.5L253.0 39.1L246.7 38.0L240.8 39.1L235.3 42.5L230.2 48.0L225.7 55.7L221.6 65.3L218.0 76.7L215.0 89.6L212.5 104.0L210.5 119.5L209.1 135.8L208.3 152.8L208.0 170.0L208.3 187.2L209.1 204.2L210.5 220.5L212.5 236.0L215.0 250.4L218.0 263.3L221.6 274.7L225.7 284.3L230.2 292.0L235.3 297.5L240.8 300.9L246.7 302.0L253.0 300.9L259.6 297.5L266.7 292.0L274.0 284.3L281.6 274.7L289.5 263.3L297.6 250.4L305.8 236.0L314.2 220.5L322.8 204.2L331.4 187.2L340.0 170.0L348.6 152.8L357.2 135.8L365.8 119.5L374.2 104.0L382.4 89.6L390.5 76.7L398.4 65.3L406.0 55.7L413.3 48.0L420.4 42.5L427.0 39.1L433.3 38.0L439.2 39.1L444.7 42.5L449.8 48.0L454.3 55.7L458.4 65.3L462.0 76.7L465.0 89.6L467.5 104.0L469.5 119.5L470.9 135.8L471.7 152.8L472.0 170.0Z"/>
+        </defs>
+
+        <rect width="680" height="340" fill="url(#field)"/>
+        <rect width="680" height="340" fill="url(#dots)"/>
+
+        <!-- the loop: a dark track band, then pink and mint ink slightly out of register -->
+        <use href="#eight" fill="none" stroke="#232857" stroke-width="18" stroke-linejoin="round"/>
+        <g class="ink" fill="none" stroke-width="3" stroke-linejoin="round">
+          <use href="#eight" stroke="#FF5C8A" stroke-opacity=".85" transform="translate(-5 -4)"/>
+          <use href="#eight" stroke="#5CE1C6" stroke-opacity=".8" transform="translate(5 4)"/>
+        </g>
+
+        <!-- threats: hollow paper hexagons closing in -->
+        <g fill="rgba(243,238,255,.06)" stroke="#F3EEFF" stroke-width="2" stroke-linejoin="round">
+          <polygon class="spin" points="605,84 598.5,95.3 585.5,95.3 579,84 585.5,72.7 598.5,72.7"/>
+          <polygon class="spin r" points="103,258 97.5,267.5 86.5,267.5 81,258 86.5,248.5 97.5,248.5"/>
+          <polygon class="spin" points="609,262 604.5,269.8 595.5,269.8 591,262 595.5,254.2 604.5,254.2"/>
+          <polygon class="spin r" points="120,70 116,76.9 108,76.9 104,70 108,63.1 116,63.1"/>
+        </g>
+
+        <!-- the core, where the lobes cross: gold light, mint rim, pulse ring -->
+        <circle cx="340" cy="170" r="30" fill="#FFC93C" fill-opacity=".45" filter="url(#soft)"/>
+        <circle class="pulse" cx="340" cy="170" r="19" fill="none" stroke="#5CE1C6" stroke-width="1.6"/>
+        <circle cx="340" cy="170" r="19" fill="#141838" stroke="#5CE1C6" stroke-width="2.2"/>
+        <circle cx="340" cy="170" r="12" fill="#FFC93C" filter="url(#glow)"/>
+        <circle cx="340" cy="170" r="4" fill="#141838"/>
+
+        <!-- runners (Dots) and their trails; the script adds two more, like Echo -->
+        <g id="heroRunners">
+          <g class="rn" fill="#5CE1C6">
+            <circle cx="443.5" cy="41.5" r="5" fill-opacity=".5"/>
+            <circle cx="437.5" cy="38.5" r="4.4" fill-opacity=".4"/>
+            <circle cx="431.0" cy="38.2" r="3.8" fill-opacity=".31"/>
+            <circle cx="424.1" cy="40.4" r="3.2" fill-opacity=".23"/>
+            <circle cx="416.8" cy="45.1" r="2.6" fill-opacity=".16"/>
+            <circle cx="409.1" cy="52.2" r="2" fill-opacity=".1"/>
+            <circle cx="448.9" cy="47.0" r="7" fill="#F3EEFF" filter="url(#glow)"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <div class="btns">
+      <a class="btn btn-primary" aria-disabled="true" href="#status"><span lang="en">Coming to the App Store</span><span lang="tr">Yakında App Store'da</span></a>
+      <a class="btn btn-ghost" href="privacy.html"><span lang="en">Privacy Policy</span><span lang="tr">Gizlilik Politikası</span></a>
+      <a class="btn btn-ghost" href="support.html"><span lang="en">Support</span><span lang="tr">Destek</span></a>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <section id="name">
+      <p class="label" lang="en">Where the name comes from</p>
+      <p class="label" lang="tr">İsim nereden geliyor</p>
+      <p class="name-h" aria-hidden="true"><span class="l1">Lissajous</span><span class="plus">+</span><span class="l2">loop</span></p>
+      <div lang="en">
+        <p class="lede">Every loop in the game is a <strong>Lissajous curve</strong>: the figure a point draws when it swings in two directions at once, each at its own steady rhythm.</p>
+        <p class="muted">Nathaniel Bowditch described these curves in 1815. In 1857 the French physicist Jules Antoine Lissajous made them visible: he fixed small mirrors to two tuning forks set at right angles and bounced a beam of light off both onto a wall. You still see them on oscilloscopes today.</p>
+        <p class="muted">The shape depends only on the ratio of the two rhythms. 1:1 draws a circle, 1:2 a figure eight, and denser ratios tie tighter knots. Lissaloop uses six of them. Every point where the curve crosses itself becomes a <strong>node</strong> that bursts as your runners pass, so the denser the loop, the harder it defends.</p>
+      </div>
+      <div lang="tr">
+        <p class="lede">Oyundaki her döngü bir <strong>Lissajous eğrisi</strong>: aynı anda iki yönde, her biri kendi sabit ritmiyle salınan bir noktanın çizdiği şekil.</p>
+        <p class="muted">Nathaniel Bowditch bu eğrileri 1815'te tarif etti. 1857'de Fransız fizikçi Jules Antoine Lissajous onları görünür kıldı: birbirine dik iki diyapazona küçük aynalar tutturdu ve bir ışık demetini ikisinden de yansıtarak duvara düşürdü. Bugün osiloskoplarda hâlâ görürsün.</p>
+        <p class="muted">Şekli yalnızca iki ritmin oranı belirler. 1:1 bir daire çizer, 1:2 bir sekiz; oran yoğunlaştıkça eğri daha sıkı düğümler atar. Lissaloop bunlardan altısını kullanır. Eğrinin kendini kestiği her nokta, koşucuların geçtikçe patlayan bir <strong>node</strong> olur; döngü ne kadar yoğunsa o kadar sert savunur.</p>
+      </div>
+
+      <!-- The lab: the game's six loops (config.ts TRACKS), morphing like Rewire
+           (geometry.ts pos(): the same t on both curves, eased). Node positions come
+           from the game's computeNodes(). A pen traces the curve like a light beam. -->
+      <div class="lab" id="lab">
+        <svg class="fig" viewBox="0 0 680 400" role="img" aria-label="A Lissajous curve that morphs through the six loop ratios of the game, from a circle to a dense weave, with a pen tracing it and nodes at every crossing.">
+          <rect width="680" height="400" fill="url(#field)"/>
+          <rect width="680" height="400" fill="url(#dots)"/>
+          <text id="labName" x="26" y="42" fill="#9A9CCB" font-size="13" letter-spacing="3">EIGHT</text>
+          <text id="labRatio" x="26" y="84" fill="#FFC93C" font-size="34" font-weight="500">1 : 2</text>
+          <text x="654" y="382" fill="#9A9CCB" font-size="11" letter-spacing="2" text-anchor="end">x = sin(a·t + π/2) · y = sin(b·t)</text>
+          <g transform="translate(340 200) scale(1.2121) translate(-340 -170)">
+            <path id="labBand" d="M472 170L466 236L449.8 292L427 301L398.4 274.7L365.8 220.5L340 170L314.2 119.5L281.6 65.3L253 39.1L230.2 48L214 104L208 170L214 236L230.2 292L253 301L281.6 274.7L314.2 220.5L340 170L365.8 119.5L398.4 65.3L427 39.1L449.8 48L466 104Z" fill="none" stroke="#232857" stroke-width="12" stroke-linejoin="round"/>
+            <g class="ink" fill="none" stroke-width="2.4" stroke-linejoin="round">
+              <path id="labPink" stroke="#FF5C8A" stroke-opacity=".85" transform="translate(-4 -3)"/>
+              <path id="labMint" stroke="#5CE1C6" stroke-opacity=".8" transform="translate(4 3)"/>
+            </g>
+            <g id="labNodes"></g>
+            <circle cx="340" cy="170" r="10" fill="#FFC93C" fill-opacity=".5" filter="url(#soft)"/>
+            <circle cx="340" cy="170" r="7.5" fill="#141838" stroke="#5CE1C6" stroke-width="1.8"/>
+            <circle cx="340" cy="170" r="4.5" fill="#FFC93C"/>
+            <g id="labTrail" fill="none" stroke="#FFC93C" stroke-linecap="round" stroke-linejoin="round"></g>
+            <circle id="labPen" cx="-20" cy="-20" r="5" fill="#F3EEFF" filter="url(#glow)"/>
+          </g>
+        </svg>
+        <div class="lab-panel">
+          <div class="formula">
+            <div class="cap"><span lang="en">The game's own formula</span><span lang="tr">Oyunun kendi formülü</span></div>
+            x = sin(<span class="v a" id="fa">1</span>·t + π/2)<br>
+            y = sin(<span class="v b" id="fb">2</span>·t)
+          </div>
+          <div class="readout">
+            <span lang="en">Loop</span><span lang="tr">Döngü</span><b id="rName">Eight</b>
+            <span lang="en">Ratio</span><span lang="tr">Oran</span><b id="rRatio">1 : 2</b>
+            <span lang="en">Nodes</span><span lang="tr">Node</span><b id="rNodes">1</b>
+          </div>
+        </div>
+        <div class="chips" id="chips" role="group" aria-label="Loops"></div>
+      </div>
+      <p class="caption" lang="en">In the game, <strong>Rewire</strong> bends your loop into the next ratio, just like this. Tap a loop to jump to it.</p>
+      <p class="caption" lang="tr">Oyunda <strong>Rewire</strong>, döngünü bir sonraki orana büker, tıpkı bunun gibi. Birine dokunarak ona geç.</p>
+    </section>
+
+    <section>
+      <p class="label" lang="en">How to play</p>
+      <p class="label" lang="tr">Nasıl oynanır</p>
+      <div lang="en">
+        <h2>The loop is your only wall.</h2>
+        <p class="lede">Threats drift in from every side toward the core. Your runners circle the loop and fire at whatever comes close. If the core falls, you are pushed back five waves.</p>
+      </div>
+      <div lang="tr">
+        <h2>Döngü tek duvarın.</h2>
+        <p class="lede">Tehditler her yönden çekirdeğe doğru süzülür. Koşucuların döngüde döner ve yaklaşan her şeye ateş eder. Çekirdek düşerse beş dalga geri gidersin.</p>
+      </div>
+      <ul class="howto">
+        <li class="how">
+          <svg width="40" height="28" viewBox="0 0 40 28" aria-hidden="true"><circle cx="20" cy="14" r="10" fill="none" stroke="#5CE1C6" stroke-width="2"/><circle cx="20" cy="14" r="3.5" fill="#5CE1C6"/><path d="M20 0V6M20 22V28M6 14H12M28 14H34" stroke="#5CE1C6" stroke-width="2"/></svg>
+          <p lang="en">Runners aim and fire on their own</p>
+          <p lang="tr">Koşucular kendi kendine nişan alıp ateş eder</p>
+        </li>
+        <li class="how">
+          <svg width="40" height="28" viewBox="0 0 40 28" aria-hidden="true"><path d="M23 2L12 16H19L16 26L28 11H21Z" fill="#FF5C8A"/></svg>
+          <p lang="en">Hold anywhere on the field to surge: one full bar per wave, so when you spend it matters</p>
+          <p lang="tr">Surge için sahada herhangi bir yere basılı tut: her dalga bir dolu çubuk, ne zaman harcadığın önemli</p>
+        </li>
+        <li class="how">
+          <svg width="40" height="28" viewBox="0 0 40 28" aria-hidden="true"><path d="M20 3L31 24H9Z" fill="none" stroke="#FFC93C" stroke-width="2" stroke-linejoin="round"/><path d="M20 10L26 21H14Z" fill="#FFC93C"/></svg>
+          <p lang="en">Evolve for new weapons, rewire for new loops</p>
+          <p lang="tr">Evrimle yeni silahlar, yeniden bağlayarak yeni döngüler aç</p>
+        </li>
+      </ul>
+      <div class="stats" role="list">
+        <div class="stat" role="listitem"><b>6</b><span lang="en">Loops</span><span lang="tr">Döngü</span></div>
+        <div class="stat" role="listitem"><b>7</b><span lang="en">Forms</span><span lang="tr">Form</span></div>
+        <div class="stat" role="listitem"><b>9</b><span lang="en">Upgrades</span><span lang="tr">Upgrade</span></div>
+      </div>
+    </section>
+
+    <section>
+      <p class="label" lang="en">What is in it</p>
+      <p class="label" lang="tr">İçinde ne var</p>
+      <div lang="en">
+        <h2>Hard on purpose. Strategy over grinding.</h2>
+        <div class="rows">
+          <div class="row a">
+            <h3>Six loops, seven forms</h3>
+            <p>Rewire from Ring to Eight, Knot, Pretzel, Bloom and Weave: every denser loop adds nodes that burst as your runners pass. Evolve from Dot to Nova, one new weapon with each form.</p>
+          </div>
+          <div class="row b">
+            <h3>Waves that change the rules</h3>
+            <p>Every tenth wave the Warden arrives and calls in drifters. In between, Rush, Siege and Armored waves each ask for a different build, and a clean defense pays a bonus.</p>
+          </div>
+          <div class="row c">
+            <h3>Ascend for prisms</h3>
+            <p>When you hit a wall, start over from wave 1 for prisms: a permanent bonus to damage and coins that carries the next run further. Your runners keep earning while you are away.</p>
+          </div>
+        </div>
+      </div>
+      <div lang="tr">
+        <h2>Bilerek zor. Kasmak yerine strateji.</h2>
+        <div class="rows">
+          <div class="row a">
+            <h3>Altı döngü, yedi form</h3>
+            <p>Ring'den Eight, Knot, Pretzel, Bloom ve Weave'e yeniden bağla: her yoğun döngü, koşucuların geçtikçe patlayan node'lar ekler. Dot'tan Nova'ya evrimleş, her formla yeni bir silah.</p>
+          </div>
+          <div class="row b">
+            <h3>Kuralı değiştiren dalgalar</h3>
+            <p>Her onuncu dalgada Warden gelir ve drifter çağırır. Aralarda Rush, Siege ve Armored dalgaları her biri başka bir yapı ister; temiz savunma bonus kazandırır.</p>
+          </div>
+          <div class="row c">
+            <h3>Prizma için Yüksel</h3>
+            <p>Duvara dayandığında 1. dalgadan yeniden başla, prizma kazan: hasar ve coin'e kalıcı bir bonus, bir sonraki koşuyu daha ileri taşır. Sen yokken de koşucuların kazanmaya devam eder.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="status">
+      <p class="label" lang="en">Status</p>
+      <p class="label" lang="tr">Durum</p>
+      <div lang="en">
+        <h2>Preparing for submission.</h2>
+        <p>Lissaloop is feature-complete and going through device testing before it goes to the App Store. This page will link to the listing as soon as it is live.</p>
+      </div>
+      <div lang="tr">
+        <h2>Gönderime hazırlanıyor.</h2>
+        <p>Lissaloop özellik olarak tamamlandı ve App Store'a gönderilmeden önce cihaz testlerinden geçiyor. Yayına girer girmez bu sayfa App Store bağlantısını gösterecek.</p>
+      </div>
+      <dl class="meta">
+        <div><dt><span lang="en">Platform</span><span lang="tr">Platform</span></dt><dd>iOS · iPhone</dd></div>
+        <div><dt><span lang="en">Bundle ID</span><span lang="tr">Paket kimliği</span></dt><dd>com.osmnks.lissaloop</dd></div>
+        <div><dt><span lang="en">Orientation</span><span lang="tr">Yönlendirme</span></dt><dd><span lang="en">Portrait</span><span lang="tr">Dikey</span></dd></div>
+        <div><dt><span lang="en">Languages</span><span lang="tr">Diller</span></dt><dd>English · Türkçe</dd></div>
+        <div><dt>Game Center</dt><dd><span lang="en">Achievements · Leaderboard</span><span lang="tr">Başarımlar · Sıralama</span></dd></div>
+        <div><dt><span lang="en">Price</span><span lang="tr">Fiyat</span></dt><dd><span lang="en">Free, with optional purchases</span><span lang="tr">Ücretsiz, isteğe bağlı satın almalarla</span></dd></div>
+        <div><dt><span lang="en">Built with</span><span lang="tr">Geliştirme</span></dt><dd>React Native · Skia</dd></div>
+      </dl>
+    </section>
+
+    <section>
+      <p class="label" lang="en">Support</p>
+      <p class="label" lang="tr">Destek</p>
+      <div lang="en">
+        <h2>Made by one person.</h2>
+        <p>Bug reports, purchase problems, refund questions and ideas all reach me at the same address, and I read every one.</p>
+      </div>
+      <div lang="tr">
+        <h2>Tek kişi tarafından yapılıyor.</h2>
+        <p>Hata bildirimleri, satın alma sorunları, iade soruları ve öneriler aynı adrese ulaşıyor ve hepsini okuyorum.</p>
+      </div>
+      <div class="btns">
+        <a class="btn btn-ghost" href="support.html"><span lang="en">Support &amp; FAQ</span><span lang="tr">Destek ve SSS</span></a>
+        <a class="btn btn-ghost" href="mailto:osmankose85@gmail.com?subject=Lissaloop"><span>osmankose85@gmail.com</span></a>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 Osman Kose</span>
+    <span>
+      <a href="support.html"><span lang="en">Support</span><span lang="tr">Destek</span></a> ·
+      <a href="privacy.html"><span lang="en">Privacy</span><span lang="tr">Gizlilik</span></a> ·
+      <a href="/"><span lang="en">All games</span><span lang="tr">Tüm oyunlar</span></a>
+    </span>
+  </div>
+</footer>
+
+<script>
+// Language toggle. Defaults to the browser's language, then remembers the
+// choice (shared by every Lissaloop page). Both languages are already in the
+// HTML and CSS hides one, so nothing is fetched and there is no flash.
+(function () {
+  var KEY = 'lissaloop.lang';
+  var btn = document.getElementById('langBtn');
+  function apply(l) {
+    document.documentElement.setAttribute('data-lang', l);
+    document.documentElement.setAttribute('lang', l);
+    btn.textContent = l === 'tr' ? 'TR' : 'EN';
+  }
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch (e) {}
+  apply(saved || ((navigator.language || 'en').toLowerCase().indexOf('tr') === 0 ? 'tr' : 'en'));
+  btn.addEventListener('click', function () {
+    var next = document.documentElement.getAttribute('data-lang') === 'tr' ? 'en' : 'tr';
+    apply(next);
+    try { localStorage.setItem(KEY, next); } catch (e) {}
+  });
+})();
+
+// Shared by both fields: the game's curve (config.ts: x = sin(a t + π/2), y = sin(b t)),
+// reduced motion, and "only animate while on screen".
+var LL = (function () {
+  var TAU = Math.PI * 2;
+  var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  function onScreen(el, cb) {
+    if (!('IntersectionObserver' in window)) { cb(true); return; }
+    new IntersectionObserver(function (es) { cb(es[0].isIntersecting); }).observe(el);
+  }
+  return { TAU: TAU, reduce: reduce, onScreen: onScreen };
+})();
+
+// Hero: three runners (Echo) lap the Eight a third of a loop apart, trails a few steps behind.
+(function () {
+  var host = document.getElementById('heroRunners');
+  if (!host || LL.reduce) return;
+  var first = host.querySelector('.rn');
+  host.appendChild(first.cloneNode(true)); host.appendChild(first.cloneNode(true));
+  var runners = host.querySelectorAll('.rn');
+  var CX = 340, CY = 170, K = 132, SPEED = 0.6, STEP = 0.07, t0 = null, visible = true;
+  LL.onScreen(host.ownerSVGElement, function (v) { visible = v; });
+  function place(el, t) {
+    el.setAttribute('cx', (CX + K * Math.cos(t)).toFixed(1));
+    el.setAttribute('cy', (CY + K * Math.sin(2 * t)).toFixed(1));
+  }
+  function frame(ts) {
+    requestAnimationFrame(frame);
+    if (!visible) return;
+    if (t0 === null) t0 = ts;
+    var base = -0.6 + (ts - t0) / 1000 * SPEED;
+    for (var j = 0; j < runners.length; j++) {
+      var c = runners[j].getElementsByTagName('circle'), t = base + j * LL.TAU / runners.length;
+      place(c[c.length - 1], t);
+      for (var i = 0; i < c.length - 1; i++) place(c[i], t - (i + 1) * STEP);
+    }
+  }
+  requestAnimationFrame(frame);
+})();
+
+// The Lissajous lab.
+(function () {
+  var lab = document.getElementById('lab');
+  if (!lab) return;
+  // name, a, b, node count shown in the game (config.ts TRACKS)
+  var TR = [['Ring', 1, 1, 0], ['Eight', 1, 2, 1], ['Knot', 3, 2, 7], ['Pretzel', 3, 4, 17], ['Bloom', 5, 4, 31], ['Weave', 5, 6, 49]];
+  // node positions from the game's computeNodes() (geometry.ts), unit coordinates
+  var NODES = [[],[[0,0]],[[0.707,0.5],[0,0.866],[-0.707,0.5],[0,0],[0.707,-0.5],[0,-0.866],[-0.707,-0.5]],[[0.924,0.5],[0.707,0.866],[0,0.866],[-0.383,0.5],[-0.707,0],[-0.924,-0.5],[-0.707,-0.866],[-0.383,-0.5],[0,0],[0.383,0.5],[0.707,0],[0.383,-0.5],[0,-0.866],[-0.924,0.5],[-0.707,0.866],[0.924,-0.5],[0.707,-0.866]],[[0.924,0.309],[0.707,0.588],[0.383,0.809],[0,0.951],[-0.707,0.951],[-0.924,0.809],[-0.924,0.309],[-0.707,0],[-0.383,-0.309],[0,-0.588],[0.383,-0.809],[0.707,-0.951],[0.924,-0.809],[0.707,-0.588],[0.383,-0.309],[0,0],[-0.383,0.309],[-0.707,0.588],[-0.383,0.809],[0,0.588],[0.383,0.309],[0.707,0],[0.924,-0.309],[0,-0.951],[-0.383,-0.809],[-0.707,-0.588],[-0.924,-0.309],[0.707,0.951],[0.924,0.809],[-0.707,-0.951],[-0.924,-0.809]],[[0.966,0.309],[0.866,0.588],[0.707,0.809],[0.5,0.951],[0,0.951],[-0.259,0.809],[-0.5,0.588],[-0.707,0.309],[-0.866,0],[-0.966,-0.309],[-0.966,-0.809],[-0.866,-0.951],[-0.5,-0.951],[-0.259,-0.809],[0,-0.588],[0.259,-0.309],[0.5,0],[0.707,0.309],[0.966,0.809],[0.866,0.951],[0.5,0.588],[0,0],[-0.259,-0.309],[-0.5,-0.588],[-0.707,-0.809],[-0.866,-0.588],[-0.707,-0.309],[-0.5,0],[-0.259,0.309],[0,0.588],[0.259,0.809],[0.866,0],[0.707,-0.309],[0.5,-0.588],[0.259,-0.809],[0,-0.951],[-0.966,0.309],[-0.866,0.588],[-0.707,0.809],[-0.5,0.951],[0.966,-0.309],[0.966,-0.809],[0.866,-0.951],[0.5,-0.951],[-0.966,0.809],[-0.866,0.951],[0.707,-0.809],[0.866,-0.588]]];
+  var NS = 'http://www.w3.org/2000/svg', TAU = LL.TAU;
+  var CX = 340, CY = 170, R = 132, N = 520, HOLD = 3.8, MORPH = 1.3, LAPS_PER_S = 0.35;
+  function $(id) { return document.getElementById(id); }
+  var band = $('labBand'), pink = $('labPink'), mint = $('labMint'), pen = $('labPen'), nodesG = $('labNodes'), trailG = $('labTrail');
+  var chipsEl = $('chips');
+
+  function pt(i, t) { return [Math.sin(TR[i][1] * t + Math.PI / 2), Math.sin(TR[i][2] * t)]; }
+  function ease(k) { return k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2; }
+  var from = 1, to = 1, k = 1;
+  function sample(t) {
+    var A = pt(from, t);
+    if (from === to) return A;
+    var B = pt(to, t), e = ease(Math.min(1, k));
+    return [A[0] + (B[0] - A[0]) * e, A[1] + (B[1] - A[1]) * e];
+  }
+  function sx(p) { return (CX + R * p[0]).toFixed(1); }
+  function sy(p) { return (CY + R * p[1]).toFixed(1); }
+  function pathD(t0, t1, n) {
+    var d = '';
+    for (var i = 0; i <= n; i++) { var p = sample(t0 + (t1 - t0) * i / n); d += (i ? 'L' : 'M') + sx(p) + ' ' + sy(p); }
+    return d;
+  }
+  function drawCurve() { var d = pathD(0, TAU, N) + 'Z'; band.setAttribute('d', d); pink.setAttribute('d', d); mint.setAttribute('d', d); }
+
+  // nodes: a mint ring and dot at each crossing, plus a burst ring when the pen passes
+  var nodeEls = [], flash = [];
+  for (var j = 0; j < 49; j++) {
+    var g = document.createElementNS(NS, 'g');
+    var burst = document.createElementNS(NS, 'circle'); burst.setAttribute('r', '5'); burst.setAttribute('fill', 'none'); burst.setAttribute('stroke', '#5CE1C6'); burst.setAttribute('stroke-width', '1.6'); burst.setAttribute('opacity', '0');
+    var ring = document.createElementNS(NS, 'circle'); ring.setAttribute('r', '4.2'); ring.setAttribute('fill', '#141838'); ring.setAttribute('stroke', '#5CE1C6'); ring.setAttribute('stroke-width', '1.4');
+    var dot = document.createElementNS(NS, 'circle'); dot.setAttribute('r', '1.6'); dot.setAttribute('fill', '#5CE1C6');
+    g.appendChild(burst); g.appendChild(ring); g.appendChild(dot); nodesG.appendChild(g);
+    nodeEls.push({ g: g, burst: burst, x: 0, y: 0 }); flash.push(0);
+  }
+  var nodeFade = 1;
+  function setNodes(i) {
+    var list = NODES[i];
+    for (var j = 0; j < nodeEls.length; j++) {
+      var n = nodeEls[j], p = list[j];
+      if (!p) { n.g.style.display = 'none'; continue; }
+      n.x = CX + R * p[0]; n.y = CY + R * p[1]; flash[j] = 0;
+      n.g.style.display = ''; n.g.setAttribute('transform', 'translate(' + n.x.toFixed(1) + ' ' + n.y.toFixed(1) + ')');
+    }
+  }
+
+  // trail: four segments behind the pen, fading out
+  var trail = [];
+  [0.9, 0.55, 0.3, 0.13].forEach(function (op, i) {
+    var p = document.createElementNS(NS, 'path'); p.setAttribute('stroke-opacity', op); p.setAttribute('stroke-width', String(3.2 - i * 0.5));
+    trailG.appendChild(p); trail.push(p);
+  });
+
+  // readouts and chips (each chip draws its own little curve)
+  var chips = [];
+  TR.forEach(function (tr, i) {
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.setAttribute('aria-pressed', 'false');
+    var s = document.createElementNS(NS, 'svg'); s.setAttribute('viewBox', '0 0 34 34'); s.setAttribute('aria-hidden', 'true');
+    var p = document.createElementNS(NS, 'path'), d = '';
+    for (var q = 0; q <= 240; q++) { var v = pt(i, q / 240 * TAU); d += (q ? 'L' : 'M') + (17 + 13 * v[0]).toFixed(1) + ' ' + (17 + 13 * v[1]).toFixed(1); }
+    p.setAttribute('d', d + 'Z'); p.setAttribute('fill', 'none'); p.setAttribute('stroke', i === 0 ? '#5CE1C6' : '#5CE1C6'); p.setAttribute('stroke-width', '1.4');
+    s.appendChild(p); b.appendChild(s);
+    var name = document.createElement('b'); name.textContent = tr[0]; b.appendChild(name);
+    var ratio = document.createElement('span'); ratio.textContent = tr[1] + ':' + tr[2]; b.appendChild(ratio);
+    b.addEventListener('click', function () { go(i); auto = false; autoResume = 12; });
+    chipsEl.appendChild(b); chips.push(b);
+  });
+  function setLabels(i) {
+    var tr = TR[i];
+    $('labName').textContent = tr[0].toUpperCase();
+    $('labRatio').textContent = tr[1] + ' : ' + tr[2];
+    $('fa').textContent = tr[1]; $('fb').textContent = tr[2];
+    $('rName').textContent = tr[0]; $('rRatio').textContent = tr[1] + ' : ' + tr[2]; $('rNodes').textContent = tr[3];
+    chips.forEach(function (c, j) { c.setAttribute('aria-pressed', j === i ? 'true' : 'false'); });
+  }
+
+  var hold = 0, auto = !LL.reduce, autoResume = 0, penT = 0;
+  function go(i) {
+    if (i === to && from === to) return;
+    from = to; to = i; k = LL.reduce ? 1 : 0; nodeFade = 0;
+    if (LL.reduce) from = to;
+    setLabels(i); setNodes(i); hold = 0;
+    drawCurve();
+    if (LL.reduce) { nodesG.style.opacity = 1; }
+  }
+
+  setLabels(to); setNodes(to); drawCurve();
+  if (LL.reduce) { pen.style.display = 'none'; return; }
+
+  var visible = true, last = null;
+  LL.onScreen(lab, function (v) { visible = v; last = null; });
+  function frame(ts) {
+    requestAnimationFrame(frame);
+    if (!visible) return;
+    var dt = last === null ? 0 : Math.min(0.05, (ts - last) / 1000); last = ts;
+    if (from !== to) {
+      k = Math.min(1, k + dt / MORPH); drawCurve();
+      if (k >= 1) { from = to; drawCurve(); }
+    } else {
+      nodeFade = Math.min(1, nodeFade + dt * 2);
+      if (auto) { hold += dt; if (hold > HOLD) go((to + 1) % TR.length); }
+      else if ((autoResume -= dt) <= 0) { auto = true; hold = 0; }
+    }
+    nodesG.style.opacity = from === to ? nodeFade : 0;
+    // the pen: roughly constant speed along the curve, whatever its density
+    var tr = TR[to], omega = LAPS_PER_S * TAU * 1.414 / Math.hypot(tr[1], tr[2]);
+    penT += dt * omega;
+    var p = sample(penT), px = CX + R * p[0], py = CY + R * p[1];
+    pen.setAttribute('cx', px.toFixed(1)); pen.setAttribute('cy', py.toFixed(1));
+    var span = omega * 0.5 / trail.length;
+    for (var s = 0; s < trail.length; s++) trail[s].setAttribute('d', pathD(penT - (s + 1) * span, penT - s * span, 10));
+    // nodes burst as the pen crosses them
+    for (var j = 0; j < nodeEls.length; j++) {
+      var n = nodeEls[j];
+      if (n.g.style.display === 'none') continue;
+      if (from === to && Math.hypot(n.x - px, n.y - py) < 5) flash[j] = 1;
+      if (flash[j] > 0) {
+        flash[j] = Math.max(0, flash[j] - dt * 1.8);
+        n.burst.setAttribute('r', (5 + (1 - flash[j]) * 14).toFixed(1));
+        n.burst.setAttribute('opacity', flash[j].toFixed(2));
+      }
+    }
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+
+</body>
+</html>

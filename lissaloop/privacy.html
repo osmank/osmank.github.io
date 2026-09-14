@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lissaloop — Privacy Policy</title>
+<meta name="description" content="Privacy policy for Lissaloop (com.osmnks.lissaloop). No account, no server, no analytics. Advertising, purchases and Game Center are handled by the third parties described here.">
+<meta name="theme-color" content="#10132E">
+<link rel="canonical" href="https://osmank.github.io/lissaloop/privacy.html">
+<link rel="icon" type="image/png" href="icon-64.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Bricolage+Grotesque:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* The game's palette (src/ui/kit.ts COL) and fonts (Unbounded, Bricolage Grotesque). */
+  :root{
+    --bg:#10132E;--surface:#1B1F4A;--edge:#2E3468;
+    --ink:#F3EEFF;--muted:#9A9CCB;--pink:#FF5C8A;--mint:#5CE1C6;--sun:#FFC93C;
+    --display:"Unbounded",system-ui,sans-serif;
+    --body:"Bricolage Grotesque",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;
+    line-height:1.65;-webkit-font-smoothing:antialiased;
+    min-height:100vh;display:flex;flex-direction:column;
+  }
+  a{color:var(--mint);text-underline-offset:3px}
+  a:focus-visible{outline:2px solid var(--sun);outline-offset:3px}
+  .wrap{width:100%;max-width:680px;margin:0 auto;padding:0 24px}
+
+  /* ---- language ----
+     KOK ELEMANI HARIC. JS <html> uzerine lang="tr" yaziyor; kural body ile
+     sinirlandirilmazsa [lang="tr"] <html>in KENDISINI secip tum sayfayi gizler. */
+  body [lang="tr"]{display:none}
+  html[data-lang="tr"] body [lang="en"]{display:none}
+  html[data-lang="tr"] body [lang="tr"]{display:revert}
+  .mast-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .lang{
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;
+    color:var(--ink);background:rgba(243,238,255,.05);
+    border:1px solid rgba(243,238,255,.25);border-radius:12px;
+    padding:6px 14px;cursor:pointer;
+  }
+  .lang:hover{border-color:var(--muted)}
+  .lang:focus-visible{outline:2px solid var(--sun);outline-offset:3px}
+  .masthead{padding:32px 0 0}
+  .back{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--muted);text-decoration:none}
+  .back:hover{color:var(--ink)}
+  h1{font-family:var(--display);font-weight:900;font-size:clamp(28px,6vw,40px);
+    line-height:1.12;margin:44px 0 10px;letter-spacing:-.02em;
+    text-shadow:-3px -2px 0 rgba(255,92,138,.55),3px 2px 0 rgba(92,225,198,.45)}
+  .sub{font-family:var(--mono);font-size:.74rem;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:36px}
+  h2{font-family:var(--display);font-weight:700;font-size:1.02rem;letter-spacing:-.01em;
+    margin:36px 0 10px;padding-top:26px;border-top:1px solid var(--edge)}
+  h3{font-family:var(--body);font-weight:600;font-size:1.02rem;margin:22px 0 6px}
+  p+p{margin-top:13px}
+  ul{margin:12px 0 0 20px}
+  li{margin-bottom:8px}
+  li::marker{color:var(--mint)}
+  .callout{
+    background:var(--surface);border:1px solid var(--edge);border-radius:16px;
+    padding:18px 20px;margin:22px 0;box-shadow:6px 6px 0 var(--pink);
+  }
+  .callout p:first-child{font-family:var(--display);font-weight:700;font-size:.9rem;margin-bottom:6px;color:var(--sun)}
+  code{font-family:var(--mono);font-size:.84em;color:var(--mint)}
+  footer{margin-top:auto;padding:34px 0 44px;border-top:1px solid var(--edge)}
+  .foot{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;
+    font-family:var(--mono);font-size:.74rem;color:var(--muted)}
+  .foot a{color:var(--muted)}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap mast-row">
+    <a class="back" href="./">← Lissaloop</a>
+    <button class="lang" id="langBtn" type="button" aria-label="Change language">EN</button>
+  </div>
+</header>
+
+<main class="wrap">
+<div lang="en">
+
+  <h1>Privacy Policy</h1>
+  <p class="sub">Lissaloop · com.osmnks.lissaloop · Last updated 14 September 2026</p>
+
+  <div class="callout">
+    <p>The short version</p>
+    <p>Lissaloop has no accounts, no login and no server of mine. Your progress stays on your device. I do not receive, store or sell any personal data about you. The only data that leaves your phone goes to Apple (purchases and Game Center) and to the advertising provider described below, and you can decline ad tracking at the first prompt.</p>
+  </div>
+
+  <h2>Who is responsible</h2>
+  <p>Lissaloop is developed and published by <strong>Osman Kose</strong>, an independent developer based in Türkiye. For any question about this policy or about your data, write to <a href="mailto:osmankose85@gmail.com?subject=Lissaloop%20privacy">osmankose85@gmail.com</a>.</p>
+
+  <h2>What stays on your device</h2>
+  <p>The game saves the following locally, using the operating system's standard app storage. None of it is transmitted to me:</p>
+  <ul>
+    <li>Coins, upgrade levels, your runners' form and loop, prisms, best wave and kills</li>
+    <li>Settings: sound, effects and language</li>
+    <li>The time you last played, used to work out what your runners earned while you were away</li>
+    <li>When you last used each rewarded offer and when the last full-screen ad was shown, so cooldowns survive a restart</li>
+    <li>Which purchases you own, and the loop look you picked</li>
+  </ul>
+  <p>Deleting the app removes all of it. There is no cloud save on my side and nothing to restore from me.</p>
+
+  <h2>Game Center</h2>
+  <p>If you are signed in to <strong>Apple Game Center</strong>, Lissaloop reports your achievements and your best wave to it, and the in-game leaderboard shows the display names of the top players. This uses your Game Center player identifier and display name and is governed by <a href="https://www.apple.com/legal/privacy/">Apple's privacy policy</a>. If you are not signed in, the game works the same; only the leaderboard is unavailable.</p>
+
+  <h2>Advertising</h2>
+  <p>Lissaloop shows ads through <strong>Unity LevelPlay</strong> (ironSource), a mobile advertising mediation service operated by Unity Technologies. Ads are either your choice or come at a natural pause:</p>
+  <ul>
+    <li><strong>Rewarded ads</strong>, only when you tap an offer: double offline earnings, breach insurance and Surge Overcharge</li>
+    <li><strong>Full-screen ads</strong>, only after a core breach or an Ascend, never during play and never in the first minutes of a session</li>
+  </ul>
+  <p>To serve ads, the advertising SDK may collect and process:</p>
+  <ul>
+    <li>Device identifiers, including the Identifier for Advertisers (IDFA) <em>only if you allow tracking</em></li>
+    <li>Device and connection information such as model, operating system version, language and coarse location derived from IP address</li>
+    <li>Interaction data: that an ad was shown, viewed or clicked</li>
+  </ul>
+  <p>This processing is carried out by Unity as an independent controller. Their policy applies to it: <a href="https://unity.com/legal/game-player-and-app-user-privacy-policy">Unity Game Player and App User Privacy Policy</a>.</p>
+
+  <h3>App Tracking Transparency</h3>
+  <p>Once, when ads are available, iOS asks whether Lissaloop may track you across other companies' apps and websites. <strong>If you decline, the IDFA is not shared and ads become non-personalised.</strong> The game works exactly the same either way; nothing is locked behind that permission. You can change your answer at any time in <code>Settings → Privacy &amp; Security → Tracking</code>.</p>
+
+  <h2>Purchases</h2>
+  <p>Lissaloop offers two optional, permanent purchases: <strong>Lissaloop+</strong> (no full-screen ads; rewarded-ad bonuses come without the video, with the same cooldowns; a gold loop look) and <strong>Long Break</strong> (offline earnings build up for 12 hours instead of 3).</p>
+  <p>In-app purchases are processed entirely by <strong>Apple</strong> through the App Store. I never see and never receive your name, card number, billing address or Apple ID. The app only learns whether a purchase completed, so it can deliver it. Refunds are handled by Apple at <a href="https://reportaproblem.apple.com">reportaproblem.apple.com</a>.</p>
+
+  <h2>What Lissaloop does not do</h2>
+  <ul>
+    <li>No account, no sign-up, no email collection</li>
+    <li>No analytics or crash-reporting SDK</li>
+    <li>No contacts, photos, microphone, camera or precise location access</li>
+    <li>No selling or sharing of personal data by me</li>
+  </ul>
+
+  <h2>Children</h2>
+  <p>Lissaloop is not directed at children under 13 and I do not knowingly collect personal information from them. If you believe a child has provided such information through the advertising SDK, contact me and I will help you raise it with the provider.</p>
+
+  <h2>Your rights</h2>
+  <p>Because I hold no personal data about you, there is nothing on my side to export or delete; uninstalling the app erases everything the game stored. For data held by the advertising provider or by Apple, use the contact routes in their policies linked above. If you are in the EEA, the UK or Türkiye, you keep your rights under GDPR and KVKK respectively; write to me and I will point you to the right controller.</p>
+
+  <h2>Changes</h2>
+  <p>If this policy changes, the date at the top of this page changes with it and the updated version is published here.</p>
+
+</div>
+<div lang="tr">
+
+  <h1>Gizlilik Politikası</h1>
+  <p class="sub">Lissaloop · com.osmnks.lissaloop · Son güncelleme 14 Eylül 2026</p>
+
+  <div class="callout">
+    <p>Kısa özet</p>
+    <p>Lissaloop'ta hesap, giriş ve bana ait bir sunucu yok. İlerlemen cihazında kalır. Seninle ilgili hiçbir kişisel veriyi almıyor, saklamıyor ve satmıyorum. Telefonundan çıkan tek veri Apple'a (satın alma ve Game Center için) ve aşağıda anlatılan reklam sağlayıcısına gider. Reklam izlemesini ilk soruda reddedebilirsin.</p>
+  </div>
+
+  <h2>Sorumlu kim</h2>
+  <p>Lissaloop'u Türkiye'de yaşayan bağımsız bir geliştirici, <strong>Osman Köse</strong> geliştiriyor ve yayımlıyor. Bu politika ya da verilerin hakkında her türlü soru için: <a href="mailto:osmankose85@gmail.com?subject=Lissaloop%20gizlilik">osmankose85@gmail.com</a></p>
+
+  <h2>Cihazında kalanlar</h2>
+  <p>Oyun şunları yalnızca cihaza kaydeder, bana iletmez:</p>
+  <ul>
+    <li>Coinler, upgrade seviyeleri, koşucularının formu ve döngüsü, prizmalar, en iyi dalga ve öldürme sayısı</li>
+    <li>Ayarlar: ses, efektler ve dil</li>
+    <li>Son oynadığın zaman: sen yokken koşucuların ne kazandığını hesaplamak için</li>
+    <li>Her ödüllü teklifi en son ne zaman kullandığın ve son tam ekran reklamın ne zaman çıktığı: bekleme süreleri uygulama kapanınca sıfırlanmasın diye</li>
+    <li>Sahip olduğun satın almalar ve seçtiğin döngü görünümü</li>
+  </ul>
+  <p>Uygulamayı silmek hepsini siler. Bulut yedeği yok, bende geri yüklenecek bir kayıt da yok.</p>
+
+  <h2>Game Center</h2>
+  <p><strong>Apple Game Center</strong>'a giriş yaptıysan Lissaloop başarımlarını ve en iyi dalganı ona bildirir; oyun içindeki sıralama en iyi oyuncuların görünen adlarını gösterir. Bunun için Game Center oyuncu kimliğin ve görünen adın kullanılır; <a href="https://www.apple.com/legal/privacy/">Apple'ın gizlilik politikası</a> geçerlidir. Giriş yapmadıysan oyun aynı çalışır, sadece sıralama görünmez.</p>
+
+  <h2>Reklamlar</h2>
+  <p>Lissaloop, Unity Technologies tarafından işletilen <strong>Unity LevelPlay</strong> (ironSource) üzerinden reklam gösterir. Reklamlar ya senin seçimindir ya da doğal bir duraksamada gelir:</p>
+  <ul>
+    <li><strong>Ödüllü reklamlar</strong>, sadece bir teklife dokunduğunda: offline kazancı ikiye katlama, breach sigortası ve Surge Overcharge</li>
+    <li><strong>Tam ekran reklamlar</strong>, sadece çekirdek düştükten ya da Yüksel'den sonra; oyun sırasında ve oturumun ilk dakikalarında asla</li>
+  </ul>
+  <p>Reklam SDK'sı cihaz tanımlayıcılarını (izin verirsen IDFA dâhil), cihaz ve bağlantı bilgilerini (model, işletim sistemi sürümü, dil, IP adresinden çıkarılan yaklaşık konum) ve reklam etkileşim verisini (gösterildi, izlendi, tıklandı) işleyebilir. Bu işleme Unity'nin kendi sorumluluğundadır; <a href="https://unity.com/legal/game-player-and-app-user-privacy-policy">Unity gizlilik politikası</a> geçerlidir.</p>
+  <p>Reklamlar kullanılabilir olduğunda iOS bir kez, diğer şirketlerin uygulama ve sitelerinde izlenmene izin verip vermediğini sorar. <strong>Reddedersen IDFA paylaşılmaz ve reklamlar kişiselleştirilmez.</strong> Oyun her iki durumda da birebir aynı çalışır; o izne bağlı kilitli hiçbir şey yok. Cevabını <code>Ayarlar → Gizlilik ve Güvenlik → İzleme</code> bölümünden istediğin zaman değiştirebilirsin.</p>
+
+  <h2>Satın almalar</h2>
+  <p>Lissaloop'ta isteğe bağlı, kalıcı iki ürün var: <strong>Lissaloop+</strong> (tam ekran reklam yok; ödüllü reklam bonusları videosuz ama aynı bekleme süreleriyle gelir; altın döngü görünümü) ve <strong>Uzun Mola</strong> (offline kazanç 3 yerine 12 saat birikir).</p>
+  <p>Satın almalar tamamen <strong>Apple</strong> tarafından App Store üzerinden yürütülür. Adını, kart bilgilerini ya da Apple Kimliğini hiçbir zaman görmem. Uygulama yalnızca satın almanın tamamlanıp tamamlanmadığını öğrenir. İade talepleri için: <a href="https://reportaproblem.apple.com">reportaproblem.apple.com</a></p>
+
+  <h2>Yapılmayanlar</h2>
+  <p>Hesap yok, e-posta toplanmıyor, analitik ya da çökme raporlama SDK'sı yok, rehber, fotoğraf, mikrofon, kamera ya da kesin konum erişimi yok, ve tarafımdan kişisel veri satışı ya da paylaşımı yok.</p>
+
+  <h2>Çocuklar</h2>
+  <p>Lissaloop 13 yaş altı çocuklara yönelik değil ve çocuklardan bilerek kişisel veri toplamıyorum. Bir çocuğun reklam SDK'sı üzerinden böyle bir bilgi verdiğini düşünüyorsan bana yaz, sağlayıcıya iletmene yardım edeyim.</p>
+
+  <h2>Hakların</h2>
+  <p>Tarafımda kişisel verin bulunmadığı için dışa aktarılacak ya da silinecek bir kayıt yok; uygulamayı kaldırmak oyunun sakladığı her şeyi siler. Reklam sağlayıcısında ya da Apple'da duran veriler için yukarıdaki politikalardaki iletişim yollarını kullanabilirsin. KVKK ve GDPR kapsamındaki hakların saklıdır; bana yazarsan doğru adrese yönlendiririm.</p>
+
+  <h2>Değişiklikler</h2>
+  <p>Bu politika değişirse sayfanın üstündeki tarih de değişir ve güncel sürüm bu adreste yayımlanır.</p>
+
+</div>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 Osman Kose</span>
+    <span><a href="./">Lissaloop</a> · <a href="support.html"><span lang="en">Support</span><span lang="tr">Destek</span></a> · <a href="/"><span lang="en">All games</span><span lang="tr">Tüm oyunlar</span></a></span>
+  </div>
+</footer>
+
+<script>
+// Ayni dil anahtari — secim tum Lissaloop sayfalarinda ortak (localStorage).
+(function () {
+  var KEY = 'lissaloop.lang';
+  var btn = document.getElementById('langBtn');
+  function apply(l) {
+    document.documentElement.setAttribute('data-lang', l);
+    document.documentElement.setAttribute('lang', l);
+    btn.textContent = l === 'tr' ? 'TR' : 'EN';
+  }
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch (e) {}
+  apply(saved || ((navigator.language || 'en').toLowerCase().indexOf('tr') === 0 ? 'tr' : 'en'));
+  btn.addEventListener('click', function () {
+    var next = document.documentElement.getAttribute('data-lang') === 'tr' ? 'en' : 'tr';
+    apply(next);
+    try { localStorage.setItem(KEY, next); } catch (e) {}
+  });
+})();
+</script>
+
+</body>
+</html>
