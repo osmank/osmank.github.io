@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NOSLOW — Never Slow Down</title>
-<meta name="description" content="A one-touch arcade game for iPhone. Your ball never loses speed, and every orb makes you permanently faster. Burn your heat to hunt the mines, or stay cold and climb.">
-<meta name="theme-color" content="#050311">
+<title>NOSLOW — Tap. Break free. Get caught.</title>
+<meta name="description" content="A one-touch orbit game for iPhone. Your ship circles a planet; one tap sends it flying straight through the next ring, and the next planet catches it. 50 levels, 5 chapters, a new daily level every day.">
+<meta name="theme-color" content="#0d192e">
 <link rel="canonical" href="https://osmank.github.io/noslow/">
-<meta property="og:title" content="NOSLOW — Never Slow Down">
-<meta property="og:description" content="Your ball never loses speed. Every orb makes you permanently faster. Your success is your difficulty.">
+<meta property="og:title" content="NOSLOW — Tap. Break free. Get caught.">
+<meta property="og:description" content="One tap breaks your ship out of orbit. Fly through the ring, get caught by the next planet. 50 levels, 5 chapters, a daily level for everyone.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://osmank.github.io/noslow/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,11 +16,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#050311;--surface:#0f0b22;--edge:#241a3d;
-    --ink:#ece8ff;--muted:#9a8fbd;
-    --ember:#ffc46b;--cyan:#7fd8ff;
-    --t1:#7fd8ff;--t2:#a85ae0;--t3:#e14a9b;--t4:#ff8a3d;--t5:#fff1e0;
-    --mine:#ff5468;
+    --bg:#0d192e;--surface:#15274a;--edge:#24406e;
+    --ink:#f2f0f7;--muted:#a7b6d2;
+    --gold:#ffd85c;--cyan:#9fd6ff;--sea:#82e6d2;--lava:#ff9640;--red:#ff6b7a;
     --display:"Space Grotesk",system-ui,sans-serif;
     --body:"IBM Plex Sans",system-ui,sans-serif;
     --mono:"IBM Plex Mono",ui-monospace,monospace;
@@ -31,8 +29,8 @@
     line-height:1.7;-webkit-font-smoothing:antialiased;
     min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;
   }
-  a{color:var(--ember);text-underline-offset:3px}
-  a:focus-visible{outline:2px solid var(--ember);outline-offset:3px}
+  a{color:var(--gold);text-underline-offset:3px}
+  a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
   .wrap{width:100%;max-width:760px;margin:0 auto;padding:0 24px}
 
   /* ---- language ----
@@ -45,12 +43,12 @@
   .mast-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
   .lang{
     font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;
-    color:var(--ink);background:rgba(236,232,255,.05);
-    border:1px solid rgba(236,232,255,.25);border-radius:8px;
+    color:var(--ink);background:rgba(242,240,247,.05);
+    border:1px solid rgba(242,240,247,.25);border-radius:8px;
     padding:6px 14px;cursor:pointer;
   }
   .lang:hover{border-color:var(--muted)}
-  .lang:focus-visible{outline:2px solid var(--ember);outline-offset:3px}
+  .lang:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
   .masthead{padding:32px 0 0}
   .back{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;
     text-transform:uppercase;color:var(--muted);text-decoration:none}
@@ -60,21 +58,19 @@
   .hero{padding:56px 0 12px;text-align:center;position:relative}
   .hero::before{
     content:"";position:absolute;inset:-10% -40% 40%;z-index:-1;
-    background:radial-gradient(ellipse at 50% 30%,rgba(255,138,61,.16),rgba(168,90,224,.10) 42%,transparent 70%);
+    background:radial-gradient(ellipse at 50% 30%,rgba(130,170,230,.22),rgba(255,216,92,.06) 45%,transparent 70%);
     pointer-events:none;
   }
   .eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.22em;
     text-transform:uppercase;color:var(--muted);margin-bottom:18px}
   .eyebrow b{font-weight:500}
-  .eyebrow .s1{color:var(--t1)}.eyebrow .s2{color:var(--t3)}.eyebrow .s3{color:var(--t4)}
+  .eyebrow .s1{color:var(--cyan)}.eyebrow .s2{color:var(--gold)}.eyebrow .s3{color:var(--sea)}
   .logo{
     font-family:var(--display);font-weight:700;
     font-size:clamp(52px,15vw,108px);line-height:.92;letter-spacing:-.03em;
-    background:linear-gradient(180deg,#fff 0%,var(--ember) 55%,#ff7a3d 100%);
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-    margin-bottom:16px;
+    color:#f3efe5;margin-bottom:16px;
   }
-  .tagline{max-width:52ch;margin:0 auto;color:var(--muted);font-size:1.02rem}
+  .tagline{max-width:54ch;margin:0 auto;color:var(--muted);font-size:1.02rem}
   .tagline strong{color:var(--ink);font-weight:500}
 
   .scene{margin:34px auto 8px;max-width:560px}
@@ -85,9 +81,7 @@
     font-family:var(--mono);font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;
     text-decoration:none;border-radius:10px;padding:13px 22px;border:1px solid transparent;
   }
-  .btn-primary{background:var(--ember);color:#1a0d02;font-weight:500}
-  .btn-primary[aria-disabled="true"]{background:rgba(255,196,107,.16);color:var(--ember);
-    border-color:rgba(255,196,107,.4);cursor:default}
+  .btn-primary{background:var(--gold);color:#1b2440;font-weight:500}
   .btn-ghost{border-color:var(--edge);color:var(--muted)}
   .btn-ghost:hover{border-color:var(--muted);color:var(--ink)}
 
@@ -97,7 +91,7 @@
   .label{font-family:var(--mono);font-size:.7rem;letter-spacing:.2em;
     text-transform:uppercase;color:var(--muted);margin-bottom:14px}
   h2{font-family:var(--display);font-weight:600;font-size:clamp(22px,4.4vw,30px);
-    line-height:1.22;letter-spacing:-.01em;margin-bottom:12px}
+    line-height:1.22;letter-spacing:-.01em;margin-bottom:12px;text-wrap:balance}
   .lede{color:var(--muted);max-width:60ch}
   .lede+.lede{margin-top:12px}
   .lede strong{color:var(--ink);font-weight:500}
@@ -107,37 +101,31 @@
     flex:1 1 130px;background:var(--surface);border:1px solid var(--edge);
     border-radius:12px;padding:16px 18px;
   }
-  .stat b{display:block;font-family:var(--display);font-size:1.7rem;line-height:1.1;color:var(--ember)}
+  .stat b{display:block;font-family:var(--display);font-size:1.7rem;line-height:1.1;color:var(--gold)}
   .stat span{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;
     text-transform:uppercase;color:var(--muted)}
 
-  /* heat ladder */
+  /* chapters */
   .ladder{list-style:none;margin:26px 0 0;padding:0;display:grid;gap:8px}
   .rung{
     display:flex;align-items:center;gap:14px;background:var(--surface);
     border:1px solid var(--edge);border-radius:10px;padding:12px 16px;
   }
   .swatch{width:12px;height:12px;border-radius:99px;flex:none}
-  .rung-n{font-family:var(--mono);font-size:.8rem;letter-spacing:.12em;flex:1}
-  .rung-m{font-family:var(--display);font-weight:600;color:var(--muted)}
-  .od{
-    margin-top:14px;border:1px dashed rgba(255,138,61,.5);border-radius:10px;
-    padding:14px 16px;color:var(--muted);font-size:.94rem;
-  }
-  .od b{color:var(--t4);font-family:var(--mono);font-size:.8rem;letter-spacing:.14em}
+  .rung-n{font-family:var(--mono);font-size:.8rem;letter-spacing:.12em;flex:0 0 auto;min-width:7.5em}
+  .rung-m{color:var(--muted);font-size:.92rem;min-width:0}
 
-  /* mode list */
   .modes{list-style:none;margin:24px 0 0;padding:0;display:grid;gap:10px}
   .mode{background:var(--surface);border:1px solid var(--edge);border-radius:12px;padding:16px 18px}
   .mode-t{font-family:var(--mono);font-size:.76rem;letter-spacing:.16em;
-    text-transform:uppercase;color:var(--cyan);margin-bottom:4px}
+    text-transform:uppercase;color:var(--gold);margin-bottom:4px}
   .mode-d{color:var(--muted);font-size:.95rem}
 
   .quote{
     font-family:var(--display);font-weight:600;font-size:clamp(20px,4vw,27px);
-    line-height:1.35;text-align:center;color:var(--ink);max-width:22ch;margin:0 auto;
+    line-height:1.35;text-align:center;color:var(--ink);max-width:24ch;margin:0 auto;
   }
-  .quote span{color:var(--t4)}
+  .quote span{color:var(--gold)}
 
   footer{margin-top:auto;padding:34px 0 44px;border-top:1px solid var(--edge)}
   .foot{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;
@@ -145,8 +133,8 @@
   .foot a{color:var(--muted)}
 
   @media (prefers-reduced-motion:no-preference){
-    .pulse{animation:pulse 2.6s ease-in-out infinite}
-    @keyframes pulse{0%,100%{opacity:.35}50%{opacity:.9}}
+    .spin{transform-origin:200px 170px;animation:spin 6s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
   }
 </style>
 </head>
@@ -160,60 +148,38 @@
 </header>
 
 <div class="wrap hero">
-  <p class="eyebrow"><b class="s1">Steer</b> · <b class="s2">Burn</b> · <b class="s3">Climb</b></p>
+  <p class="eyebrow" lang="en"><b class="s1">Tap</b> · <b class="s2">Break free</b> · <b class="s3">Get caught</b></p>
+  <p class="eyebrow" lang="tr"><b class="s1">Dokun</b> · <b class="s2">Kop</b> · <b class="s3">Yakalan</b></p>
   <h1 class="logo">NOSLOW</h1>
-  <p class="tagline" lang="en">A one-touch arcade game for iPhone. Your ball is perfectly elastic — it never loses speed, and every orb you collect makes you <strong>permanently faster</strong>. Your success is your difficulty.</p>
-  <p class="tagline" lang="tr">iPhone için tek dokunuşlu bir arcade oyunu. Topun mükemmel esnek — hızını hiç kaybetmiyor ve topladığın her küre seni <strong>kalıcı olarak hızlandırıyor</strong>. Başarın, zorluğun oluyor.</p>
+  <p class="tagline" lang="en">A one-touch orbit game for iPhone. Your ship circles a planet by itself. <strong>One tap</strong> breaks it free in a straight line — through the golden ring, into the next planet's orbit.</p>
+  <p class="tagline" lang="tr">iPhone için tek dokunuşlu bir yörünge oyunu. Mekiğin bir gezegenin etrafında kendi kendine döner. <strong>Tek dokunuş</strong> onu dümdüz koparır — altın halkadan geçer, sıradaki gezegenin yörüngesine yakalanır.</p>
 
   <div class="scene" aria-hidden="true">
     <svg viewBox="0 0 560 300" role="presentation">
-      <defs>
-        <linearGradient id="trail" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#7fd8ff" stop-opacity="0"/>
-          <stop offset="45%" stop-color="#e14a9b" stop-opacity=".55"/>
-          <stop offset="100%" stop-color="#ffc46b" stop-opacity="1"/>
-        </linearGradient>
-        <radialGradient id="glow">
-          <stop offset="0%" stop-color="#fff1e0" stop-opacity=".9"/>
-          <stop offset="55%" stop-color="#ffc46b" stop-opacity=".35"/>
-          <stop offset="100%" stop-color="#ffc46b" stop-opacity="0"/>
-        </radialGradient>
-      </defs>
-
       <!-- field -->
-      <rect x="14" y="14" width="532" height="272" rx="16" fill="none" stroke="#241a3d" stroke-width="2"/>
-
-      <!-- orbs -->
-      <circle cx="120" cy="96" r="5" fill="#7fd8ff" opacity=".8"/>
-      <circle cx="238" cy="212" r="5" fill="#7fd8ff" opacity=".8"/>
-      <circle cx="352" cy="84" r="5" fill="#7fd8ff" opacity=".8"/>
-
-      <!-- mines -->
-      <g stroke="#ff5468" stroke-width="2" fill="none" opacity=".85">
-        <g transform="translate(186,132)"><circle r="9"/><path d="M0-15V-11M0 15V11M-15 0H-11M15 0H11"/></g>
-        <g transform="translate(300,168)"><circle r="9"/><path d="M0-15V-11M0 15V11M-15 0H-11M15 0H11"/></g>
-        <g transform="translate(430,120)"><circle r="9"/><path d="M0-15V-11M0 15V11M-15 0H-11M15 0H11"/></g>
-      </g>
-
-      <!-- the line the ball has travelled: bounces, never slows -->
-      <polyline points="30,180 120,96 208,236 300,60 388,214 452,150"
-        fill="none" stroke="url(#trail)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-
-      <!-- flare ring charging around the ball -->
-      <circle cx="452" cy="150" r="30" fill="none" stroke="#ff8a3d" stroke-width="2"
-        stroke-dasharray="140 48" stroke-linecap="round" class="pulse" transform="rotate(-90 452 150)"/>
-
-      <!-- ball -->
-      <circle cx="452" cy="150" r="34" fill="url(#glow)"/>
-      <circle cx="452" cy="150" r="9" fill="#fff1e0"/>
-
-      <!-- aim line, dashed, the moment before release -->
-      <path d="M452 150 L534 96" stroke="#ece8ff" stroke-opacity=".35" stroke-width="2" stroke-dasharray="5 7"/>
+      <rect x="14" y="14" width="532" height="272" rx="22" fill="none" stroke="#24406e" stroke-width="2"/>
+      <!-- stars -->
+      <g fill="#f2f0f7" opacity=".5"><circle cx="70" cy="50" r="1.4"/><circle cx="510" cy="60" r="1.2"/><circle cx="300" cy="40" r="1"/><circle cx="460" cy="250" r="1.3"/><circle cx="110" cy="250" r="1"/></g>
+      <!-- planet A + orbit -->
+      <circle cx="200" cy="170" r="62" fill="none" stroke="#f2f0f7" stroke-opacity=".18" stroke-width="1.5"/>
+      <circle cx="200" cy="170" r="34" fill="#82e6d2"/>
+      <circle cx="190" cy="160" r="8" fill="#5ec4b0"/><circle cx="214" cy="182" r="5" fill="#5ec4b0"/>
+      <!-- ship circling -->
+      <g class="spin"><circle cx="200" cy="108" r="6" fill="#f2f0f7"/><circle cx="194" cy="108" r="3" fill="#ffb454"/></g>
+      <!-- flight line: tangent, through the ring, into planet B -->
+      <path d="M262 170 L392 110" stroke="#ffd85c" stroke-opacity=".55" stroke-width="2" stroke-dasharray="4 7"/>
+      <!-- ring -->
+      <circle cx="330" cy="139" r="20" fill="none" stroke="#ffd85c" stroke-width="5"/>
+      <!-- planet B -->
+      <circle cx="440" cy="92" r="26" fill="#9fd6ff"/>
+      <circle cx="440" cy="92" r="50" fill="none" stroke="#f2f0f7" stroke-opacity=".12" stroke-width="1.5"/>
+      <!-- mine -->
+      <g transform="translate(380,210)"><circle r="9" fill="#2a2f3e" stroke="#ff6b7a" stroke-width="2"/><circle r="3" fill="#ff6b7a"/></g>
     </svg>
   </div>
 
   <div class="btns">
-    <a class="btn btn-primary" aria-disabled="true" href="#status"><span lang="en">Coming to the App Store</span><span lang="tr">Yakında App Store'da</span></a>
+    <a class="btn btn-primary" href="https://apps.apple.com/app/id6788125636"><span lang="en">Get it on the App Store</span><span lang="tr">App Store'dan indir</span></a>
     <a class="btn btn-ghost" href="privacy.html"><span lang="en">Privacy Policy</span><span lang="tr">Gizlilik Politikası</span></a>
     <a class="btn btn-ghost" href="support.html"><span lang="en">Support</span><span lang="tr">Destek</span></a>
   </div>
@@ -225,89 +191,60 @@
     <p class="label" lang="en">The game</p>
     <p class="label" lang="tr">Oyun</p>
     <div lang="en">
-      <h2>One touch. No brakes.</h2>
-      <p class="lede">Hold anywhere and time slows to a crawl. Drag to aim, release to fly — <strong>same speed, new direction</strong>. There is no jump, no boost, no brake. Steering costs FAZ energy; orbs refill it. Run dry and you are a passenger.</p>
-      <p class="lede">Chain orbs without touching a wall to build your combo. Graze a mine by a hair and score more for it. Cowards score less.</p>
+      <h2>One tap is your only move.</h2>
+      <p class="lede">Your ship orbits a planet on its own. Tap and it leaves the orbit <strong>straight ahead, the way it faces</strong>. Pick the moment so the line runs through the next golden ring, and the next planet catches you. Fly through every ring in order, as fast as you can.</p>
+      <p class="lede">Pass through the center of a ring for a PERFECT. Beat the target time for ★★; finish even faster with half the rings PERFECT for ★★★.</p>
     </div>
     <div lang="tr">
-      <h2>Tek dokunuş. Fren yok.</h2>
-      <p class="lede">Ekranın herhangi bir yerine bas, zaman yavaşlar. Sürükleyerek nişan al, bırakınca uç — <strong>aynı hız, yeni yön</strong>. Zıplama yok, hızlanma yok, fren yok. Yönlendirmek FAZ enerjisi harcıyor; küreler onu dolduruyor. Enerjin biterse yolcu olursun.</p>
-      <p class="lede">Duvara değmeden küre topla, komboyu büyüt. Bir mayının kılpayı yanından geç, fazladan puan al. Korkaklar az kazanır.</p>
+      <h2>Tek hamlen bir dokunuş.</h2>
+      <p class="lede">Mekiğin bir gezegenin etrafında kendi kendine döner. Dokunduğunda yörüngeden <strong>baktığı yöne dümdüz</strong> kopar. Anı öyle seç ki çizgi sıradaki altın halkadan geçsin, sıradaki gezegen de seni yakalasın. Bütün halkalardan sırayla, olabildiğince hızlı geç.</p>
+      <p class="lede">Halkanın tam ortasından geçersen PERFECT. Hedef sürenin altında bitir, ★★ al; daha da hızlı bitir ve halkaların yarısından PERFECT geç, ★★★ al.</p>
     </div>
     <div class="stats" role="list">
-      <div class="stat" role="listitem"><b>5</b><span lang="en">Modes</span><span lang="tr">Mod</span></div>
-      <div class="stat" role="listitem"><b>3</b><span lang="en">Arenas</span><span lang="tr">Arena</span></div>
-      <div class="stat" role="listitem"><b>×2.5</b><span lang="en">Top heat tier</span><span lang="tr">En üst ısı katmanı</span></div>
+      <div class="stat" role="listitem"><b>50</b><span lang="en">Levels</span><span lang="tr">Seviye</span></div>
+      <div class="stat" role="listitem"><b>5</b><span lang="en">Chapters</span><span lang="tr">Bölüm</span></div>
+      <div class="stat" role="listitem"><b>1</b><span lang="en">Daily level</span><span lang="tr">Günlük seviye</span></div>
     </div>
   </section>
 
   <section>
-    <p class="label" lang="en">The decision</p>
-    <p class="label" lang="tr">Karar</p>
+    <p class="label" lang="en">Chapters</p>
+    <p class="label" lang="tr">Bölümler</p>
     <div lang="en">
-      <h2>Burn, or climb.</h2>
-      <p class="lede">Hold longer and a ring fills around your ball. Let go once it is full and you erupt — a burst of speed, and for a second and a half <strong>every mine on the field is prey</strong>.</p>
-      <p class="lede">Hunting is not free. It costs tier heat: the same pool that carries you up the ladder. Never your speed — your ball never slows. So every flare is a real decision. Clear the field, or stay cold and climb higher? <strong>The best scores belong to players who barely needed to hunt.</strong></p>
+      <h2>Every chapter adds one new rule.</h2>
+      <p class="lede">Each new danger is explained the moment it first appears.</p>
     </div>
     <div lang="tr">
-      <h2>Yak, ya da tırman.</h2>
-      <p class="lede">Daha uzun basılı tut, topunun etrafında bir halka dolar. Dolduğu anda bırakırsan patlarsın — bir hız patlaması ve bir buçuk saniye boyunca <strong>sahadaki her mayın av olur</strong>.</p>
-      <p class="lede">Avlanmak bedava değil. Tier ısısına mal oluyor: seni merdivende yukarı taşıyan havuzun ta kendisi. Hızına asla — topun hiç yavaşlamıyor. Yani her flare gerçek bir karar. Sahayı temizle, yoksa soğuk kalıp daha yükseğe mi tırman? <strong>En iyi skorlar, avlanmaya neredeyse hiç ihtiyaç duymayanların.</strong></p>
-    </div>
-  </section>
-
-  <section>
-    <p class="label" lang="en">The ladder</p>
-    <p class="label" lang="tr">Merdiven</p>
-    <div lang="en">
-      <h2>Heat is the score multiplier.</h2>
-      <p class="lede">The faster you are, the more every point is worth — and the less room you have to think.</p>
-    </div>
-    <div lang="tr">
-      <h2>Isı, puan çarpanıdır.</h2>
-      <p class="lede">Ne kadar hızlıysan her puan o kadar değerli — ve düşünecek o kadar az yerin var.</p>
+      <h2>Her bölüm tek bir yeni kural ekler.</h2>
+      <p class="lede">Her yeni tehlike, ilk çıktığı anda anlatılır.</p>
     </div>
     <ul class="ladder">
-      <li class="rung"><span class="swatch" style="background:var(--t1)"></span><span class="rung-n">CYAN</span><span class="rung-m">×1.0</span></li>
-      <li class="rung"><span class="swatch" style="background:var(--t2)"></span><span class="rung-n">VIOLET</span><span class="rung-m">×1.3</span></li>
-      <li class="rung"><span class="swatch" style="background:var(--t3)"></span><span class="rung-n">MAGENTA</span><span class="rung-m">×1.6</span></li>
-      <li class="rung"><span class="swatch" style="background:var(--t4)"></span><span class="rung-n">EMBER</span><span class="rung-m">×2.0</span></li>
-      <li class="rung"><span class="swatch" style="background:var(--t5)"></span><span class="rung-n">WHITE-HOT</span><span class="rung-m">×2.5</span></li>
+      <li class="rung"><span class="swatch" style="background:var(--cyan)"></span><span class="rung-n" lang="en">THE JUMP</span><span class="rung-n" lang="tr">ATLAYIŞ</span><span class="rung-m" lang="en">Tap, break free, get caught. Mines never move.</span><span class="rung-m" lang="tr">Dokun, kop, yakalan. Mayınlar kıpırdamaz.</span></li>
+      <li class="rung"><span class="swatch" style="background:var(--sea)"></span><span class="rung-n" lang="en">CHAIN</span><span class="rung-n" lang="tr">ZİNCİR</span><span class="rung-m" lang="en">PERFECT after PERFECT speeds you up. Drones guard the rings.</span><span class="rung-m" lang="tr">Art arda PERFECT seni hızlandırır. Dronlar halkaları korur.</span></li>
+      <li class="rung"><span class="swatch" style="background:var(--lava)"></span><span class="rung-n" lang="en">LAVA</span><span class="rung-n" lang="tr">LAV</span><span class="rung-m" lang="en">Lava planets catch you, then melt you. Leave before the ring runs out.</span><span class="rung-m" lang="tr">Lav gezegeni seni yakalar, sonra eritir. Halka bitmeden kop.</span></li>
+      <li class="rung"><span class="swatch" style="background:var(--gold)"></span><span class="rung-n" lang="en">MASTERY</span><span class="rung-n" lang="tr">USTALIK</span><span class="rung-m" lang="en">Comets cross the field. Lava melts faster.</span><span class="rung-m" lang="tr">Kuyruklu yıldızlar sahayı keser. Lav daha çabuk eritir.</span></li>
+      <li class="rung"><span class="swatch" style="background:#c9d3e6"></span><span class="rung-n" lang="en">BLACK HOLE</span><span class="rung-n" lang="tr">KARA DELİK</span><span class="rung-m" lang="en">Black holes bend your flight. Follow the curve.</span><span class="rung-m" lang="tr">Kara delikler uçuşunu büker. Eğriyi izle.</span></li>
     </ul>
-    <p class="od" lang="en"><b>OVERDRIVE</b><br>Push to the ceiling and it begins: double score, and a world that closes in around you.</p>
-    <p class="od" lang="tr"><b>OVERDRIVE</b><br>Tavana dayan ve başlasın: çift puan, ve üstüne kapanan bir dünya.</p>
   </section>
 
   <section>
-    <p class="label" lang="en">Five ways to play</p>
-    <p class="label" lang="tr">Beş oynama biçimi</p>
-    <div lang="en"><h2>One game, five appetites.</h2></div>
-    <div lang="tr"><h2>Tek oyun, beş iştah.</h2></div>
+    <p class="label" lang="en">Every day</p>
+    <p class="label" lang="tr">Her gün</p>
     <ul class="modes">
       <li class="mode">
-        <p class="mode-t">Endless</p>
-        <p class="mode-d" lang="en">The pure run, and an all-time leaderboard.</p>
-        <p class="mode-d" lang="tr">Saf tur, ve tüm zamanların liderlik tablosu.</p>
+        <p class="mode-t" lang="en">Daily level</p><p class="mode-t" lang="tr">Günlük seviye</p>
+        <p class="mode-d" lang="en">One level, the same for everyone, with its own Game Center board. Easy on Monday, hard by Sunday. Your best time counts; a new one arrives at midnight UTC.</p>
+        <p class="mode-d" lang="tr">Herkes için aynı tek seviye, kendi Game Center tablosuyla. Pazartesi kolay, Pazar'a doğru zor. En iyi süren sayılır; yenisi UTC gece yarısında gelir.</p>
       </li>
       <li class="mode">
-        <p class="mode-t">Daily</p>
-        <p class="mode-d" lang="en">One seed, everyone, best try counts. Fresh every day, with its own board.</p>
-        <p class="mode-d" lang="tr">Tek tohum, herkes aynı tur, en iyi deneme sayılır. Her gün yenilenir, kendi tablosu vardır.</p>
+        <p class="mode-t" lang="en">Streak</p><p class="mode-t" lang="tr">Seri</p>
+        <p class="mode-d" lang="en">Clear the daily level day after day and the reward grows, with bonuses at 7 and 30 days.</p>
+        <p class="mode-d" lang="tr">Günlük seviyeyi her gün bitir, ödül büyüsün; 7. ve 30. günde ek ödül.</p>
       </li>
       <li class="mode">
-        <p class="mode-t">Arenas</p>
-        <p class="mode-d" lang="en">ORBIT bends the walls into a circle. WARP turns the edges into portals. TWIN splits the field in two. Each keeps its own leaderboard.</p>
-        <p class="mode-d" lang="tr">ORBIT duvarları çembere büker. WARP kenarları portala çevirir. TWIN sahayı ikiye böler. Her biri kendi tablosunu tutar.</p>
-      </li>
-      <li class="mode">
-        <p class="mode-t">Challenges</p>
-        <p class="mode-d" lang="en">Three always-on goals that carry across runs and raise your RANK.</p>
-        <p class="mode-d" lang="tr">Turlar arasında taşınan ve RANK'ini yükselten, hep açık üç hedef.</p>
-      </li>
-      <li class="mode">
-        <p class="mode-t">Missions</p>
-        <p class="mode-d" lang="en">In-run goals that adapt to how you actually play.</p>
-        <p class="mode-d" lang="tr">Nasıl oynadığına göre şekillenen tur içi hedefler.</p>
+        <p class="mode-t" lang="en">Thrust and ships</p><p class="mode-t" lang="tr">İtki ve mekikler</p>
+        <p class="mode-d" lang="en">Heading off the screen? The game slows down and THRUST appears: spend coins to bend the ship to the nearest planet. Unlock ships in the hangar that make thrust cheaper or free.</p>
+        <p class="mode-d" lang="tr">Ekrandan mı çıkıyorsun? Oyun yavaşlar ve İTKİ çıkar: Coin harcayıp mekiği en yakın gezegene bük. Hangardan itkiyi ucuzlatan ya da bedava yapan mekikleri aç.</p>
       </li>
     </ul>
   </section>
@@ -316,33 +253,20 @@
     <p class="label" lang="en">Money</p>
     <p class="label" lang="tr">Para</p>
     <div lang="en">
-      <h2>Earn, don't pay.</h2>
-      <p class="lede">Ember is earned by playing — runs, missions, daily streaks, tier records. You spend it on cosmetics and arenas. <strong>Never on power. Never on score.</strong> Prestige styles cannot be bought at any price, only earned. Every leaderboard score was set under the same rules as yours.</p>
-      <p class="lede">There are optional Ember packs, and NOSLOW+ removes the interstitial ads. Rewarded ads stay optional either way, and nothing in the game hides behind one.</p>
+      <h2>Earn coins by playing.</h2>
+      <p class="lede">Coins come from new stars, PERFECT passes, the daily streak, mastering a chapter and beating your records. You spend them on thrust, on continuing after a crash, on opening a chapter early, and on ships. <strong>Ships are only ever unlocked with coins, never with money.</strong></p>
+      <p class="lede">There is one optional coin pack, and NOSLOW+ removes the full-screen ads. Rewarded ads — continue, double coins, free coins — are always your choice.</p>
     </div>
     <div lang="tr">
-      <h2>Kazan, satın alma.</h2>
-      <p class="lede">Ember oynayarak kazanılır — turlar, görevler, günlük seriler, tier rekorları. Kozmetiklere ve arenalara harcarsın. <strong>Asla güce değil. Asla puana değil.</strong> Prestij stilleri hiçbir fiyata satın alınamaz, yalnızca kazanılır. Tablodaki her skor seninkiyle aynı kurallar altında yapıldı.</p>
-      <p class="lede">İsteğe bağlı Ember paketleri var, ve NOSLOW+ araya giren reklamları kaldırıyor. Ödüllü reklamlar her hâlükârda isteğe bağlı, ve oyunda hiçbir şey onların arkasına saklanmıyor.</p>
-    </div>
-  </section>
-
-  <section id="status">
-    <p class="label" lang="en">Status</p>
-    <p class="label" lang="tr">Durum</p>
-    <div lang="en">
-      <h2>Coming to the App Store.</h2>
-      <p class="lede">NOSLOW is finished and submitted for review. iPhone, iOS. Made by one person. When it lands, this page gets the link — until then, questions are welcome at <a href="mailto:osmankose85@gmail.com?subject=NOSLOW">osmankose85@gmail.com</a>.</p>
-    </div>
-    <div lang="tr">
-      <h2>Yakında App Store'da.</h2>
-      <p class="lede">NOSLOW bitti ve incelemeye gönderildi. iPhone, iOS. Tek kişi tarafından yapıldı. Yayına girdiğinde bağlantı bu sayfaya düşecek — o zamana kadar sorular için <a href="mailto:osmankose85@gmail.com?subject=NOSLOW">osmankose85@gmail.com</a>.</p>
+      <h2>Coin oynayarak kazanılır.</h2>
+      <p class="lede">Coin yeni yıldızlardan, PERFECT geçişlerden, günlük seriden, bir bölümde ustalaşmaktan ve rekor kırmaktan gelir. İtkiye, çarpınca devam etmeye, bir bölümü erken açmaya ve mekiklere harcanır. <strong>Mekikler yalnızca Coin ile açılır, asla parayla.</strong></p>
+      <p class="lede">İsteğe bağlı tek bir Coin paketi var, NOSLOW+ da tam sayfa reklamları kaldırıyor. Ödüllü reklamlar — devam, çift Coin, bedava Coin — her zaman senin tercihin.</p>
     </div>
   </section>
 
   <section>
-    <p class="quote" lang="en">One hand. One touch.<br>Can you go <span>WHITE-HOT</span>?</p>
-    <p class="quote" lang="tr">Tek el. Tek dokunuş.<br><span>WHITE-HOT</span> olabilir misin?</p>
+    <p class="quote" lang="en">One planet. One ring. <span>One tap.</span></p>
+    <p class="quote" lang="tr">Bir gezegen. Bir halka. <span>Tek dokunuş.</span></p>
   </section>
 
 </main>

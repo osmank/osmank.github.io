@@ -1,2 +1,3 @@
 google.com, pub-7711650343722646, DIRECT, f08c47fec0942fa0
 ironsrc.com, 675891, DIRECT
+ownerdomain=osmank.github.io
